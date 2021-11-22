@@ -5,8 +5,6 @@ import javafx.scene.image.Image;
 import java.io.InputStream;
 
 public class Buttons {
-    private static final String PATH="com/wjduquette/george/tiles/";
-
     // 000, undefined
 
     public static final Image BACKPACK = file("Buttons_001");
