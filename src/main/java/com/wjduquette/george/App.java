@@ -3,6 +3,7 @@ package com.wjduquette.george;
 import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.tiles.Buttons;
 import com.wjduquette.george.tiles.Effects;
+import com.wjduquette.george.tiles.Mobiles;
 import com.wjduquette.george.widgets.CanvasPane;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -13,6 +14,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class App extends Application {
     private final CanvasPane canvas = new CanvasPane();
@@ -21,17 +23,9 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         // FIRST, read tiles
-        tiles = List.of(
-            Effects.BULLET,
-            Effects.TARGET,
-            Effects.FIREBALL,
-            Effects.JAWS,
-            Effects.FIST,
-            Effects.SWOOSH,
-            Effects.CLAW,
-            Effects.SLIME,
-            Effects.ZZZ
-        );
+        tiles = Mobiles.getSprites().stream()
+            .map(s -> s.image())
+            .collect(Collectors.toList());
         System.out.println("Got tiles: " + tiles.size());
 
         // NEXT, configure the GUI
