@@ -2,6 +2,7 @@ package com.wjduquette.george.graphics;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
 import java.util.ArrayList;
@@ -36,5 +37,29 @@ public class ImageUtils {
         }
 
         return list;
+    }
+
+    /**
+     * Resizes the image to be factor times bigger, retaining pixelation.
+     * @param source The source image
+     * @param factor The factor, >= 1
+     * @return The new image
+     */
+    public static Image embiggen(Image source, int factor) {
+        PixelReader reader = source.getPixelReader();
+        int w = (int)source.getWidth();
+        int h = (int)source.getHeight();
+        WritableImage result = new WritableImage(w*factor, h*factor);
+        PixelWriter writer = result.getPixelWriter();
+
+        for (int i = 0; i < w*factor; i++) {
+            for (int j = 0; j < h*factor; j++) {
+                int si = i / factor;
+                int sj = j / factor;
+                writer.setColor(i,j, reader.getColor(si,sj));
+            }
+        }
+
+        return result;
     }
 }

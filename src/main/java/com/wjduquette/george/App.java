@@ -1,6 +1,7 @@
 package com.wjduquette.george;
 
 import com.wjduquette.george.graphics.ImageUtils;
+import com.wjduquette.george.graphics.Sprite;
 import com.wjduquette.george.tiles.Buttons;
 import com.wjduquette.george.tiles.Effects;
 import com.wjduquette.george.tiles.Mobiles;
@@ -13,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,9 +25,9 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         // FIRST, read tiles
-        tiles = Mobiles.getSprites().stream()
-            .map(s -> s.image())
-            .collect(Collectors.toList());
+        tiles = new ArrayList<>();
+        Sprite george = Mobiles.getSprite("george");
+        tiles.add(ImageUtils.embiggen(george.image(), 2));
         System.out.println("Got tiles: " + tiles.size());
 
         // NEXT, configure the GUI
