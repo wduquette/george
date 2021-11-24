@@ -59,7 +59,7 @@ public class App extends Application {
         }
 
         // NEXT, render the mobiles on top
-        for (Entity mobile : world.query(Mobile.class, Cell.class, Tile.class).toList()) {
+        for (Entity mobile : world.stream().filter(e -> e.has(Mobile.class)).toList()) {
             canvas.drawImage(mobile.tile().image(), rc2xy(mobile.cell()));
         }
     }

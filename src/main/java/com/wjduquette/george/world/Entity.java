@@ -41,27 +41,38 @@ public class Entity {
     public long id() {
         return id;
     }
+
     /**
-     * Get a specific component.
-     * @param cls
-     * @param <T>
-     * @return
+     * Get the component of the given class
+     * @param cls The desired component class.
+     * @param <T> The class
+     * @return The component
      */
-    public <T> Optional<T> get(Class<?> cls) {
-        return Optional.ofNullable((T)components.get(cls));
+    public <T> Optional<T> get(Class<T> cls) {
+        return Optional.ofNullable(components.get(cls));
     }
 
+    /**
+     * Puts a component into the entity, replacing any previous component
+     * of the same type.
+     * @param component The new component value
+     * @param <T> The component type.
+     */
     public <T> void put(T component) {
         components.put(component);
     }
 
     /**
-     * Returns true if the entity has all of the components in the set.
+     * Returns true if the entity has all the components in the set.
      * @param componentSet A set of component classes
      * @return true or false
      */
     public boolean hasAll(Set<Class<?>> componentSet) {
         return components.keySet().containsAll(componentSet);
+    }
+
+    public boolean has(Class<?> component) {
+        return components.get(component) != null;
     }
 
     //-------------------------------------------------------------------------
@@ -74,13 +85,12 @@ public class Entity {
 
     //-------------------------------------------------------------------------
     // Entity Builder
-    public static class Builder {
-        private final Entity entity;
 
-        Builder (Entity entity) {
-            this.entity = entity;
-        }
-
+    // TODO: I'd like to just roll this into Entity...but then mobile() and
+    // terrain() are oversubscribed.  I want to keep the queries brief, so
+    // these would be, what: putMobile()?  setMobile()?
+    // And this isn't really a Builder, exactly....
+    public static record Builder(Entity entity) {
         public Builder cell(int row, int col) {
             entity.put(new Cell(row, col));
             return this;

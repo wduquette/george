@@ -80,4 +80,12 @@ public class World {
         return entities.values().stream()
             .filter(e -> e.hasAll(set));
     }
+
+    /**
+     * Gets a stream of entities.
+     * @return the stream.
+     */
+    public Stream<Entity> stream() {
+        return entities.values().stream();
+    }
 }
