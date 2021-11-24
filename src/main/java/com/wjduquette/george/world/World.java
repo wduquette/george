@@ -16,6 +16,10 @@ import java.util.stream.Stream;
  *     <li>Mobile: A visible thing that can move about the world</li>
  *     <li>Terrain: An underlying terrain tile</li>
  * </ul>
+ *
+ * <p>TODO: How to efficiently support route and proximity computations?
+ * Aha! I have a System that computes the needed data and passes it along to
+ * subsequent systems.  Not there yet.</p>
  */
 public class World {
     //-------------------------------------------------------------------------

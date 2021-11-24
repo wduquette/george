@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Tiles {
+public class Mobiles {
     private static final Map<String, ImageResource> tiles = new LinkedHashMap<>();
     public static List<ImageResource> getTiles() {
         return tiles.values().stream().collect(Collectors.toList());
@@ -45,7 +45,7 @@ public class Tiles {
 
     private static Image file(String filename, String name) {
         String resource = filename + ".png";
-        try (InputStream istream = Tiles.class.getResourceAsStream(resource)) {
+        try (InputStream istream = Mobiles.class.getResourceAsStream(resource)) {
             Image img = new Image(istream);
             tiles.put(name, new ImageResource(name, resource, img));
             return img;

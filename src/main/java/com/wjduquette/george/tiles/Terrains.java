@@ -7,7 +7,7 @@ import java.io.InputStream;
 /**
  * A class of terrain tiles.
  */
-public class Terrain {
+public class Terrains {
     public static final Image UNKNOWN = file("terrain_000");
     public static final Image TILE_FLOOR = file("terrain_001");
     public static final Image BLOCK_WALL = file("terrain_002");
@@ -35,7 +35,7 @@ public class Terrain {
 
     private static Image file(String filename) {
         InputStream istream =
-            Terrain.class.getResourceAsStream(filename + ".png");
+            Terrains.class.getResourceAsStream(filename + ".png");
         return new Image(istream);
     }
 }
