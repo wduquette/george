@@ -1,6 +1,7 @@
 package com.wjduquette.george.world;
 
 import com.wjduquette.george.util.TypeMap;
+import javafx.scene.image.Image;
 
 import java.util.Optional;
 import java.util.Set;
@@ -67,6 +68,37 @@ public class Entity {
     // Specific component accessors
 
     public Cell    cell()    { return components.get(Cell.class); }
+    public Tile    tile()    { return components.get(Tile.class); }
     public Mobile  mobile()  { return components.get(Mobile.class); }
     public Terrain terrain() { return components.get(Terrain.class); }
+
+    //-------------------------------------------------------------------------
+    // Entity Builder
+    public static class Builder {
+        private final Entity entity;
+
+        Builder (Entity entity) {
+            this.entity = entity;
+        }
+
+        public Builder cell(int row, int col) {
+            entity.put(new Cell(row, col));
+            return this;
+        }
+
+        public Builder mobile() {
+            entity.put(new Mobile());
+            return this;
+        }
+
+        public Builder terrain() {
+            entity.put(new Terrain());
+            return this;
+        }
+
+        public Builder tile(Image img) {
+            entity.put(new Tile(img));
+            return this;
+        }
+    }
 }

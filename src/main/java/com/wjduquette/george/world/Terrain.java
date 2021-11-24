@@ -4,8 +4,7 @@ import javafx.scene.image.Image;
 
 /**
  * A terrain tile in the world.
- * TODO: Should include other terrain info, regarding passability, etc.
- * @param tile The image to display for this tile.
+ * TODO: Should include info about passability, etc.
  */
-public record Terrain(Image tile) { }
+public record Terrain() { }
 

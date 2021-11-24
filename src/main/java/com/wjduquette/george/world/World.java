@@ -13,6 +13,7 @@ import java.util.stream.Stream;
  *
  * <ul>
  *     <li>Cell: A location in the world</li>
+ *     <li>Tile: The tile used to draw a thing</li>
  *     <li>Mobile: A visible thing that can move about the world</li>
  *     <li>Terrain: An underlying terrain tile</li>
  * </ul>
@@ -45,10 +46,10 @@ public class World {
      * Makes a new entity in the world.
      * @return the entity
      */
-    public Entity make() {
+    public Entity.Builder make() {
         var entity = new Entity(++entityCounter);
         entities.put(entity.id(), entity);
-        return entity;
+        return new Entity.Builder(entity);
     }
 
     /**

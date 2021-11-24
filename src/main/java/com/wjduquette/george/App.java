@@ -6,8 +6,10 @@ import com.wjduquette.george.tiles.Terrains;
 import com.wjduquette.george.widgets.CanvasPane;
 import com.wjduquette.george.world.*;
 import javafx.application.Application;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -22,23 +24,24 @@ public class App extends Application {
         // FIRST, initialize the world.
         for (int r = -5; r <= 5; r++) {
             for (int c = -5; c <= 5; c++) {
-                Entity e = world.make();
-                e.put(new Cell(r,c));
-
+                Image img;
                 if (Math.abs(r) > 2 || Math.abs(c) > 2) {
-                    e.put(new Terrain(Terrains.GRASS));
+                    img = Terrains.GRASS;
                 } else {
-                    e.put(new Terrain(Terrains.TILE_FLOOR));
+                    img = Terrains.TILE_FLOOR;
                 }
+                world.make().terrain()
+                    .cell(r,c)
+                    .tile(img);
             }
         }
 
-        Entity player = world.make();
-        player.put(new Cell(0,0));
-        player.put(new Mobile(Mobiles.GEORGE));
+        world.make().mobile()
+            .cell(0,0)
+            .tile(Mobiles.GEORGE);
 
         // NEXT, configure the GUI
-        canvas.setOnResize(this::render);
+        canvas.setOnResize(() -> renderWorld(world));
 
         Scene scene = new Scene(canvas, 440, 440);
         stage.setTitle("George's Saga!");
@@ -46,29 +49,28 @@ public class App extends Application {
         stage.show();
     }
 
-    private void render() {
+    private void renderWorld(World world) {
         GraphicsContext gc = canvas.gc();
         canvas.clear();
 
-        for (Entity ground : world.query(Cell.class, Terrain.class).toList()) {
-            Cell cell = ground.cell();
-            Terrain terrain = ground.terrain();
-            // TODO: need to allow for scrolling, other visual controls.
-            int x = (5 + cell.col())*40;
-            int y = (5 + cell.row())*40;
-            gc.drawImage(terrain.tile(), x, y);
+        // FIRST, render the terrain
+        for (Entity terrain : world.query(Terrain.class, Cell.class, Tile.class).toList()) {
+            canvas.drawImage(terrain.tile().image(), rc2xy(terrain.cell()));
         }
 
-        for (Entity mobile : world.query(Cell.class, Mobile.class).toList()) {
-            Cell cell = mobile.cell();
-            Mobile mob = mobile.mobile();
-            // TODO: need to allow for scrolling, other visual controls.
-            int x = (5 + cell.col())*40;
-            int y = (5 + cell.row())*40;
-            gc.drawImage(mob.image(), x, y);
+        // NEXT, render the mobiles on top
+        for (Entity mobile : world.query(Mobile.class, Cell.class, Tile.class).toList()) {
+            canvas.drawImage(mobile.tile().image(), rc2xy(mobile.cell()));
         }
     }
 
+    // Convert cell coordinates to pixel coordinates.
+    // Need to account for the cell offset.
+    private Point2D rc2xy(Cell cell) {
+        int x = (5 + cell.col())*40;
+        int y = (5 + cell.row())*40;
+        return new Point2D(x,y);
+    }
 
     public static void main(String[] args) {
         launch();

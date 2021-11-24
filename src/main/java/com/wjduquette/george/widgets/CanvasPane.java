@@ -6,6 +6,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -91,6 +92,15 @@ public class CanvasPane extends Pane {
      */
     public void clear() {
         gc().clearRect(0, 0, getWidth(), getHeight());
+    }
+
+    /**
+     * Draws an image on the canvas at the given location.
+     * @param img The image
+     * @param point The locatio
+     */
+    public void drawImage(Image img, Point2D point) {
+        gc().drawImage(img, point.getX(), point.getY());
     }
 
     //-------------------------------------------------------------------------
