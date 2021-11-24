@@ -5,4 +5,4 @@ package com.wjduquette.george.world;
  * @param row The cell's row in the array of tiles
  * @param col The cell's column in the array of tiles
  */
-public record Cell(int row, int col) implements Component { }
+public record Cell(int row, int col) { }

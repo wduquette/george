@@ -6,4 +6,4 @@ import javafx.scene.image.Image;
  * A "mobile": a thing that can move around the world.
  * @param image The mobile's image
  */
-public record Mobile(Image image) implements Component { }
+public record Mobile(Image image) { }

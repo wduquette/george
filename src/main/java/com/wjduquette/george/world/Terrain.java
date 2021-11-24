@@ -7,5 +7,5 @@ import javafx.scene.image.Image;
  * TODO: Should include other terrain info, regarding passability, etc.
  * @param tile The image to display for this tile.
  */
-public record Terrain(Image tile) implements Component { }
+public record Terrain(Image tile) { }
 
