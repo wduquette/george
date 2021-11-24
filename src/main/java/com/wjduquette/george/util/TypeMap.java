@@ -2,6 +2,7 @@ package com.wjduquette.george.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public final class TypeMap {
     //-------------------------------------------------------------------------
@@ -36,6 +37,14 @@ public final class TypeMap {
     @SuppressWarnings("unchecked")
     public <T> T get(Class<T> cls) {
         return (T) this.map.get(cls);
+    }
+
+    /**
+     * The TypeMap's key set.
+     * @return The set
+     */
+    public Set<Class<?>> keySet() {
+        return map.keySet();
     }
 }
 
