@@ -15,24 +15,21 @@ public class ImageUtils {
     private ImageUtils() {} // Not instantiable
 
     /**
-     * Breaks a PNG image into a set of size*size tiles
+     * Breaks a PNG image into a set of width*height tiles, reading from
+     * right to left and top to bottom.
      * @param sourceImage The source image.
-     * @param size The tile size in pixels
-     * @return A list of the loaded pixels.
+     * @param width The tile width in pixels
+     * @param height The tile height in pixels
+     * @return A list of the loaded tiles.
      */
-    public static List<Image> getTiles(Image sourceImage, int size) {
+    public static List<Image> getTiles(Image sourceImage, int width, int height) {
         List<Image> list = new ArrayList<>();
-
-        System.out.println("sourceImage = " + sourceImage.getWidth() + "x" +
-            sourceImage.getHeight());
 
         PixelReader reader = sourceImage.getPixelReader();
 
-        for (int j = 0; j < sourceImage.getHeight(); j += size) {
-            for (int i = 0; i < sourceImage.getWidth(); i += size) {
-                WritableImage tile =
-                    new WritableImage(reader, i, j, size, size);
-                list.add(tile);
+        for (int j = 0; j < sourceImage.getHeight(); j += height) {
+            for (int i = 0; i < sourceImage.getWidth(); i += width) {
+                list.add(new WritableImage(reader, i, j, width, height));
             }
         }
 

@@ -1,6 +1,5 @@
 package com.wjduquette.george;
 
-import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.tiles.Mobiles;
 import com.wjduquette.george.tiles.Terrains;
 import com.wjduquette.george.tilesets.TileSet;
@@ -12,9 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class App extends Application {
     private final CanvasPane canvas = new CanvasPane();
@@ -50,6 +46,14 @@ public class App extends Application {
         stage.show();
 
         TileSet items = new TileSet(getClass(), "tilesets/items.txt");
+        println("TileSet: " + items.resource());
+        for (int i = 0; i < items.size(); i++) {
+            println(String.format("  [%03d] %s", i, items.getInfo().get(i).name()));
+        }
+    }
+
+    private void println(String line) {
+        System.out.println(line);
     }
 
     private void renderWorld(World world) {
