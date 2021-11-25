@@ -1,5 +1,7 @@
 package com.wjduquette.george.tilesets;
 
+import com.wjduquette.george.util.Resource;
+
 /**
  * A TileSet represents a set of tiles loaded from disk.  On the disk, a
  * TileSet is represented by a keyword file and a PNG image.  In memory,
@@ -39,10 +41,16 @@ package com.wjduquette.george.tilesets;
  * file from left to right and top to bottom.  Indices are assigned in the
  * same order.</p>
  *
- * <p>The {@code %skip} keyword is used to skip blank or unwanted tiles, so
+ * <p>The {@code %unused} keyword is used to skip blank or unwanted tiles, so
  * as to preserve the relation of indices to PNG file tiles (as this is
- * important to external tools like the Tiled map editor).  The {@code %skip}
+ * important to external tools like the Tiled map editor).  The {@code %unused}
  * keyword is only required in the middle of a {@code %file}'s tiles.</p>
  */
 public class TileSet {
+    //-------------------------------------------------------------------------
+    // Constructor
+
+    public TileSet(Class<?> cls, String relPath) {
+        Resource.getLines(cls, relPath).forEach(line -> System.out.println(line));
+    }
 }

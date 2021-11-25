@@ -3,6 +3,7 @@ package com.wjduquette.george;
 import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.tiles.Mobiles;
 import com.wjduquette.george.tiles.Terrains;
+import com.wjduquette.george.tilesets.TileSet;
 import com.wjduquette.george.widgets.CanvasPane;
 import com.wjduquette.george.world.*;
 import javafx.application.Application;
@@ -47,6 +48,8 @@ public class App extends Application {
         stage.setTitle("George's Saga!");
         stage.setScene(scene);
         stage.show();
+
+        TileSet items = new TileSet(getClass(), "tilesets/items.txt");
     }
 
     private void renderWorld(World world) {
