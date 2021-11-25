@@ -1,0 +1,34 @@
+# Strings for the World region.
+
+#------------------------------------------------------------------------------
+# Signs
+#
+# Signs are plain text, centered for displayed.
+
+%string sign.map
+The signs shows a detailed map of the world, with an
+arrow labeled "You are Here".  Unfortunately, you can't
+read the language the map legend is written in, so the
+information is of no use to you.
+
+You might find it more useful to click the map icon down
+on the control bar.
+%end
+
+%string sign.floobham
+Floobham Township
+
+Everything for the Adventurer!
+%end
+
+%string sign.floob_castle
+Floob Castle
+
+Do Not Feed The Guards!
+%end
+
+%string sign.bugland
+Tunnel to Paradise Valley
+
+Warning: Beware of Bugs
+%end
