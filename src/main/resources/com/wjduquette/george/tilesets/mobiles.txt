@@ -1,0 +1,20 @@
+# mobiles tiles
+%prefix mobile
+%size 40 40
+%file mobile_human.png
+%tile george
+%tile knight
+%tile friar
+%tile wizard1
+%tile thief
+%tile desk_wizard
+%tile fillmore
+%tile gold_fillmore
+%tile dark_wizard
+%tile peasant1
+%tile peasant2
+%tile peasant3
+%tile peasant4
+%tile peasant5
+%tile princess
+%tile wizard2

@@ -15,17 +15,22 @@ import javafx.stage.Stage;
 public class App extends Application {
     private final CanvasPane canvas = new CanvasPane();
     private final World world = new World();
+    private TileSet terrain;
+    private TileSet mobiles;
 
     @Override
     public void start(Stage stage) {
+        terrain = new TileSet(getClass(), "tilesets/standard_terrain.txt");
+        mobiles = new TileSet(getClass(), "tilesets/mobiles.txt");
+
         // FIRST, initialize the world.
         for (int r = -5; r <= 5; r++) {
             for (int c = -5; c <= 5; c++) {
                 Image img;
                 if (Math.abs(r) > 2 || Math.abs(c) > 2) {
-                    img = Terrains.GRASS;
+                    img = terrain.get("standard.grass").orElseThrow();
                 } else {
-                    img = Terrains.TILE_FLOOR;
+                    img = terrain.get("standard.tile_floor").orElseThrow();
                 }
                 world.make().terrain()
                     .cell(r,c)
@@ -35,7 +40,7 @@ public class App extends Application {
 
         world.make().mobile()
             .cell(0,0)
-            .tile(Mobiles.GEORGE);
+            .tile(mobiles.get("mobile.george").orElseThrow());
 
         // NEXT, configure the GUI
         canvas.setOnResize(() -> renderWorld(world));
@@ -44,12 +49,6 @@ public class App extends Application {
         stage.setTitle("George's Saga!");
         stage.setScene(scene);
         stage.show();
-
-        TileSet items = new TileSet(getClass(), "tilesets/items.txt");
-        println("TileSet: " + items.resource());
-        for (int i = 0; i < items.size(); i++) {
-            println(String.format("  [%03d] %s", i, items.getInfo().get(i).name()));
-        }
     }
 
     private void println(String line) {

@@ -1,0 +1,28 @@
+# standard terrain tiles
+%prefix standard
+%size 40 40
+%file terrain.png
+%tile unknown
+%tile tile_floor
+%tile block_wall
+%tile cobble_floor
+%tile stone_wall
+%tile water
+%tile earth
+%tile grass
+%tile sand
+%tile gravel
+%tile mountain
+%tile cave
+%tile wood_floor_ns
+%tile wood_floor_ew
+%tile hbridge
+%tile hbridge_north
+%tile forest
+%tile brick_spiral
+%tile brick_ns
+%tile brick_ew
+%tile vbridge_west
+%tile vbridge_east
+%tile vbridge
+%tile hbridge_south
