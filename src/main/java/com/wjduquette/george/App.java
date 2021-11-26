@@ -24,14 +24,14 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        terrain = new TileSet(getClass(), "assets/tilesets/standard_terrain.txt");
-        mobiles = new TileSet(getClass(), "assets/tilesets/mobiles.txt");
-        items = new TileSet(getClass(), "assets/tilesets/Items.txt");
-        buttons = new TileSet(getClass(), "assets/tilesets/Buttons.txt");
-        effects = new TileSet(getClass(), "assets/tilesets/Effects.txt");
-        features = new TileSet(getClass(), "assets/tilesets/Features.txt");
-        slots = new TileSet(getClass(), "assets/tilesets/Slots.txt");
-        markers = new TileSet(getClass(), "assets/tilesets/markers.txt");
+        terrain = new TileSet(getClass(), "assets/tilesets/standard_terrain.tileset");
+        mobiles = new TileSet(getClass(), "assets/tilesets/mobiles.tileset");
+        items = new TileSet(getClass(), "assets/tilesets/Items.tileset");
+        buttons = new TileSet(getClass(), "assets/tilesets/Buttons.tileset");
+        effects = new TileSet(getClass(), "assets/tilesets/Effects.tileset");
+        features = new TileSet(getClass(), "assets/tilesets/Features.tileset");
+        slots = new TileSet(getClass(), "assets/tilesets/Slots.tileset");
+        markers = new TileSet(getClass(), "assets/tilesets/markers.tileset");
 
 
         // FIRST, initialize the world.
