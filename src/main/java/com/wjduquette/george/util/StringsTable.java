@@ -70,6 +70,8 @@ public final class StringsTable {
         // NEXT, load the data.
         try {
             loadData(cls, relPath);
+        } catch (KeywordParser.KeywordException ex) {
+            throw new ResourceException(cls, relPath, ex.getMessage());
         } catch (ResourceException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -83,56 +85,19 @@ public final class StringsTable {
      * @param relPath The path to the resource relative to the class.
      * @throws ResourceException on error.
      */
-    private void loadData(Class<?> cls, String relPath) {
-        var inString = false;
-        String key = null;
-        var buffer = new ArrayList<String>();
+    private void loadData(Class<?> cls, String relPath)
+        throws KeywordParser.KeywordException
+    {
+        var parser = new KeywordParser();
+        parser.defineKeyword("%parser", (scanner, $) -> {
+            this.prefix = scanner.next();
+        });
+        parser.defineBlock("%string", "%end", (scanner, block) -> {
+            var key = scanner.next();
+            table.put(prefix + "." + key, block);
+        });
 
-        for (String line : Resource.getLines(cls, relPath)) {
-            // FIRST, if we're in a string, accumulate the lines of text.
-            if (inString) {
-                if (line.startsWith("%end")) {
-                    table.put(prefix + "." + key,
-                        String.join("\n", buffer).trim());
-                    buffer.clear();
-                    inString = false;
-                } else if (line.startsWith("%")) {
-                    throw new ResourceException(cls, relPath,
-                        "Unexpected keyword in string: \"" + line + "\"");
-                } else {
-                    buffer.add(line);
-                }
-
-                continue;
-            }
-
-            // NEXT, we're not yet in a string.
-            line = line.trim();
-
-            // Skip blank lines and comments.
-            if (line.isEmpty() || line.startsWith("#")) {
-                continue;
-            }
-
-            // Handle keywords.
-            Scanner scanner = new Scanner(line);
-
-            if (scanner.hasNext("%prefix")) {
-                scanner.next();
-                prefix = scanner.next();
-            } else if (scanner.hasNext("%string")) {
-                scanner.next();
-                key = scanner.next();
-                inString = true;
-            }
-
-            scanner.close();
-        }
-
-        if (inString) {
-            throw new ResourceException(cls, relPath,
-                "no %end for %string \"" + key + "\"");
-        }
+        parser.parse(Resource.getLines(cls, relPath));
     }
 
     //-------------------------------------------------------------------------
@@ -164,9 +129,7 @@ public final class StringsTable {
 
     /** @return a list of the keys. */
     public List<String> keyList() {
-        List<String> keys = new ArrayList<>();
-        keys.addAll(table.keySet());
-        return keys;
+        return new ArrayList<>(table.keySet());
     }
 
     // Old methods we might or might not want to support.
