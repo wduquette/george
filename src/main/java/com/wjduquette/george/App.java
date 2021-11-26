@@ -17,11 +17,24 @@ public class App extends Application {
     private final World world = new World();
     private TileSet terrain;
     private TileSet mobiles;
+    private TileSet items;
+    private TileSet buttons;
+    private TileSet effects;
+    private TileSet features;
+    private TileSet slots;
+    private TileSet markers;
 
     @Override
     public void start(Stage stage) {
         terrain = new TileSet(getClass(), "tilesets/standard_terrain.txt");
         mobiles = new TileSet(getClass(), "tilesets/mobiles.txt");
+        items = new TileSet(getClass(), "tilesets/Items.txt");
+        buttons = new TileSet(getClass(), "tilesets/Buttons.txt");
+        effects = new TileSet(getClass(), "tilesets/Effects.txt");
+        features = new TileSet(getClass(), "tilesets/Features.txt");
+        slots = new TileSet(getClass(), "tilesets/Slots.txt");
+        markers = new TileSet(getClass(), "tilesets/markers.txt");
+
 
         // FIRST, initialize the world.
         for (int r = -5; r <= 5; r++) {

@@ -1,0 +1,27 @@
+# Terrain Features
+# (Stuff that goes on top of the actual terrain)
+%prefix feature
+%size 40 40
+%file Features.png
+%unused
+%tile closed_door
+%tile open_door
+%tile stairs_down
+%tile stairs_up
+%tile chest
+%tile open_chest
+%tile ladder_down
+%tile ladder_up
+%tile portal_active
+%tile portal_inactive
+%tile sign
+%tile spikes
+%tile pedestal
+%tile save_pedestal
+%tile broken_orb
+%tile yellow_orb
+%tile blue_orb
+%tile green_orb
+%tile red_orb
+%tile tall_pedestal
+%tile heart_pedestal
