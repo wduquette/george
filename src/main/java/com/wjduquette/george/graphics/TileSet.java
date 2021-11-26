@@ -115,7 +115,7 @@ public class TileSet {
             tileHeight = scanner.nextInt();
         });
         parser.defineKeyword("%file", (scanner, $) -> {
-            String filename = scanner.next();
+            String filename = Resource.relativeTo(relPath, scanner.next());
             Image fileImage = loadTileSetImage(cls, relPath, filename);
             images = ImageUtils.getTiles(fileImage, tileWidth, tileHeight);
             nextIndex = 0;
@@ -138,11 +138,8 @@ public class TileSet {
     private Image loadTileSetImage(
         Class<?> cls,
         String relPath,
-        String imageName)
+        String imagePath)
     {
-        String imgPath =
-            new File(relPath).toPath().getParent().resolve(imageName).toString();
-
         try (InputStream istream = Resource.get(cls, imgPath)) {
             return new Image(istream);
         } catch (IOException ex) {

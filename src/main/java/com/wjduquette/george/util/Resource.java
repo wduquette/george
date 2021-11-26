@@ -1,9 +1,6 @@
 package com.wjduquette.george.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -45,6 +42,18 @@ public class Resource {
         } catch (IOException ex) {
             throw new ResourceException(cls, relPath, ex);
         }
+    }
+
+    /**
+     * Given a relative path to a resource and a path relative to that for a
+     * related resource, return the path to the related resource.
+     * @param parentPath
+     * @param relPath
+     * @return
+     */
+    public static String relativeTo(String parentPath, String relPath) {
+       return new File(parentPath).toPath().getParent()
+           .resolve(relPath).toString();
     }
 
 }
