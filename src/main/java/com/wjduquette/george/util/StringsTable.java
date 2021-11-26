@@ -138,8 +138,23 @@ public final class StringsTable {
     //-------------------------------------------------------------------------
     // Getters
 
+    /**
+     * Gets the table's resource ID.
+     * @return The resource
+     */
+    public String resource() {
+        return resource;
+    }
+
+    /**
+     * Gets the table's prefix.
+     * @return The prefix
+     */
+    public String prefix() {
+        return prefix;
+    }
+
     /** Retrieves a string from the table given its key
-     *
      * @param key The key
      * @return The string
      */
