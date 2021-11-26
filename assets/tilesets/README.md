@@ -8,5 +8,5 @@ To edit a tile set:
 
 - Edit the .pyxel file, e.g., Items.pyxel
 - Export the content as a .png, e.g., Items.png
-- Copy the .png file to the relevant resources folder, e.g., tilesets/
+- Copy the .png file to the relevant resources folder, e.g., assets/tilesets/
 
