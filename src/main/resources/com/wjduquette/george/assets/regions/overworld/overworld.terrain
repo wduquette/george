@@ -1,0 +1,38 @@
+# Terrain Tile Set for Overworld
+#
+# In the original implementation of George, the unknown tiles here were
+# treated as feature tiles.  I'm not sure I'll do the same.
+
+#prefix overworld
+#size 40 40
+#unused
+%tile tile_floor       Tile_floor         floor
+%tile block_wall       Block_wall         wall
+%tile cobble_floor     Cobblestone        floor
+%tile stone_wall       Stone_wall         wall
+%tile castle11         Castle
+%tile castle12         Castle
+%tile castle13         Castle
+%tile water            Water              water
+%tile earth            Earth              floor
+%tile sand             Sand               floor
+%tile grass            Grass              floor
+%tile forest_entry     Forest             floor
+%tile castle21         Castle
+%tile castle22         Castle_Entrance
+%tile castle23         Castle
+%tile mountains        Mountains          wall
+%tile cave             Tunnel_entrance
+%tile forest_gate      Forest_Gate
+%tile bridge_ew_top    Bridge             floor
+%unused
+%tile town1            Town
+%tile town2            Town_Entrance
+%tile town3            Town
+%unused
+%unused
+%unused
+%tile bridge_ew_bottom Bridge             floor
+%tile bridge_ns_left   Bridge             floor
+%tile bridge_ns_right  Bridge             floor
+

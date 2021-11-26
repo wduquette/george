@@ -1,0 +1,5 @@
+# Overworld region definition file
+
+%tilemap overworld.json
+%terrain overworld.terrain
+%strings overworld.strings
