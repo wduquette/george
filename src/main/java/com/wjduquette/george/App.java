@@ -1,7 +1,5 @@
 package com.wjduquette.george;
 
-import com.wjduquette.george.tiles.Mobiles;
-import com.wjduquette.george.tiles.Terrains;
 import com.wjduquette.george.tilesets.TileSet;
 import com.wjduquette.george.widgets.CanvasPane;
 import com.wjduquette.george.world.*;
@@ -26,14 +24,14 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        terrain = new TileSet(getClass(), "tilesets/standard_terrain.txt");
-        mobiles = new TileSet(getClass(), "tilesets/mobiles.txt");
-        items = new TileSet(getClass(), "tilesets/Items.txt");
-        buttons = new TileSet(getClass(), "tilesets/Buttons.txt");
-        effects = new TileSet(getClass(), "tilesets/Effects.txt");
-        features = new TileSet(getClass(), "tilesets/Features.txt");
-        slots = new TileSet(getClass(), "tilesets/Slots.txt");
-        markers = new TileSet(getClass(), "tilesets/markers.txt");
+        terrain = new TileSet(getClass(), "assets/tilesets/standard_terrain.txt");
+        mobiles = new TileSet(getClass(), "assets/tilesets/mobiles.txt");
+        items = new TileSet(getClass(), "assets/tilesets/Items.txt");
+        buttons = new TileSet(getClass(), "assets/tilesets/Buttons.txt");
+        effects = new TileSet(getClass(), "assets/tilesets/Effects.txt");
+        features = new TileSet(getClass(), "assets/tilesets/Features.txt");
+        slots = new TileSet(getClass(), "assets/tilesets/Slots.txt");
+        markers = new TileSet(getClass(), "assets/tilesets/markers.txt");
 
 
         // FIRST, initialize the world.
