@@ -1,4 +1,4 @@
-package com.wjduquette.george.tilesets;
+package com.wjduquette.george.graphics;
 
 import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.util.Resource;

@@ -1,6 +1,6 @@
 package com.wjduquette.george;
 
-import com.wjduquette.george.tilesets.TileSet;
+import com.wjduquette.george.graphics.TileSet;
 import com.wjduquette.george.widgets.CanvasPane;
 import com.wjduquette.george.world.*;
 import javafx.application.Application;
