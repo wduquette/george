@@ -105,24 +105,26 @@ public class TileSet {
             if (line.isEmpty() || line.startsWith("#")) {
                 continue;
             }
+            Scanner scanner = new Scanner(line);
 
-            String[] tokens = line.split(" ");
+            String keyword = scanner.next();
 
-            switch (tokens[0]) {
+            switch (keyword) {
                 case "%prefix":
-                    prefix = tokens[1];
+                    prefix = scanner.next();
                     break;
                 case "%size":
-                    tileWidth = Integer.valueOf(tokens[1]);
-                    tileHeight = Integer.valueOf(tokens[2]);
+                    tileWidth = scanner.nextInt();
+                    tileHeight = scanner.nextInt();
                     break;
                 case "%file":
-                    Image fileImage = loadTileSetImage(cls, relPath, tokens[1]);
+                    String filename = scanner.next();
+                    Image fileImage = loadTileSetImage(cls, relPath, filename);
                     images = ImageUtils.getTiles(fileImage, tileWidth, tileHeight);
                     nextIndex = 0;
                     break;
                 case "%tile":
-                    var name = prefix + "." + tokens[1];
+                    var name = prefix + "." + scanner.next();
                     var info = new TileInfo(name, images.get(nextIndex++));
                     tileList.add(info);
                     tileMap.put(info.name(), info);
@@ -134,8 +136,10 @@ public class TileSet {
                     break;
                 default:
                     throw new ResourceException(cls, relPath,
-                        "Unexpected keyword: \"" + tokens[0] + "\"");
+                        "Unexpected keyword: \"" + keyword + "\"");
             }
+
+            scanner.close();
         }
 
         // NEXT, report problems.
