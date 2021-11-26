@@ -1,5 +1,6 @@
 package com.wjduquette.george;
 
+import com.wjduquette.george.graphics.TerrainTileSet;
 import com.wjduquette.george.graphics.TileSet;
 import com.wjduquette.george.widgets.CanvasPane;
 import com.wjduquette.george.world.*;
@@ -13,7 +14,7 @@ import javafx.stage.Stage;
 public class App extends Application {
     private final CanvasPane canvas = new CanvasPane();
     private final World world = new World();
-    private TileSet terrain;
+    private TerrainTileSet terrain;
     private TileSet mobiles;
     private TileSet items;
     private TileSet buttons;
@@ -24,7 +25,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        terrain = new TileSet(getClass(), "assets/tilesets/standard_terrain.tileset");
+        terrain = new TerrainTileSet(getClass(), "assets/tilesets/standard.terrain");
         mobiles = new TileSet(getClass(), "assets/tilesets/mobiles.tileset");
         items = new TileSet(getClass(), "assets/tilesets/Items.tileset");
         buttons = new TileSet(getClass(), "assets/tilesets/Buttons.tileset");
@@ -37,12 +38,9 @@ public class App extends Application {
         // FIRST, initialize the world.
         for (int r = -5; r <= 5; r++) {
             for (int c = -5; c <= 5; c++) {
-                Image img;
-                if (Math.abs(r) > 2 || Math.abs(c) > 2) {
-                    img = terrain.get("standard.grass").orElseThrow();
-                } else {
-                    img = terrain.get("standard.tile_floor").orElseThrow();
-                }
+                String tile = Math.abs(r) > 2 || Math.abs(c) > 2
+                    ? "standard.grass" : "standard.tile_floor";
+                Image img = terrain.get(tile).orElseThrow().image();
                 world.make().terrain()
                     .cell(r,c)
                     .tile(img);
