@@ -20,7 +20,8 @@ import java.util.*;
  *
  * <h3>Keyword File Syntax</h3>
  *
- * <p>A keyword file looks like this:</p>
+ * <p>By convention, a TileSet keyword file has a `.tileset` file type.
+ * A TileSet file looks like this:</p>
  *
  * <pre>
  * %prefix {tileset prefix}
