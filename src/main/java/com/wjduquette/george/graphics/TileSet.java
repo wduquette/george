@@ -1,6 +1,6 @@
 package com.wjduquette.george.graphics;
 
-import com.wjduquette.george.graphics.ImageUtils;
+import com.wjduquette.george.util.KeywordParser;
 import com.wjduquette.george.util.Resource;
 import com.wjduquette.george.util.ResourceException;
 import javafx.scene.image.Image;
@@ -74,12 +74,18 @@ public class TileSet {
     // The map from name to tile.
     private final Map<String,TileInfo> tileMap = new HashMap<>();
 
+    // Transient; used during parsing.
+    private transient List<Image> images;
+    private transient int nextIndex = 0;
+
     //-------------------------------------------------------------------------
     // Constructor
 
     public TileSet(Class<?> cls, String relPath) {
         try {
             loadData(cls, relPath);
+        } catch (KeywordParser.KeywordException ex) {
+            throw new ResourceException(cls, relPath, ex.getMessage());
         } catch (ResourceException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -87,64 +93,45 @@ public class TileSet {
         }
     }
 
-    private void loadData(Class<?> cls, String relPath) {
+    private void loadData(Class<?> cls, String relPath)
+        throws KeywordParser.KeywordException
+    {
         // FIRST, prepare to accumulate data.
-        prefix = null;
-        tileWidth = -1;
-        tileHeight = -1;
-        var nextIndex = 0;
-        List<Image> images = null;
-
-        // NEXT, get the input lines
         this.resource = (relPath.startsWith("/"))
             ? relPath : cls.getCanonicalName() + ":" + relPath;
+        this.prefix = null;
+        this.tileWidth = -1;
+        this.tileHeight = -1;
 
-        for (String line : Resource.getLines(cls, relPath)) {
-            line = line.trim();
+        // NEXT, parse the data.
+        var parser = new KeywordParser();
 
-            if (line.isEmpty() || line.startsWith("#")) {
-                continue;
-            }
-            Scanner scanner = new Scanner(line);
+        parser.defineKeyword("%prefix", (scanner, $) -> {
+            prefix = scanner.next();
+        });
+        parser.defineKeyword("%size", (scanner, $) -> {
+            tileWidth = scanner.nextInt();
+            tileHeight = scanner.nextInt();
+        });
+        parser.defineKeyword("%file", (scanner, $) -> {
+            String filename = scanner.next();
+            Image fileImage = loadTileSetImage(cls, relPath, filename);
+            images = ImageUtils.getTiles(fileImage, tileWidth, tileHeight);
+            nextIndex = 0;
+        });
+        parser.defineKeyword("%tile", (scanner, $) -> {
+            var name = prefix + "." + scanner.next();
+            var info = new TileInfo(name, images.get(nextIndex++));
+            tileList.add(info);
+            tileMap.put(info.name(), info);
+        });
+        parser.defineKeyword("%unused", (scanner, $) -> {
+            var unused = new TileInfo("unused", images.get(nextIndex++));
+            tileList.add(unused);
+            // Do not add to name lookup.
+        });
 
-            String keyword = scanner.next();
-
-            switch (keyword) {
-                case "%prefix":
-                    prefix = scanner.next();
-                    break;
-                case "%size":
-                    tileWidth = scanner.nextInt();
-                    tileHeight = scanner.nextInt();
-                    break;
-                case "%file":
-                    String filename = scanner.next();
-                    Image fileImage = loadTileSetImage(cls, relPath, filename);
-                    images = ImageUtils.getTiles(fileImage, tileWidth, tileHeight);
-                    nextIndex = 0;
-                    break;
-                case "%tile":
-                    var name = prefix + "." + scanner.next();
-                    var info = new TileInfo(name, images.get(nextIndex++));
-                    tileList.add(info);
-                    tileMap.put(info.name(), info);
-                    break;
-                case "%unused":
-                    var unused = new TileInfo("unused", images.get(nextIndex++));
-                    tileList.add(unused);
-                    // Do not add to name lookup.
-                    break;
-                default:
-                    throw new ResourceException(cls, relPath,
-                        "Unexpected keyword: \"" + keyword + "\"");
-            }
-
-            scanner.close();
-        }
-
-        // NEXT, report problems.
-        // TODO: Could do a lot of error reporting; but it's in an
-        // internal file.
+        parser.parse(Resource.getLines(cls, relPath));
     }
 
     private Image loadTileSetImage(
