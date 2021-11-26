@@ -138,7 +138,7 @@ public class TileSet {
     private Image loadTileSetImage(
         Class<?> cls,
         String relPath,
-        String imagePath)
+        String imgPath)
     {
         try (InputStream istream = Resource.get(cls, imgPath)) {
             return new Image(istream);
