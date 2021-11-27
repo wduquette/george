@@ -3,9 +3,6 @@
  */
 package com.wjduquette.george.tmx;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.List;
 
 import com.wjduquette.george.util.Resource;
@@ -21,7 +18,7 @@ import com.google.gson.Gson;
  * discarded; hence it only has minimal convenience methods.
  * @author will
  */
-public class TiledMap {
+public class TiledMapReader {
 	//-------------------------------------------------------------------------
 	// Instance Variables
 	/** Height of the tile map, in tiles. */
@@ -213,7 +210,7 @@ public class TiledMap {
 	 * @param resource The resource name
 	 * @return The TiledMap object.
 	 */
-	public static TiledMap read(Class<?> cls, String resource) {
+	public static TiledMapReader read(Class<?> cls, String resource) {
 		try {
 			List<String> lines = Resource.getLines(cls, "test.json");
 			String jsonText = String.join("\n", lines);
@@ -221,7 +218,7 @@ public class TiledMap {
 			// NEXT, parse the JSON.
 			Gson gson = new Gson();
 
-			return gson.fromJson(jsonText.toString(), TiledMap.class);
+			return gson.fromJson(jsonText.toString(), TiledMapReader.class);
 		} catch (ResourceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -234,14 +231,14 @@ public class TiledMap {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		TiledMap map = read(TiledMap.class, "test.json");
+		TiledMapReader map = read(TiledMapReader.class, "test.json");
 		
 		dump(map);
 	}
 
 	/** Dump the read data to stdout, for testing.
 	 */
-	static private void dump(TiledMap map) {
+	static private void dump(TiledMapReader map) {
 		puts("height=" + map.height);
 		puts("width=" + map.width);
 		puts("tileheight=" + map.tileheight);
