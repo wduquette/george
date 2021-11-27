@@ -3,7 +3,7 @@ package com.wjduquette.george;
 import com.wjduquette.george.graphics.TerrainTileSet;
 import com.wjduquette.george.graphics.TileSet;
 import com.wjduquette.george.widgets.CanvasPane;
-import com.wjduquette.george.world.*;
+import com.wjduquette.george.ecs.*;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 
 public class App extends Application {
     private final CanvasPane canvas = new CanvasPane();
-    private final World world = new World();
+    private final EntityTable world = new EntityTable();
     private TerrainTileSet terrain;
     private TileSet mobiles;
     private TileSet items;
@@ -64,7 +64,7 @@ public class App extends Application {
         System.out.println(line);
     }
 
-    private void renderWorld(World world) {
+    private void renderWorld(EntityTable world) {
         GraphicsContext gc = canvas.gc();
         canvas.clear();
 
