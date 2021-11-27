@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.wjduquette.george.util.Resource;
 import com.wjduquette.george.util.ResourceException;
-import com.wjduquette.george.world.Cell;
+import com.wjduquette.george.ecs.Cell;
 
 import com.google.gson.Gson;
 

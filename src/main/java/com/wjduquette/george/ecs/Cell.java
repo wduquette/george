@@ -1,4 +1,4 @@
-package com.wjduquette.george.world;
+package com.wjduquette.george.ecs;
 
 /**
  * A (row,column) cell: the location of an entity in the world

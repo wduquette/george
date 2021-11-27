@@ -1,6 +1,4 @@
-package com.wjduquette.george.world;
-
-import javafx.scene.image.Image;
+package com.wjduquette.george.ecs;
 
 /**
  * A terrain tile in the world.

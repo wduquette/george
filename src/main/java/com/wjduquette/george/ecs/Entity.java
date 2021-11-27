@@ -1,4 +1,4 @@
-package com.wjduquette.george.world;
+package com.wjduquette.george.ecs;
 
 import com.wjduquette.george.util.TypeMap;
 import javafx.scene.image.Image;

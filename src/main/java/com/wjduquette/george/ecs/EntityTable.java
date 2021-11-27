@@ -1,4 +1,4 @@
-package com.wjduquette.george.world;
+package com.wjduquette.george.ecs;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -22,7 +22,7 @@ import java.util.stream.Stream;
  * Aha! I have a System that computes the needed data and passes it along to
  * subsequent systems.  Not there yet.</p>
  */
-public class World {
+public class EntityTable {
     //-------------------------------------------------------------------------
     // Instance Variables
 
@@ -35,7 +35,7 @@ public class World {
     //-------------------------------------------------------------------------
     // Constructor
 
-    public World() {
+    public EntityTable() {
         // Nothing to do
     }
 
