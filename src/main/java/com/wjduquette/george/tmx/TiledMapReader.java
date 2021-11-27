@@ -47,7 +47,39 @@ public class TiledMapReader {
 	
 	//------------------------------------------------------------------------
 	// Convenience Methods
-	
+
+	/**
+	 * Gets the height of the map in tiles.
+	 * @return the height.
+	 */
+	public int getHeight() {
+		return height;
+	}
+
+	/**
+	 * Gets the width of the map in tiles.
+	 * @return the width
+	 */
+	public int getWidth() {
+		return width;
+	}
+
+	/**
+	 * Gets the height of one tile in pixels.
+	 * @return the height.
+	 */
+	public int getTileHeight() {
+		return tileheight;
+	}
+
+	/**
+	 * Gets the width of one tile in pixels.
+	 * @return the width
+	 */
+	public int getTileWidth() {
+		return tilewidth;
+	}
+
 	/** Returns the tile layer with the given name, or null if no
 	 * such layer is found.
 	 * @param name The name.
@@ -212,7 +244,7 @@ public class TiledMapReader {
 	 */
 	public static TiledMapReader read(Class<?> cls, String resource) {
 		try {
-			List<String> lines = Resource.getLines(cls, "test.json");
+			List<String> lines = Resource.getLines(cls, resource);
 			String jsonText = String.join("\n", lines);
 
 			// NEXT, parse the JSON.
@@ -233,7 +265,7 @@ public class TiledMapReader {
 	public static void main(String[] args) {
 		TiledMapReader map = read(TiledMapReader.class, "test.json");
 		
-		dump(map);
+//		dump(map);
 	}
 
 	/** Dump the read data to stdout, for testing.

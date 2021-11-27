@@ -1,5 +1,6 @@
 package com.wjduquette.george.ecs;
 
+import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.util.TypeMap;
 import javafx.scene.image.Image;
 
@@ -79,36 +80,33 @@ public class Entity {
     // Specific component accessors
 
     public Cell    cell()    { return components.get(Cell.class); }
+    public Feature feature() { return components.get(Feature.class); }
     public Tile    tile()    { return components.get(Tile.class); }
     public Mobile  mobile()  { return components.get(Mobile.class); }
     public Terrain terrain() { return components.get(Terrain.class); }
 
-    //-------------------------------------------------------------------------
-    // Entity Builder
+    public Entity putCell(int row, int col) {
+        put(new Cell(row, col));
+        return this;
+    }
 
-    // TODO: I'd like to just roll this into Entity...but then mobile() and
-    // terrain() are oversubscribed.  I want to keep the queries brief, so
-    // these would be, what: putMobile()?  setMobile()?
-    // And this isn't really a Builder, exactly....
-    public static record Builder(Entity entity) {
-        public Builder cell(int row, int col) {
-            entity.put(new Cell(row, col));
-            return this;
-        }
+    public Entity putTile(Image img) {
+        put(new Tile(img));
+        return this;
+    }
 
-        public Builder mobile() {
-            entity.put(new Mobile());
-            return this;
-        }
+    public Entity putMobile() {
+        put(new Mobile());
+        return this;
+    }
 
-        public Builder terrain() {
-            entity.put(new Terrain());
-            return this;
-        }
+    public Entity putFeature() {
+        put(new Feature());
+        return this;
+    }
 
-        public Builder tile(Image img) {
-            entity.put(new Tile(img));
-            return this;
-        }
+    public Entity putTerrain(TerrainType type) {
+        put(new Terrain(type));
+        return this;
     }
 }

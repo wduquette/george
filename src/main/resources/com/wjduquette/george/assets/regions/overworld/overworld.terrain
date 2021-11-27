@@ -3,9 +3,10 @@
 # In the original implementation of George, the unknown tiles here were
 # treated as feature tiles.  I'm not sure I'll do the same.
 
-#prefix overworld
-#size 40 40
-#unused
+%prefix overworld
+%size 40 40
+%file overworld.png
+%unused
 %tile tile_floor       Tile_floor         floor
 %tile block_wall       Block_wall         wall
 %tile cobble_floor     Cobblestone        floor

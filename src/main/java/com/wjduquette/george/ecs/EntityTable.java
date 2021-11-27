@@ -46,10 +46,19 @@ public class EntityTable {
      * Makes a new entity in the world.
      * @return the entity
      */
-    public Entity.Builder make() {
+    public Entity make() {
         var entity = new Entity(++entityCounter);
         entities.put(entity.id(), entity);
-        return new Entity.Builder(entity);
+        return entity;
+    }
+
+    /**
+     * Gets the entity with the given ID.
+     * @param id The ID
+     * @return The entity
+     */
+    public Entity get(long id) {
+        return entities.get(id);
     }
 
     /**

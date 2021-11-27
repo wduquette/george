@@ -1,8 +1,9 @@
 package com.wjduquette.george.ecs;
 
+import com.wjduquette.george.model.TerrainType;
+
 /**
  * A terrain tile in the world.
- * TODO: Should include info about passability, etc.
  */
-public record Terrain() { }
+public record Terrain(TerrainType type) { }
 
