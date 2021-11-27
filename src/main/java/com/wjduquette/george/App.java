@@ -6,6 +6,7 @@ import com.wjduquette.george.model.RegionMap;
 import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.widgets.CanvasPane;
 import com.wjduquette.george.ecs.*;
+import com.wjduquette.george.widgets.MapViewer;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
@@ -46,11 +47,15 @@ public class App extends Application {
             .putCell(10,10)
             .putTile(mobiles.get("mobile.george").orElseThrow());
 
+        MapViewer viewer = new MapViewer();
+        viewer.setMap(overworld);
+
         // NEXT, configure the GUI
         // TODO: revise to display the region.
-        canvas.setOnResize(() -> renderRegion(overworld));
+//        canvas.setOnResize(() -> renderRegion(overworld));
 
-        Scene scene = new Scene(canvas, 440, 440);
+//        Scene scene = new Scene(canvas, 440, 440);
+        Scene scene = new Scene(viewer, 440, 440);
         stage.setTitle("George's Saga!");
         stage.setScene(scene);
         stage.show();
@@ -65,17 +70,17 @@ public class App extends Application {
         canvas.clear();
 
         // FIRST, render the terrain
-        for (Entity terrain : map.getEntities().query(Terrain.class).toList()) {
+        for (Entity terrain : map.query(Terrain.class).toList()) {
             canvas.drawImage(terrain.tile().image(), rc2xy(terrain.cell()));
         }
 
         // NEXT, render the features
-        for (Entity feature : map.getEntities().query(Feature.class).toList()) {
+        for (Entity feature : map.query(Feature.class).toList()) {
             canvas.drawImage(feature.tile().image(), rc2xy(feature.cell()));
         }
 
         // NEXT, render the mobiles on top
-        for (Entity mobile : map.getEntities().query(Mobile.class).toList()) {
+        for (Entity mobile : map.query(Mobile.class).toList()) {
             canvas.drawImage(mobile.tile().image(), rc2xy(mobile.cell()));
         }
     }

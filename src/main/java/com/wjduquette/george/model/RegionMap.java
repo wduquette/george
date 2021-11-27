@@ -13,6 +13,7 @@ import com.wjduquette.george.util.StringsTable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * RegionMap is a class for loading and querying region definitions defined as
@@ -186,6 +187,22 @@ public class RegionMap {
     // Public Methods
 
     /**
+     * Gets the height of the map in tiles.
+     * @return the height.
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    /**
+     * Gets the width of the map in tiles.
+     * @return the width
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
      * Gets the height of one tile in pixels.
      * @return the height.
      */
@@ -199,6 +216,10 @@ public class RegionMap {
      */
     public int getTileWidth() {
         return tileWidth;
+    }
+
+    public Stream<Entity> query(Class<?>... classes) {
+        return entities.query(classes);
     }
 
     /**
