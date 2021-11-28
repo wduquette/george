@@ -211,7 +211,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="3" name="Features">
+ <objectgroup id="3" name="Objects">
   <object id="1" name="origin" type="Point" x="1640" y="1600"/>
   <object id="2" name="floobham:origin" type="Exit" x="1720" y="1360"/>
   <object id="3" name="bugland:origin" type="Exit" x="2000" y="960"/>
