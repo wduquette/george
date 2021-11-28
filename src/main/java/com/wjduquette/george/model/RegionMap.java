@@ -111,10 +111,10 @@ public class RegionMap {
     private void readTiledMap(Class<?> cls, String filename) {
         TiledMapReader map = TiledMapReader.read(cls, filename);
 
-        this.width = map.width();
-        this.height = map.height();
-        this.tileHeight = map.tileHeight();
-        this.tileWidth = map.tileWidth();
+        this.width = map.width;
+        this.height = map.height;
+        this.tileHeight = map.tileheight;
+        this.tileWidth = map.tilewidth;
 
         Map<Cell,TerrainType> featureTypes = readFeaturesLayer(map);
         readTerrainLayer(map, featureTypes);
@@ -131,8 +131,8 @@ public class RegionMap {
         for (int i = 0; i < layer.data.length; i++) {
             // FIRST, get the row, column, and tile set index.
             // Tiled numbers tiles from 1 to N; we use 0 to N-1.
-            int r = i / map.width();
-            int c = i % map.width();
+            int r = i / map.height;
+            int c = i % map.width;
             int tileIndex = layer.data[i] - 1;
 
             // Skip empty tiles.
@@ -162,8 +162,8 @@ public class RegionMap {
         for (int i = 0; i < terrainLayer.data.length; i++) {
             // FIRST, get the row, column, and tile set index.
             // Tiled numbers tiles from 1 to N; we use 0 to N-1.
-            int r = i / map.width();
-            int c = i % map.width();
+            int r = i / map.height;
+            int c = i % map.width;
             int tileIndex = terrainLayer.data[i] - 1;
 
             // Skip empty tiles.
@@ -185,6 +185,14 @@ public class RegionMap {
 
     //-------------------------------------------------------------------------
     // Public Methods
+
+    /**
+     * Gets the resource ID.
+     * @return the ID string
+     */
+    public String resource() {
+        return resource;
+    }
 
     /**
      * Gets the height of the map in tiles.

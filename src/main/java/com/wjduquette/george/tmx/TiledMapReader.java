@@ -12,7 +12,8 @@ import com.google.gson.Gson;
  * A class representing a Tiled Map Editor tile map, as exported into
  * JSON format and loaded by GSon.  This is expected to be a transient
  * object, loaded, used to build the real data structures, and then
- * discarded; hence it only has minimal convenience methods.
+ * discarded; the instance variables are public and it has few convenience
+ * methods.
  *
  * <p>All classes and instance variables are defined to match the Tiled
  * JSON schema; however, no attempt is made to capture everything
@@ -55,9 +56,9 @@ public class TiledMapReader {
 
 	/** A Custom Property */
 	public static class Property {
-		private String name;  // The property name
-		private String type;  // The property type
-		private String value; // The value string
+		public String name;  // The property name
+		public String type;  // The property type
+		public String value; // The value string
 	}
 
 
@@ -66,52 +67,20 @@ public class TiledMapReader {
 
 	// All names are as they appear in the .json input.  Do not change them!
 
-	private String type;            // Should always be "map"
-	private String version;         // The .json schema version
-	private int height;             // Map height in tiles
-	private int width;              // Map width in tiles.
-	private int tileheight;         // Height of one tile, in pixels
-	private int tilewidth;          // Width of one tile, in pixels
-	private Layer[] layers;         // The array of Layer records
-	private Property[] properties;  // Custom map properties
+	public String type;            // Should always be "map"
+	public String version;         // The .json schema version
+	public int height;             // Map height in tiles
+	public int width;              // Map width in tiles.
+	public int tileheight;         // Height of one tile, in pixels
+	public int tilewidth;          // Width of one tile, in pixels
+	public Layer[] layers;         // The array of Layer records
+	public Property[] properties;  // Custom map properties
 
 	// Omitted: infinite, nextlayerid, nextobjectid, orientation, renderorder,
 	// tiledversion, tilesets
 
 	//------------------------------------------------------------------------
 	// Convenience Methods
-
-	/**
-	 * Gets the height of the map in tiles.
-	 * @return the height.
-	 */
-	public int height() {
-		return height;
-	}
-
-	/**
-	 * Gets the width of the map in tiles.
-	 * @return the width
-	 */
-	public int width() {
-		return width;
-	}
-
-	/**
-	 * Gets the height of one tile in pixels.
-	 * @return the height.
-	 */
-	public int tileHeight() {
-		return tileheight;
-	}
-
-	/**
-	 * Gets the width of one tile in pixels.
-	 * @return the width
-	 */
-	public int tileWidth() {
-		return tilewidth;
-	}
 
 	/** Returns the tile layer with the given name, or null if no
 	 * such layer is found.
@@ -147,7 +116,7 @@ public class TiledMapReader {
 	
 	/** Given a MapObject, return the Cell of its upper left corner,
 	 * using the map's tile size.
-	 * TODO: Move to MapObject
+	 * TODO: Move to RegionMap
 	 *
 	 * @param object A MapObject
 	 * @return A Cell coordinate
@@ -174,7 +143,7 @@ public class TiledMapReader {
 			// NEXT, parse the JSON.
 			Gson gson = new Gson();
 
-			return gson.fromJson(jsonText.toString(), TiledMapReader.class);
+			return gson.fromJson(jsonText, TiledMapReader.class);
 		} catch (ResourceException e) {
 			throw e;
 		} catch (Exception e) {
