@@ -111,10 +111,10 @@ public class RegionMap {
     private void readTiledMap(Class<?> cls, String filename) {
         TiledMapReader map = TiledMapReader.read(cls, filename);
 
-        this.width = map.getWidth();
-        this.height = map.getHeight();
-        this.tileHeight = map.getTileHeight();
-        this.tileWidth = map.getTileWidth();
+        this.width = map.width();
+        this.height = map.height();
+        this.tileHeight = map.tileHeight();
+        this.tileWidth = map.tileWidth();
 
         Map<Cell,TerrainType> featureTypes = readFeaturesLayer(map);
         readTerrainLayer(map, featureTypes);
@@ -122,7 +122,7 @@ public class RegionMap {
 
     private Map<Cell,TerrainType> readFeaturesLayer(TiledMapReader map) {
         var featureType = new HashMap<Cell,TerrainType>();
-        Layer layer = map.getTileLayer(FEATURES_LAYER);
+        Layer layer = map.tileLayer(FEATURES_LAYER);
 
         if (layer == null) {
             return featureType;
@@ -131,8 +131,8 @@ public class RegionMap {
         for (int i = 0; i < layer.data.length; i++) {
             // FIRST, get the row, column, and tile set index.
             // Tiled numbers tiles from 1 to N; we use 0 to N-1.
-            int r = i / map.getWidth();
-            int c = i % map.getWidth();
+            int r = i / map.width();
+            int c = i % map.width();
             int tileIndex = layer.data[i] - 1;
 
             // Skip empty tiles.
@@ -157,13 +157,13 @@ public class RegionMap {
         TiledMapReader map,
         Map<Cell,TerrainType> featureTypes)
     {
-        Layer terrainLayer = map.getTileLayer(TERRAIN_LAYER);
+        Layer terrainLayer = map.tileLayer(TERRAIN_LAYER);
 
         for (int i = 0; i < terrainLayer.data.length; i++) {
             // FIRST, get the row, column, and tile set index.
             // Tiled numbers tiles from 1 to N; we use 0 to N-1.
-            int r = i / map.getWidth();
-            int c = i % map.getWidth();
+            int r = i / map.width();
+            int c = i % map.width();
             int tileIndex = terrainLayer.data[i] - 1;
 
             // Skip empty tiles.

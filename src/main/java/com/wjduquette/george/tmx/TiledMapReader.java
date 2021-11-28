@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.wjduquette.george.tmx;
 
 import java.util.List;
@@ -13,35 +10,74 @@ import com.google.gson.Gson;
 
 /**
  * A class representing a Tiled Map Editor tile map, as exported into
- * JSON format and loaded by Gson.  This is expected to be a transient
+ * JSON format and loaded by GSon.  This is expected to be a transient
  * object, loaded, used to build the real data structures, and then
  * discarded; hence it only has minimal convenience methods.
+ *
+ * <p>All classes and instance variables are defined to match the Tiled
+ * JSON schema; however, no attempt is made to capture everything
+ * in the schema.</p>
+ *
+ * <p>See "devdocs/Tiled JSON Schema 1.6.md" for details.</p>
  * @author will
  */
 public class TiledMapReader {
+	/** The supported version of the Tiled JSON schema. */
+	public static final String SCHEMA_VERSION = "1.6";
+
+	//-------------------------------------------------------------------------
+	// Nested Types
+
+	/** A layer in the tile map */
+	public static class Layer {
+		public String name;           // The user-defined name
+		public String type;           // "tilelayer" or "objectgroup"
+		public int[] data;            // tilelayer: Array of tile GIDs
+		public MapObject[] objects;   // objectgroup: Array of objects
+		public Property[] properties; // Custom properties
+
+		// Omitted fields: draworder, height, id, opacity, visible, width, x, y
+	}
+
+	/** An object in an "objectgroup" layer.  Objects are defined
+	 * in pixel coordinates rather than tile coordinates. */
+	public static class MapObject {
+		public String name;            // The user-defined name
+		public String type;            // The user-defined type
+		public int x;                  // Upper-left x-coordinate, in pixels
+		public int y;                  // Upper-left y-coordinate, in pixels.
+		public int width;              // Width in pixels.
+		public int height;             // Height in pixels.
+		public Property[] properties;  // Custom properties
+
+		// Omitted fields: id, rotation, visible
+	}
+
+	/** A Custom Property */
+	public static class Property {
+		private String name;  // The property name
+		private String type;  // The property type
+		private String value; // The value string
+	}
+
+
 	//-------------------------------------------------------------------------
 	// Instance Variables
-	/** Height of the tile map, in tiles. */
-	public int height;
-	
-	/** Width of the tile map, in tiles. */
-	public int width;
-	
-	/** Height of one tile, in pixels.  */
-	public int tileheight;
-	
-	/** Width of one tile, in pixels. */
-	public int tilewidth;
-	
-	/** Array of layers, which may be tile layers or object layers. */
-	public Layer[] layers;
-	
-	/** Array of tile sets used by this tile map.  Not clear we're going
-	 * to use it, but here it is.
-	 */
-	public TileSet[] tilesets;
-	
-	
+
+	// All names are as they appear in the .json input.  Do not change them!
+
+	private String type;            // Should always be "map"
+	private String version;         // The .json schema version
+	private int height;             // Map height in tiles
+	private int width;              // Map width in tiles.
+	private int tileheight;         // Height of one tile, in pixels
+	private int tilewidth;          // Width of one tile, in pixels
+	private Layer[] layers;         // The array of Layer records
+	private Property[] properties;  // Custom map properties
+
+	// Omitted: infinite, nextlayerid, nextobjectid, orientation, renderorder,
+	// tiledversion, tilesets
+
 	//------------------------------------------------------------------------
 	// Convenience Methods
 
@@ -49,7 +85,7 @@ public class TiledMapReader {
 	 * Gets the height of the map in tiles.
 	 * @return the height.
 	 */
-	public int getHeight() {
+	public int height() {
 		return height;
 	}
 
@@ -57,7 +93,7 @@ public class TiledMapReader {
 	 * Gets the width of the map in tiles.
 	 * @return the width
 	 */
-	public int getWidth() {
+	public int width() {
 		return width;
 	}
 
@@ -65,7 +101,7 @@ public class TiledMapReader {
 	 * Gets the height of one tile in pixels.
 	 * @return the height.
 	 */
-	public int getTileHeight() {
+	public int tileHeight() {
 		return tileheight;
 	}
 
@@ -73,19 +109,20 @@ public class TiledMapReader {
 	 * Gets the width of one tile in pixels.
 	 * @return the width
 	 */
-	public int getTileWidth() {
+	public int tileWidth() {
 		return tilewidth;
 	}
 
 	/** Returns the tile layer with the given name, or null if no
 	 * such layer is found.
+	 * TODO: Use Optional
 	 * @param name The name.
 	 * @return A tile layer, or null.
 	 */
-	public Layer getTileLayer(String name) {
-		for (Layer x : layers) {
-			if (x.name.equals(name) && x.type.equals("tilelayer")) {
-				return x;
+	public Layer tileLayer(String name) {
+		for (Layer layer : layers) {
+			if (layer.type.equals("tilelayer") && layer.name.equals(name)) {
+				return layer;
 			}
 		}
 		
@@ -94,10 +131,11 @@ public class TiledMapReader {
 	
 	/** Returns the object group with the given name, or null if no
 	 * such layer is found.
+	 * TODO: Use Optional
 	 * @param name The name.
 	 * @return A Layer, or null.
 	 */
-	public Layer getObjectGroup(String name) {
+	public Layer objectGroup(String name) {
 		for (Layer x : layers) {
 			if (x.name.equals(name) && x.type.equals("objectgroup")) {
 				return x;
@@ -109,125 +147,13 @@ public class TiledMapReader {
 	
 	/** Given a MapObject, return the Cell of its upper left corner,
 	 * using the map's tile size.
+	 * TODO: Move to MapObject
 	 *
-	 * @param o A MapObject
+	 * @param object A MapObject
 	 * @return A Cell coordinate
 	 */
-	public Cell getObjectCell(MapObject o) {
-		return new Cell(o.y / tileheight, o.x / tilewidth);
-	}
-	
-
-	//------------------------------------------------------------------------
-	// Nested classes
-	
-	/** A layer in the tile map */
-	public static class Layer {
-		/** The name of the layer, as displayed in Tiled's UI. */
-		public String name;
-		
-		/** The type of the layer, either "tilelayer" or "objectgroup". */
-		public String type;
-
-		/** For tile layers, the array of tile GIDs, presumably in
-		 * row-major order.
-		 */
-		public int[] data;
-		
-		/** For object groups, the array of objects. */
-		public MapObject[] objects;
-		
-		//---------------------------------------------------------------------
-		// Omitted fields
-		
-		// TBD: opacity
-		// TBD: width
-		// TBD: height
-		// TBD: x
-		// TBD: y
-		// TBD: visible
-		// TBD: properties
-	}
-	
-	/** An object on a map (usually a feature or mobile location).  An
-	 * object represents a point or some bounded area on the map.  It
-	 * is defined in pixel coordinates rather than tile coordinates. */
-	public static class MapObject {
-		/** The name of the object. */
-		public String name;
-		
-		/** The type, which is interpreted by the region. */
-		public String type;
-		
-		/** The upper-left x-coordinate, in pixels. */
-		public int x;
-
-		/** The upper-left y-coordinate, in pixels. */
-		public int y;
-		
-		/** The width of the object, in pixels. */
-		public int width;
-		
-		/** The height of the object, in pixels. */
-		public int height;
-		
-		/** Properties associated with the object. */
-		// In latest version, this is an array.
-//		public Properties properties;
-				
-		//---------------------------------------------------------------------
-		// Omitted fields
-		
-		// TBD: visible
-		// TBD: properties
-		
-	}
-
-	/** A tile set used by the tile map */
-	public static class TileSet {
-		/** The global index for the first tile in this particular
-		 * tile set.
-		 */
-		public int firstgid;
-		
-		/** The name of the image file that defines this tile set. */
-		public String image;
-		
-		/** The name of the tile set in the Tiled UI. */
-		public String name;
-		
-		/** The height of the tile set image in pixels. */
-		public int imageheight;
-		
-		/** The width of the tile set image in pixels. */
-		public int imagewidth;
-		
-		/** Height of one tile, in pixels.  */
-		public int tileheight;
-		
-		/** Width of one tile, in pixels. */
-		public int tilewidth;
-		
-		/** Margin around the outside of the image, in pixels. */
-		public int margin;
-		
-		/** Spacing between tiles, in pixels. */
-		public int spacing;
-		
-		// TBD: Properties, if needed.
-	}
-	
-	/** A property structure for objects.  Unused properties will be null. */
-	public static class Properties {
-		/** Name of the Point-of-Interest associated with the object's
-		 * location.
-		 */
-		public String point;
-		
-		/** Name of a Sprite to use for this object.  The enum from which
-		 * the sprite is drawn may vary depending on the type of the object.
-		 */
-		public String sprite;
+	public Cell getObjectCell(MapObject object) {
+		return new Cell(object.y / tileheight, object.x / tilewidth);
 	}
 	
 	//------------------------------------------------------------------------
@@ -238,7 +164,7 @@ public class TiledMapReader {
 	 * cannot be read, the application terminates.
 	 * @param cls The class
 	 * @param resource The resource name
-	 * @return The TiledMap object.
+	 * @return The TiledMapReader object.
 	 */
 	public static TiledMapReader read(Class<?> cls, String resource) {
 		try {
@@ -254,55 +180,5 @@ public class TiledMapReader {
 		} catch (Exception e) {
 			throw new ResourceException(cls, resource, e);
 		}
-		
 	}
-
-	/** Main: test routine.
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		TiledMapReader map = read(TiledMapReader.class, "test.json");
-		
-//		dump(map);
-	}
-
-	/** Dump the read data to stdout, for testing.
-	 */
-	static private void dump(TiledMapReader map) {
-		puts("height=" + map.height);
-		puts("width=" + map.width);
-		puts("tileheight=" + map.tileheight);
-		puts("tilewidth=" + map.tilewidth);
-		puts("layer.size=" + map.layers.length);
-		puts("\n");
-		
-		for (int i = 0; i < map.layers.length; i++) {
-			puts("Layer " + i + ": " + map.layers[i].name);
-			puts("  type="+map.layers[i].type);
-			if (map.layers[i].data != null) {
-				puts("  data="+map.layers[i].data.length + " tile indices");
-			}
-			
-			if (map.layers[i].objects != null) {
-				puts("  objects="+map.layers[i].objects.length + " map objects");
-			}
-		}
-		puts("\n");
-		
-		for (int i = 0; i < map.tilesets.length; i++) {
-			puts("Tile Set " + i + ": " + map.tilesets[i].name);
-			puts("  firstgid=" + map.tilesets[i].firstgid);
-			puts("  image=" + map.tilesets[i].image);
-		}
-		puts("\n");
-	}
-
-	/** Write to stdout, for testing.
-	 * 
-	 * @param line The line to write.
-	 */
-	private static void puts(String line) {
-		System.out.println(line);
-	}
-
 }
