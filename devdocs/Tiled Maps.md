@@ -1,4 +1,5 @@
 # Region Maps and the Tiled Map Editor
+#design,
 
 Tiled is a tile map editor available from www.mapeditor.org.  I used it in 
 the original version of George's Saga; it remains a very popular editor.  It 
@@ -9,6 +10,13 @@ has many powerful features:
 
 This document explains how we use Tiled's features to define region maps
 for George's Saga, and how we access the map data.  See [[Region Maps]] for more on  region definition.
+
+## See Also
+
+- [[Tiled JSON Schema 1.0]]
+- [[Tiled JSON Schema 1.6]]
+
+**TODO**: The current Tiled JSON format is not identical to the old format; I'll need to update my code.
 
 ## Tiled Map Data
 
@@ -122,7 +130,8 @@ used by the region.  This is all TBD, but uses might include:
 
 **TODO:** It would seem reasonable to support any number of object groups, of any name, using the `type` and `name` and possibly other attributes to control behavior.
 
-## Quick Reference ##
+
+## Quick Reference (OLD) ##
 
 **NOTE:** This is all from Old George.  I need to verify how this is done, and record it in [[Region Map]].
 

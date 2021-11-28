@@ -122,9 +122,14 @@
   "active": "0d825b141e76b8b0",
   "lastOpenFiles": [
     "To Do.md",
+    "Tiled JSON Schema 1.0.md",
+    "Tiled JSON Schema 1.6.md",
+    "Tiled Maps.md",
+    "Supporting Geographic Algorithms.md",
+    "CellMap.md",
+    "Entity Table.md",
+    "Design Questions.md",
     "Home.md",
-    "Region Maps.md",
-    "templates/Default Template.md.md",
-    "Tiled Maps.md"
+    "Region Maps.md"
   ]
 }

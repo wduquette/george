@@ -33,9 +33,6 @@ public class TiledMapReader {
 	/** Width of one tile, in pixels. */
 	public int tilewidth;
 	
-	/** Version number for this object layout */
-	public int version;
-	
 	/** Array of layers, which may be tile layers or object layers. */
 	public Layer[] layers;
 	
@@ -175,7 +172,8 @@ public class TiledMapReader {
 		public int height;
 		
 		/** Properties associated with the object. */
-		public Properties properties;
+		// In latest version, this is an array.
+//		public Properties properties;
 				
 		//---------------------------------------------------------------------
 		// Omitted fields
@@ -275,7 +273,6 @@ public class TiledMapReader {
 		puts("width=" + map.width);
 		puts("tileheight=" + map.tileheight);
 		puts("tilewidth=" + map.tilewidth);
-		puts("version=" + map.version);
 		puts("layer.size=" + map.layers.length);
 		puts("\n");
 		
