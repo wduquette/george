@@ -13,6 +13,7 @@ import com.wjduquette.george.util.StringsTable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -118,6 +119,20 @@ public class RegionMap {
 
         Map<Cell,TerrainType> featureTypes = readFeaturesLayer(map);
         readTerrainLayer(map, featureTypes);
+
+        // TEMP: Dump objects
+        Optional<Layer> objects = map.objectGroup("Objects");
+
+        if (objects.isPresent()) {
+            for (TiledMapReader.MapObject obj : objects.get().objects) {
+                System.out.println(object2cell(obj) + " " +
+                    obj.type + " " + obj.name);
+
+                for (TiledMapReader.Property prop : obj.properties()) {
+                    System.out.println("    " + prop.name + "=" + prop.value);
+                }
+            }
+        }
     }
 
     private Map<Cell,TerrainType> readFeaturesLayer(TiledMapReader map) {

@@ -42,6 +42,22 @@ public class TiledMapReader {
 		public Property[] properties; // Custom properties
 
 		// Omitted fields: draworder, height, id, opacity, visible, width, x, y
+
+		/**
+		 * Gets the objects, for object groups.
+		 * @return The list
+		 */
+		public List<MapObject> objects() {
+			return objects != null ? List.of(objects) : List.of();
+		}
+
+		/**
+		 * Gets the custom properties, if any.
+		 * @return The list
+		 */
+		public List<Property> properties() {
+			return properties != null ? List.of(properties) : List.of();
+		}
 	}
 
 	/** An object in an "objectgroup" layer.  Objects are defined
@@ -56,6 +72,14 @@ public class TiledMapReader {
 		public Property[] properties;  // Custom properties
 
 		// Omitted fields: id, rotation, visible
+
+		/**
+		 * Gets the custom properties, if any.
+		 * @return The list
+		 */
+		public List<Property> properties() {
+			return properties != null ? List.of(properties) : List.of();
+		}
 	}
 
 	/** A Custom Property */
@@ -86,18 +110,23 @@ public class TiledMapReader {
 	//------------------------------------------------------------------------
 	// Convenience Methods
 
+	/**
+	 * Gets the layers.
+	 * @return The list
+	 */
+	public List<Layer> layers() {
+		return layers != null ? List.of(layers) : List.of();
+	}
+
 	/** Returns the tile layer with the given name.
 	 * @param name The name.
 	 * @return A tile layer
 	 */
 	public Optional<Layer> tileLayer(String name) {
-		for (Layer layer : layers) {
-			if (layer.type.equals(TILE_LAYER) && layer.name.equals(name)) {
-				return Optional.of(layer);
-			}
-		}
-
-		return Optional.empty();
+		return layers().stream()
+			.filter(layer -> layer.type.equals(TILE_LAYER))
+			.filter(layer -> layer.name.equals(name))
+			.findFirst();
 	}
 	
 	/**
@@ -106,15 +135,20 @@ public class TiledMapReader {
 	 * @return The Layer
 	 */
 	public Optional<Layer> objectGroup(String name) {
-		for (Layer layer : layers) {
-			if (layer.type.equals(OBJECT_GROUP) && layer.name.equals(name)) {
-				return Optional.of(layer);
-			}
-		}
-
-		return Optional.empty();
+		return layers().stream()
+			.filter(layer -> layer.type.equals(OBJECT_GROUP))
+			.filter(layer -> layer.name.equals(name))
+			.findFirst();
 	}
-	
+
+	/**
+	 * Gets the custom properties, if any.
+	 * @return The list
+	 */
+	public List<Property> properties() {
+		return properties != null ? List.of(properties) : List.of();
+	}
+
 	//------------------------------------------------------------------------
 	// Static Methods.
 	
