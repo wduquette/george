@@ -27,8 +27,8 @@ public class TiledMapReader {
 	/** The supported version of the Tiled JSON schema. */
 	public static final String SCHEMA_VERSION = "1.6";
 
-	private static final String TILE_LAYER = "tilelayer";
-	private static final String OBJECT_GROUP = "objectgroup";
+	public static final String TILE_LAYER = "tilelayer";
+	public static final String OBJECT_GROUP = "objectgroup";
 
 	//-------------------------------------------------------------------------
 	// Nested Types
