@@ -122,7 +122,7 @@ public class RegionMap {
 
     private Map<Cell,TerrainType> readFeaturesLayer(TiledMapReader map) {
         var featureType = new HashMap<Cell,TerrainType>();
-        Layer layer = map.tileLayer(FEATURES_LAYER);
+        Layer layer = map.tileLayer(FEATURES_LAYER).orElse(null);
 
         if (layer == null) {
             return featureType;
@@ -157,7 +157,7 @@ public class RegionMap {
         TiledMapReader map,
         Map<Cell,TerrainType> featureTypes)
     {
-        Layer terrainLayer = map.tileLayer(TERRAIN_LAYER);
+        Layer terrainLayer = map.tileLayer(TERRAIN_LAYER).orElseThrow();
 
         for (int i = 0; i < terrainLayer.data.length; i++) {
             // FIRST, get the row, column, and tile set index.
@@ -182,6 +182,15 @@ public class RegionMap {
                 .putCell(r, c);
         }
     }
+
+    // Get the cell corresponding to the MapObject's x/y coordinate.
+    //
+    // For normal objects, we assume that the x,y coordinate is the
+    // pixel coordinate of the upper left corner of the cell.
+    private Cell object2cell(TiledMapReader.MapObject object) {
+        return new Cell(object.y / tileHeight, object.x / tileWidth);
+    }
+
 
     //-------------------------------------------------------------------------
     // Public Methods

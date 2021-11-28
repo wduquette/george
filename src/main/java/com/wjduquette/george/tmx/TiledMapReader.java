@@ -1,6 +1,7 @@
 package com.wjduquette.george.tmx;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.wjduquette.george.util.Resource;
 import com.wjduquette.george.util.ResourceException;
@@ -25,6 +26,9 @@ import com.google.gson.Gson;
 public class TiledMapReader {
 	/** The supported version of the Tiled JSON schema. */
 	public static final String SCHEMA_VERSION = "1.6";
+
+	private static final String TILE_LAYER = "tilelayer";
+	private static final String OBJECT_GROUP = "objectgroup";
 
 	//-------------------------------------------------------------------------
 	// Nested Types
@@ -82,47 +86,33 @@ public class TiledMapReader {
 	//------------------------------------------------------------------------
 	// Convenience Methods
 
-	/** Returns the tile layer with the given name, or null if no
-	 * such layer is found.
-	 * TODO: Use Optional
+	/** Returns the tile layer with the given name.
 	 * @param name The name.
-	 * @return A tile layer, or null.
+	 * @return A tile layer
 	 */
-	public Layer tileLayer(String name) {
+	public Optional<Layer> tileLayer(String name) {
 		for (Layer layer : layers) {
-			if (layer.type.equals("tilelayer") && layer.name.equals(name)) {
-				return layer;
+			if (layer.type.equals(TILE_LAYER) && layer.name.equals(name)) {
+				return Optional.of(layer);
 			}
 		}
-		
-		return null;
+
+		return Optional.empty();
 	}
 	
-	/** Returns the object group with the given name, or null if no
-	 * such layer is found.
-	 * TODO: Use Optional
+	/**
+	 * Returns the object group with the given name.
 	 * @param name The name.
-	 * @return A Layer, or null.
+	 * @return The Layer
 	 */
-	public Layer objectGroup(String name) {
-		for (Layer x : layers) {
-			if (x.name.equals(name) && x.type.equals("objectgroup")) {
-				return x;
+	public Optional<Layer> objectGroup(String name) {
+		for (Layer layer : layers) {
+			if (layer.type.equals(OBJECT_GROUP) && layer.name.equals(name)) {
+				return Optional.of(layer);
 			}
 		}
-		
-		return null;
-	}
-	
-	/** Given a MapObject, return the Cell of its upper left corner,
-	 * using the map's tile size.
-	 * TODO: Move to RegionMap
-	 *
-	 * @param object A MapObject
-	 * @return A Cell coordinate
-	 */
-	public Cell getObjectCell(MapObject object) {
-		return new Cell(object.y / tileheight, object.x / tilewidth);
+
+		return Optional.empty();
 	}
 	
 	//------------------------------------------------------------------------
