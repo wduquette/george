@@ -83,7 +83,13 @@ public class Entity {
     public Feature feature() { return components.get(Feature.class); }
     public Tile    tile()    { return components.get(Tile.class); }
     public Mobile  mobile()  { return components.get(Mobile.class); }
+    public Point   point()   { return components.get(Point.class); }
     public Terrain terrain() { return components.get(Terrain.class); }
+
+    public Entity putCell(Cell cell) {
+        put(cell);
+        return this;
+    }
 
     public Entity putCell(int row, int col) {
         put(new Cell(row, col));
@@ -102,6 +108,16 @@ public class Entity {
 
     public Entity putFeature() {
         put(new Feature());
+        return this;
+    }
+
+    public Entity putPoint(String name) {
+        put(new Point(name));
+        return this;
+    }
+
+    public Entity putSign(String text) {
+        put(new Sign(text));
         return this;
     }
 
