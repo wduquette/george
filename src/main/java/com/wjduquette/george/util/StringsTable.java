@@ -1,9 +1,6 @@
 package com.wjduquette.george.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class will load a Strings Table resource from disk, returning the
@@ -118,8 +115,8 @@ public final class StringsTable {
      * @param key The key
      * @return The string
      */
-    public String get(String key) {
-        return table.get(key);
+    public Optional<String> get(String key) {
+        return Optional.ofNullable(table.get(key));
     }
 
     /** @return a list of the keys. */

@@ -1,5 +1,6 @@
 package com.wjduquette.george.model;
 
+import com.wjduquette.george.TileSets;
 import com.wjduquette.george.ecs.Cell;
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.EntityTable;
@@ -10,6 +11,7 @@ import com.wjduquette.george.util.KeywordParser;
 import com.wjduquette.george.util.Resource;
 import com.wjduquette.george.util.ResourceException;
 import com.wjduquette.george.util.StringsTable;
+import javafx.scene.image.Image;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +46,10 @@ public class RegionMap {
     // The name of the Tiled tile layer containing additional static
     // terrain features.
     private static final String FEATURES_LAYER = "Features";
+
+    // Object type strings
+    private static final String POINT_OBJECT = "Point";
+    private static final String SIGN_OBJECT = "Sign";
 
     //-------------------------------------------------------------------------
     // Instance Variables
@@ -117,22 +123,12 @@ public class RegionMap {
         this.tileHeight = map.tileheight;
         this.tileWidth = map.tilewidth;
 
+        // Read features first, as the terrain layer will get the
+        // terrain type from the feature if there is one.
         Map<Cell,TerrainType> featureTypes = readFeaturesLayer(map);
         readTerrainLayer(map, featureTypes);
 
-        // TEMP: Dump objects
-        Optional<Layer> objects = map.objectGroup("Objects");
-
-        if (objects.isPresent()) {
-            for (TiledMapReader.MapObject obj : objects.get().objects) {
-                System.out.println(object2cell(obj) + " " +
-                    obj.type + " " + obj.name);
-
-                for (TiledMapReader.Property prop : obj.properties()) {
-                    System.out.println("    " + prop.name + "=" + prop.value);
-                }
-            }
-        }
+        readObjects(map);
     }
 
     private Map<Cell,TerrainType> readFeaturesLayer(TiledMapReader map) {
@@ -195,6 +191,46 @@ public class RegionMap {
                 .putTerrain(featureType != null ? featureType : tile.type())
                 .putTile(tile.image())
                 .putCell(r, c);
+        }
+    }
+
+    private void readObjects(TiledMapReader map) {
+        for (Layer layer : map.layers()) {
+            if (!layer.type.equals(TiledMapReader.OBJECT_GROUP)) {
+                continue;
+            }
+
+            for (TiledMapReader.MapObject obj : layer.objects()) {
+                switch (obj.type) {
+                    case POINT_OBJECT:
+                        entities.make()
+                            .putPoint(obj.name)
+                            .putCell(object2cell(obj));
+                        break;
+                    case SIGN_OBJECT:
+                        String text = strings.get(obj.name).orElse("TODO");
+                        Image tile =
+                            TileSets.FEATURES.get("feature.sign").orElseThrow();
+                        entities.make()
+                            .putFeature()
+                            .putSign(text)
+                            .putTile(tile)
+                            .putCell(object2cell(obj));
+                        break;
+                    default:
+                        // Nothing to do
+                        break;
+                }
+
+                // TEMP: Dump objects
+                System.out.println(object2cell(obj) + " " +
+                    obj.type + " " + obj.name);
+
+                for (TiledMapReader.Property prop : obj.properties()) {
+                    System.out.println("    " + prop.name + "=" + prop.value);
+                }
+
+            }
         }
     }
 
