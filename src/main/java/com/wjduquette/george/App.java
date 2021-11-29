@@ -38,38 +38,6 @@ public class App extends Application {
         stage.show();
     }
 
-    private void println(String line) {
-        System.out.println(line);
-    }
-
-    private void renderRegion(RegionMap map) {
-        GraphicsContext gc = canvas.gc();
-        canvas.clear();
-
-        // FIRST, render the terrain
-        for (Entity terrain : map.query(Terrain.class).toList()) {
-            canvas.drawImage(terrain.tile().image(), rc2xy(terrain.cell()));
-        }
-
-        // NEXT, render the features
-        for (Entity feature : map.query(Feature.class).toList()) {
-            canvas.drawImage(feature.tile().image(), rc2xy(feature.cell()));
-        }
-
-        // NEXT, render the mobiles on top
-        for (Entity mobile : map.query(Mobile.class).toList()) {
-            canvas.drawImage(mobile.tile().image(), rc2xy(mobile.cell()));
-        }
-    }
-
-    // Convert cell coordinates to pixel coordinates.
-    // Need to account for the cell offset.
-    private Point2D rc2xy(Cell cell) {
-        int x = cell.col()*40;
-        int y = cell.row()*40;
-        return new Point2D(x,y);
-    }
-
     public static void main(String[] args) {
         launch();
     }
