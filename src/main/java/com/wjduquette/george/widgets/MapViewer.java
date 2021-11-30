@@ -2,6 +2,7 @@ package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.model.RegionMap;
+import com.wjduquette.george.model.TerrainTile;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -92,18 +93,22 @@ public class MapViewer extends StackPane {
         computeOffsets(player.cell());
 
         // FIRST, render the terrain
-        for (Entity terrain : map.query(Terrain.class).toList()) {
-            canvas.drawImage(terrain.tile().image(), rc2xy(terrain.cell()));
+        // TODO Limit the area: we only need to draw what's in sight.
+        for (int r = 0; r < map.getHeight(); r++) {
+            for (int c = 0; c < map.getWidth(); c++) {
+                TerrainTile tile = map.getTerrain(r, c);
+                canvas.drawImage(tile.image(), rc2xy(r, c));
+            }
         }
 
         // NEXT, render the features
         for (Entity feature : map.query(Feature.class).toList()) {
-            canvas.drawImage(feature.tile().image(), rc2xy(feature.cell()));
+            canvas.drawImage(feature.tile().image(), cell2xy(feature.cell()));
         }
 
         // NEXT, render the mobiles on top
         for (Entity mobile : map.query(Mobile.class).toList()) {
-            canvas.drawImage(mobile.tile().image(), rc2xy(mobile.cell()));
+            canvas.drawImage(mobile.tile().image(), cell2xy(mobile.cell()));
         }
     }
 
@@ -115,9 +120,13 @@ public class MapViewer extends StackPane {
     }
 
     // Convert cell coordinates to pixel coordinates.
-    private Point2D rc2xy(Cell cell) {
-        int x = (cell.col() - colOffset) * map.getTileWidth();
-        int y = (cell.row() - rowOffset) * map.getTileHeight();
+    private Point2D cell2xy(Cell cell) {
+        return rc2xy(cell.row(), cell.col());
+    }
+
+    private Point2D rc2xy(int row, int col) {
+        int x = (col - colOffset) * map.getTileWidth();
+        int y = (row - rowOffset) * map.getTileHeight();
         return new Point2D(x,y);
     }
 }

@@ -1,5 +1,6 @@
 package com.wjduquette.george.ecs;
 
+import com.wjduquette.george.model.TerrainTile;
 import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.util.TypeMap;
 import javafx.scene.image.Image;
@@ -84,7 +85,6 @@ public class Entity {
     public Tile    tile()    { return components.get(Tile.class); }
     public Mobile  mobile()  { return components.get(Mobile.class); }
     public Point   point()   { return components.get(Point.class); }
-    public Terrain terrain() { return components.get(Terrain.class); }
 
     public Entity putCell(Cell cell) {
         put(cell);
@@ -106,8 +106,8 @@ public class Entity {
         return this;
     }
 
-    public Entity putFeature() {
-        put(new Feature());
+    public Entity putFeature(TerrainType type) {
+        put(new Feature(type));
         return this;
     }
 
@@ -118,11 +118,6 @@ public class Entity {
 
     public Entity putSign(String text) {
         put(new Sign(text));
-        return this;
-    }
-
-    public Entity putTerrain(TerrainType type) {
-        put(new Terrain(type));
         return this;
     }
 }

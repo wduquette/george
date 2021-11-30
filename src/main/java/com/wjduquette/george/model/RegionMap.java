@@ -13,9 +13,7 @@ import com.wjduquette.george.util.ResourceException;
 import com.wjduquette.george.util.StringsTable;
 import javafx.scene.image.Image;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -57,8 +55,8 @@ public class RegionMap {
     // The resource string, for debugging.
     private String resource;
 
-    // The terrain tile set
-    private TerrainTileSet terrain;
+    // The terrain tile set.
+    private TerrainTileSet terrainTileSet;
 
     // The Strings table
     private StringsTable strings;
@@ -70,6 +68,10 @@ public class RegionMap {
     // The size of this map.
     private int height = 0;
     private int width = 0;
+
+    // The Terrain List: The terrain tiles, in row major order, drawn
+    // from the terrainTileSet to match the TiledMap's TERRAIN_LAYER.
+    private final ArrayList<TerrainTile> terrain = new ArrayList<>();
 
     // The Entities Table
     private final EntityTable entities = new EntityTable();
@@ -100,7 +102,7 @@ public class RegionMap {
 
         parser.defineKeyword("%terrain", (scanner, $) -> {
             var filename = Resource.relativeTo(relPath, scanner.next());
-            terrain = new TerrainTileSet(cls, filename);
+            terrainTileSet = new TerrainTileSet(cls, filename);
         });
         parser.defineKeyword("%strings", (scanner, $) -> {
             var filename = Resource.relativeTo(relPath, scanner.next());
@@ -123,20 +125,37 @@ public class RegionMap {
         this.tileHeight = map.tileheight;
         this.tileWidth = map.tilewidth;
 
-        // Read features first, as the terrain layer will get the
-        // terrain type from the feature if there is one.
-        Map<Cell,TerrainType> featureTypes = readFeaturesLayer(map);
-        readTerrainLayer(map, featureTypes);
-
+        readTerrainLayer(map);
+        readFeaturesLayer(map);
         readObjects(map);
     }
 
-    private Map<Cell,TerrainType> readFeaturesLayer(TiledMapReader map) {
-        var featureType = new HashMap<Cell,TerrainType>();
+    private void readTerrainLayer(TiledMapReader map) {
+        Layer terrainLayer = map.tileLayer(TERRAIN_LAYER).orElseThrow();
+
+        terrain.ensureCapacity(terrainLayer.data.length);
+
+        for (int i = 0; i < terrainLayer.data.length; i++) {
+            // FIRST, Tiled numbers tiles from 1 to N; we use 0 to N-1.
+            // TODO: Base this on the layer's firstgid.
+            int tileIndex = terrainLayer.data[i] - 1;
+
+            // Skip empty tiles.
+            if (tileIndex < 0) {
+                continue;
+            }
+
+            // Save the tile to the terrain list.
+            TerrainTile tile = terrainTileSet.get(tileIndex);
+            terrain.add(tile);
+        }
+    }
+
+    private void readFeaturesLayer(TiledMapReader map) {
         Layer layer = map.tileLayer(FEATURES_LAYER).orElse(null);
 
         if (layer == null) {
-            return featureType;
+            return;
         }
 
         for (int i = 0; i < layer.data.length; i++) {
@@ -151,48 +170,15 @@ public class RegionMap {
                 continue;
             }
 
-            TerrainTileSet.TerrainTile tile = terrain.get(tileIndex);
+            TerrainTile tile = terrainTileSet.get(tileIndex);
 
             Entity feature = entities.make()
-                .putFeature()
-                .putTile(tile.image())
-                .putCell(r, c);
-
-            featureType.put(feature.cell(), tile.type());
-        }
-
-        return featureType;
-    }
-
-    private void readTerrainLayer(
-        TiledMapReader map,
-        Map<Cell,TerrainType> featureTypes)
-    {
-        Layer terrainLayer = map.tileLayer(TERRAIN_LAYER).orElseThrow();
-
-        for (int i = 0; i < terrainLayer.data.length; i++) {
-            // FIRST, get the row, column, and tile set index.
-            // Tiled numbers tiles from 1 to N; we use 0 to N-1.
-            int r = i / map.height;
-            int c = i % map.width;
-            int tileIndex = terrainLayer.data[i] - 1;
-
-            // Skip empty tiles.
-            if (tileIndex < 0) {
-                continue;
-            }
-
-            // If there is a static terrain feature, use its terrain type.
-            // Otherwise use the terrain tile's terrain type.
-            TerrainTileSet.TerrainTile tile = terrain.get(tileIndex);
-            TerrainType featureType = featureTypes.get(new Cell(r, c));
-
-            entities.make()
-                .putTerrain(featureType != null ? featureType : tile.type())
+                .putFeature(tile.type())
                 .putTile(tile.image())
                 .putCell(r, c);
         }
     }
+
 
     private void readObjects(TiledMapReader map) {
         for (Layer layer : map.layers()) {
@@ -201,6 +187,8 @@ public class RegionMap {
             }
 
             for (TiledMapReader.MapObject obj : layer.objects()) {
+                Cell cell = object2cell(obj);
+
                 switch (obj.type) {
                     case POINT_OBJECT:
                         entities.make()
@@ -208,12 +196,11 @@ public class RegionMap {
                             .putCell(object2cell(obj));
                         break;
                     case SIGN_OBJECT:
-                        String text = strings.get(obj.name).orElse("TODO");
                         Image tile =
                             TileSets.FEATURES.get("feature.sign").orElseThrow();
                         entities.make()
-                            .putFeature()
-                            .putSign(text)
+                            .putFeature(TerrainType.NONE)
+                            .putSign(obj.name)
                             .putTile(tile)
                             .putCell(object2cell(obj));
                         break;
@@ -297,5 +284,24 @@ public class RegionMap {
      */
     public EntityTable getEntities() {
         return entities;
+    }
+
+    /**
+     * Get the terrain tile at the given row and column.
+     * @param row The row index, 0 to height - 1
+     * @param col The column index, 0 to width - 1
+     * @return The terrain tile
+     */
+    public TerrainTile getTerrain(int row, int col) {
+        return terrain.get(row * width + col);
+    }
+
+    /**
+     * Get the terrain tile for the given cell.
+     * @param cell The cell
+     * @return The terrain tile
+     */
+    public TerrainTile getTerrain(Cell cell) {
+        return getTerrain(cell.row(), cell.col());
     }
 }

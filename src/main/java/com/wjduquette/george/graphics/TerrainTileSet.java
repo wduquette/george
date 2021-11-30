@@ -1,5 +1,6 @@
 package com.wjduquette.george.graphics;
 
+import com.wjduquette.george.model.TerrainTile;
 import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.util.KeywordParser;
 import com.wjduquette.george.util.Resource;
@@ -10,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * A TerrainTileSet is a TileSet explicitly for terrain tiles.  It loads not
@@ -224,21 +224,4 @@ public class TerrainTileSet {
     public List<TerrainTile> getInfo() {
         return Collections.unmodifiableList(tileList);
     }
-
-    //-------------------------------------------------------------------------
-    // TerrainTileInfo
-
-    /**
-     * A terrain tile.
-     * @param name The name by which it's known in the tile set.
-     * @param description The descriptive text
-     * @param type The terrain type
-     * @param image The actual image.
-     */
-    public static record TerrainTile(
-        String name,
-        TerrainType type,
-        String description,
-        Image image
-    ) {}
 }

@@ -6,6 +6,11 @@ package com.wjduquette.george.model;
  * @author will
  */
 public enum TerrainType {
+	/**
+	 * No terrain specified. This is used by features that do not affect
+	 * the terrain. */
+	NONE(false, true, true),
+
 	/** Unknown terrain */
 	UNKNOWN(true, false, false),
 
