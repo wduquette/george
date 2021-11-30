@@ -56,8 +56,14 @@ public class MapViewer extends StackPane {
             }
 
             Entity player = map.query(Mobile.class).findFirst().get();
-            Cell cell = player.cell();
-            player.cell(cell.row() + rDelta, cell.col() + cDelta);
+            Cell cell = player.cell().adjust(rDelta, cDelta);
+            TerrainTile terrain = map.getTerrain(cell);
+
+            if (terrain.type().isWalkable()) {
+                player.add(cell);
+            } else {
+                System.out.println("Bonk!");
+            }
             repaint();
         });
     }
