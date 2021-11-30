@@ -173,9 +173,9 @@ public class RegionMap {
             TerrainTile tile = terrainTileSet.get(tileIndex);
 
             Entity feature = entities.make()
-                .putFeature(tile.type())
-                .putTile(tile.image())
-                .putCell(r, c);
+                .feature(tile.type())
+                .tile(tile.image())
+                .cell(r, c);
         }
     }
 
@@ -192,17 +192,17 @@ public class RegionMap {
                 switch (obj.type) {
                     case POINT_OBJECT:
                         entities.make()
-                            .putPoint(obj.name)
-                            .putCell(object2cell(obj));
+                            .point(obj.name)
+                            .add(object2cell(obj));
                         break;
                     case SIGN_OBJECT:
                         Image tile =
                             TileSets.FEATURES.get("feature.sign").orElseThrow();
                         entities.make()
-                            .putFeature(TerrainType.NONE)
-                            .putSign(obj.name)
-                            .putTile(tile)
-                            .putCell(object2cell(obj));
+                            .feature(TerrainType.NONE)
+                            .sign(obj.name)
+                            .tile(tile)
+                            .add(object2cell(obj));
                         break;
                     default:
                         // Nothing to do

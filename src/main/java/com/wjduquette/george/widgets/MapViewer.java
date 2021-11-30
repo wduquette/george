@@ -5,8 +5,6 @@ import com.wjduquette.george.model.RegionMap;
 import com.wjduquette.george.model.TerrainTile;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 
 public class MapViewer extends StackPane {
@@ -59,7 +57,7 @@ public class MapViewer extends StackPane {
 
             Entity player = map.query(Mobile.class).findFirst().get();
             Cell cell = player.cell();
-            player.putCell(cell.row() + rDelta, cell.col() + cDelta);
+            player.cell(cell.row() + rDelta, cell.col() + cDelta);
             repaint();
         });
     }

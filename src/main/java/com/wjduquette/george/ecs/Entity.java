@@ -1,6 +1,5 @@
 package com.wjduquette.george.ecs;
 
-import com.wjduquette.george.model.TerrainTile;
 import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.util.TypeMap;
 import javafx.scene.image.Image;
@@ -60,8 +59,9 @@ public class Entity {
      * @param component The new component value
      * @param <T> The component type.
      */
-    public <T> void put(T component) {
+    public <T> Entity add(T component) {
         components.put(component);
+        return this;
     }
 
     /**
@@ -86,38 +86,33 @@ public class Entity {
     public Mobile  mobile()  { return components.get(Mobile.class); }
     public Point   point()   { return components.get(Point.class); }
 
-    public Entity putCell(Cell cell) {
-        put(cell);
+    public Entity cell(int row, int col) {
+        add(new Cell(row, col));
         return this;
     }
 
-    public Entity putCell(int row, int col) {
-        put(new Cell(row, col));
+    public Entity tile(Image img) {
+        add(new Tile(img));
         return this;
     }
 
-    public Entity putTile(Image img) {
-        put(new Tile(img));
+    public Entity mobile(String name) {
+        add(new Mobile(name));
         return this;
     }
 
-    public Entity putMobile() {
-        put(new Mobile());
+    public Entity feature(TerrainType type) {
+        add(new Feature(type));
         return this;
     }
 
-    public Entity putFeature(TerrainType type) {
-        put(new Feature(type));
+    public Entity point(String name) {
+        add(new Point(name));
         return this;
     }
 
-    public Entity putPoint(String name) {
-        put(new Point(name));
-        return this;
-    }
-
-    public Entity putSign(String text) {
-        put(new Sign(text));
+    public Entity sign(String text) {
+        add(new Sign(text));
         return this;
     }
 }

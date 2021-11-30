@@ -5,14 +5,10 @@ import com.wjduquette.george.widgets.CanvasPane;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.widgets.MapViewer;
 import javafx.application.Application;
-import javafx.geometry.Point2D;
 import javafx.scene.Scene;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 
 public class App extends Application {
-    private final CanvasPane canvas = new CanvasPane();
-
     @Override
     public void start(Stage stage) {
         RegionMap overworld = new RegionMap(getClass(),
@@ -24,9 +20,9 @@ public class App extends Application {
             .findFirst()
             .orElse(new Cell(10,10));
 
-        overworld.getEntities().make().putMobile()
-            .putCell(origin)
-            .putTile(TileSets.MOBILES.get("mobile.george").orElseThrow());
+        overworld.getEntities().make().mobile("george")
+            .add(origin)
+            .tile(TileSets.MOBILES.get("mobile.george").orElseThrow());
 
         MapViewer viewer = new MapViewer();
         viewer.setMap(overworld);
