@@ -36,6 +36,14 @@ public class Entity {
     // Getters/Setters
 
     /**
+     * Determines whether the entity has any components.
+     * @return true or false
+     */
+    public boolean isEmpty() {
+        return components.isEmpty();
+    }
+
+    /**
      * Gets the Entity's ID.
      * @return The ID
      */
@@ -114,5 +122,18 @@ public class Entity {
     public Entity sign(String text) {
         add(new Sign(text));
         return this;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buff = new StringBuilder();
+        buff.append("(entity " + id);
+        for (Class<?> cls : components.keySet()) {
+            buff.append("\n ")
+                .append(components.get(cls).toString());
+        }
+        buff.append(")");
+
+        return buff.toString();
     }
 }

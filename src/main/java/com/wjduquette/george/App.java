@@ -24,6 +24,10 @@ public class App extends Application {
             .add(origin)
             .tile(TileSets.MOBILES.get("mobile.george").orElseThrow());
 
+
+        // Dump the entities table
+        overworld.getEntities().dump();
+
         MapViewer viewer = new MapViewer();
         viewer.setMap(overworld);
 

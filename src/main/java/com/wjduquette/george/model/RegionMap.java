@@ -208,15 +208,6 @@ public class RegionMap {
                         // Nothing to do
                         break;
                 }
-
-                // TEMP: Dump objects
-                System.out.println(object2cell(obj) + " " +
-                    obj.type + " " + obj.name);
-
-                for (TiledMapReader.Property prop : obj.properties()) {
-                    System.out.println("    " + prop.name + "=" + prop.value);
-                }
-
             }
         }
     }
@@ -273,6 +264,11 @@ public class RegionMap {
         return tileWidth;
     }
 
+    /**
+     * Query the entities table for entities with matching components.
+     * @param classes A list of component classes to match
+     * @return The stream of found entities.
+     */
     public Stream<Entity> query(Class<?>... classes) {
         return entities.query(classes);
     }

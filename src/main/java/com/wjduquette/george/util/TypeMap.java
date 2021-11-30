@@ -21,6 +21,14 @@ public final class TypeMap {
     // Public Methods
 
     /**
+     * Determines whether the entity has any components.
+     * @return true or false
+     */
+    public boolean isEmpty() {
+        return map.isEmpty();
+    }
+
+    /**
      * Adds an object to the map.
      * @param value The object.
      */

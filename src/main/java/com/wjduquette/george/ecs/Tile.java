@@ -7,4 +7,9 @@ import javafx.scene.image.Image;
  * many other components.
  * @param image The tile's image
  */
-public record Tile(Image image) { }
+public record Tile(Image image) {
+    @Override public String toString() {
+        // We'd need the tile's name to do more than this.
+        return "(Tile)";
+    }
+}

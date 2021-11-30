@@ -10,4 +10,8 @@ import com.wjduquette.george.model.TerrainType;
  * @param terrainType The feature's terrain type, which may differ from the
  *                    underlying terrain cell, or NONE.
  */
-public record Feature(TerrainType terrainType) { }
+public record Feature(TerrainType terrainType) {
+    @Override public String toString() {
+        return "(Feature " + terrainType + ")";
+    }
+}

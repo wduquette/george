@@ -5,4 +5,8 @@ package com.wjduquette.george.ecs;
  * Cell and a Tile.  The Mobile-specific data is TODO.
  * @param name A stopgap parameter
  */
-public record Mobile(String name) { }
+public record Mobile(String name) {
+    @Override public String toString() {
+        return "(Mobile " + name + ")";
+    }
+}

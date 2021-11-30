@@ -97,4 +97,14 @@ public class EntityTable {
     public Stream<Entity> stream() {
         return entities.values().stream();
     }
+
+    public void dump() {
+        for (long i = 0; i <= entityCounter; i++) {
+            Entity e = entities.get(i);
+
+            if (e != null) {
+                System.out.println(e);
+            }
+        }
+    }
 }

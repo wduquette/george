@@ -5,4 +5,8 @@ package com.wjduquette.george.ecs;
  * @param row The cell's row in the array of tiles
  * @param col The cell's column in the array of tiles
  */
-public record Cell(int row, int col) { }
+public record Cell(int row, int col) {
+    @Override public String toString() {
+        return "(Cell " + row + " " + col + ")";
+    }
+}

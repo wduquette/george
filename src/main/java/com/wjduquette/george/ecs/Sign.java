@@ -6,4 +6,8 @@ package com.wjduquette.george.ecs;
  * can be interacted with.
  * @param name The name of the sign's string in the strings table.
  */
-public record Sign(String name) { }
+public record Sign(String name) {
+    @Override public String toString() {
+        return "(Sign " + name + ")";
+    }
+}
