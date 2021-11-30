@@ -1,7 +1,6 @@
 package com.wjduquette.george;
 
 import com.wjduquette.george.model.RegionMap;
-import com.wjduquette.george.widgets.CanvasPane;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.widgets.MapViewer;
 import javafx.application.Application;
@@ -21,7 +20,7 @@ public class App extends Application {
             .orElse(new Cell(10,10));
 
         overworld.getEntities().make().mobile("george")
-            .add(origin)
+            .put(origin)
             .tile(TileSets.MOBILES.get("mobile.george").orElseThrow());
 
 

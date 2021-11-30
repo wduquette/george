@@ -8,8 +8,6 @@ import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.StackPane;
 
-import java.util.List;
-
 public class MapViewer extends StackPane {
     public final static int HEIGHT_IN_TILES = 20;
     public final static int WIDTH_IN_TILES = 25;
@@ -63,7 +61,7 @@ public class MapViewer extends StackPane {
             TerrainType terrain = map.getTerrainType(cell);
 
             if (terrain.isWalkable()) {
-                player.add(cell);
+                player.put(cell);
             } else {
                 System.out.println("Bonk!");
             }

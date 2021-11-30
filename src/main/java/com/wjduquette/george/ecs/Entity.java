@@ -4,6 +4,7 @@ import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.util.TypeMap;
 import javafx.scene.image.Image;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -52,27 +53,6 @@ public class Entity {
     }
 
     /**
-     * Get the component of the given class
-     * @param cls The desired component class.
-     * @param <T> The class
-     * @return The component
-     */
-    public <T> Optional<T> get(Class<T> cls) {
-        return Optional.ofNullable(components.get(cls));
-    }
-
-    /**
-     * Puts a component into the entity, replacing any previous component
-     * of the same type.
-     * @param component The new component value
-     * @param <T> The component type.
-     */
-    public <T> Entity add(T component) {
-        components.put(component);
-        return this;
-    }
-
-    /**
      * Returns true if the entity has all the components in the set.
      * @param componentSet A set of component classes
      * @return true or false
@@ -86,7 +66,17 @@ public class Entity {
     }
 
     //-------------------------------------------------------------------------
-    // Specific component accessors
+    // Component Getters
+
+    /**
+     * Get the component of the given class
+     * @param cls The desired component class.
+     * @param <T> The class
+     * @return The component
+     */
+    public <T> Optional<T> get(Class<T> cls) {
+        return Optional.ofNullable(components.get(cls));
+    }
 
     public Cell    cell()    { return components.get(Cell.class); }
     public Feature feature() { return components.get(Feature.class); }
@@ -94,33 +84,62 @@ public class Entity {
     public Mobile  mobile()  { return components.get(Mobile.class); }
     public Point   point()   { return components.get(Point.class); }
 
+    /**
+     * Gets whether the entity is at the given cell or not.
+     * @param cell The cell
+     * @return true or false
+     */
+    public boolean isAt(Cell cell) {
+        return Objects.equals(cell(), cell);
+    }
+
+    public TerrainType terrainType() {
+        return get(Feature.class)
+            .map(f -> f.terrainType())
+            .orElse(TerrainType.NONE);
+    }
+
+    //-------------------------------------------------------------------------
+    // Component Setters
+
+    /**
+     * Puts a component into the entity, replacing any previous component
+     * of the same type.
+     * @param component The new component value
+     * @param <T> The component type.
+     */
+    public <T> Entity put(T component) {
+        components.put(component);
+        return this;
+    }
+
     public Entity cell(int row, int col) {
-        add(new Cell(row, col));
+        put(new Cell(row, col));
         return this;
     }
 
     public Entity tile(Image img) {
-        add(new Tile(img));
+        put(new Tile(img));
         return this;
     }
 
     public Entity mobile(String name) {
-        add(new Mobile(name));
+        put(new Mobile(name));
         return this;
     }
 
     public Entity feature(TerrainType type) {
-        add(new Feature(type));
+        put(new Feature(type));
         return this;
     }
 
     public Entity point(String name) {
-        add(new Point(name));
+        put(new Point(name));
         return this;
     }
 
     public Entity sign(String text) {
-        add(new Sign(text));
+        put(new Sign(text));
         return this;
     }
 

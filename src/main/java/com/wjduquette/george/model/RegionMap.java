@@ -194,7 +194,7 @@ public class RegionMap {
                     case POINT_OBJECT:
                         entities.make()
                             .point(obj.name)
-                            .add(object2cell(obj));
+                            .put(object2cell(obj));
                         break;
                     case SIGN_OBJECT:
                         Image tile =
@@ -203,7 +203,7 @@ public class RegionMap {
                             .feature(TerrainType.NONE)
                             .sign(obj.name)
                             .tile(tile)
-                            .add(object2cell(obj));
+                            .put(object2cell(obj));
                         break;
                     default:
                         // Nothing to do
@@ -309,17 +309,12 @@ public class RegionMap {
      * @return The terrain type.
      */
     public TerrainType getTerrainType(Cell cell) {
-        Optional<Entity> entity = entities.query(Feature.class)
-            .filter(e -> e.cell().equals(cell))
-            .findFirst();
+        TerrainType type = entities.query(Feature.class)
+            .filter(e -> e.isAt(cell))
+            .map(e -> e.terrainType())
+            .findFirst()
+            .orElse(TerrainType.NONE);
 
-        if (entity.isPresent()) {
-            Feature feature = entity.get().feature();
-            if (feature.terrainType() != TerrainType.NONE) {
-                return feature.terrainType();
-            }
-        }
-
-        return getTerrain(cell).type();
+        return type != TerrainType.NONE ? type : getTerrain(cell).type();
     }
 }

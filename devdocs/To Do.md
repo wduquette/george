@@ -9,6 +9,7 @@ My current To Do list.
 - [x] Add some objects, e.g., signs and other triggers.
 - [ ] Revise `MapViewer` to only draw the "visible" area.
 	- In terms of rectangular radius, not line-of-sight.
+- [x] Allow George to be moved by cursor keys, taking terrain type into account.
 - [ ] Allow George to be moved about the region by clicking, using A* for route finding, taking terrain type into account.
 	- Requires defining the basic [[Game Loop]], goals, movers, efficient terrain access.
 - [ ] Script to copy asset files to `resources`
