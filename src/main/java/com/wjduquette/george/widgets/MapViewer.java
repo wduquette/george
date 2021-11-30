@@ -3,9 +3,12 @@ package com.wjduquette.george.widgets;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.model.RegionMap;
 import com.wjduquette.george.model.TerrainTile;
+import com.wjduquette.george.model.TerrainType;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.StackPane;
+
+import java.util.List;
 
 public class MapViewer extends StackPane {
     public final static int HEIGHT_IN_TILES = 20;
@@ -57,9 +60,9 @@ public class MapViewer extends StackPane {
 
             Entity player = map.query(Mobile.class).findFirst().get();
             Cell cell = player.cell().adjust(rDelta, cDelta);
-            TerrainTile terrain = map.getTerrain(cell);
+            TerrainType terrain = map.getTerrainType(cell);
 
-            if (terrain.type().isWalkable()) {
+            if (terrain.isWalkable()) {
                 player.add(cell);
             } else {
                 System.out.println("Bonk!");

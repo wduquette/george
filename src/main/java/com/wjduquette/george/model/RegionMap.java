@@ -4,6 +4,7 @@ import com.wjduquette.george.TileSets;
 import com.wjduquette.george.ecs.Cell;
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.EntityTable;
+import com.wjduquette.george.ecs.Feature;
 import com.wjduquette.george.graphics.TerrainTileSet;
 import com.wjduquette.george.tmx.TiledMapReader;
 import com.wjduquette.george.tmx.TiledMapReader.Layer;
@@ -299,5 +300,26 @@ public class RegionMap {
      */
     public TerrainTile getTerrain(Cell cell) {
         return getTerrain(cell.row(), cell.col());
+    }
+
+    /**
+     * Gets the terrain type at the cell, taking features into account.
+     * TODO: This can be more efficient.
+     * @param cell The cell
+     * @return The terrain type.
+     */
+    public TerrainType getTerrainType(Cell cell) {
+        Optional<Entity> entity = entities.query(Feature.class)
+            .filter(e -> e.cell().equals(cell))
+            .findFirst();
+
+        if (entity.isPresent()) {
+            Feature feature = entity.get().feature();
+            if (feature.terrainType() != TerrainType.NONE) {
+                return feature.terrainType();
+            }
+        }
+
+        return getTerrain(cell).type();
     }
 }
