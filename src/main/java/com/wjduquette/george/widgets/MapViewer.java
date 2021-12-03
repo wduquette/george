@@ -20,8 +20,10 @@ public class MapViewer extends StackPane {
     // The canvas on which the map is drawn.
     private final CanvasPane canvas;
 
-    private int rowOffset = 0;
-    private int colOffset = 0;
+    private int rowMin = 0;
+    private int rowMax = 0;
+    private int colMin = 0;
+    private int colMax = 0;
 
     // The map currently being displayed
     private RegionMap map = null;
@@ -32,6 +34,7 @@ public class MapViewer extends StackPane {
     public MapViewer() {
         canvas = new CanvasPane();
         getChildren().add(canvas);
+        canvas.setOnResize(() -> repaint());
         canvas.setOnMouseClicked(me -> onMouseClick(me));
         canvas.setOnKeyPressed(evt -> onKeyPressed(evt));
     }
@@ -92,32 +95,22 @@ public class MapViewer extends StackPane {
     public void setMap(RegionMap map) {
         this.map = map;
 
-        double width = map.getTileWidth() * WIDTH_IN_TILES;
-        double height = map.getTileHeight() * HEIGHT_IN_TILES;
-
-        canvas.setMinWidth(width);
-        canvas.setPrefWidth(width);
-        canvas.setMaxWidth(width);
-        canvas.setMinHeight(height);
-        canvas.setPrefHeight(height);
-        canvas.setMaxHeight(height);
-
-        canvas.clear();
         Platform.runLater(() -> {
             repaint();
-            canvas.requestFocus();
+            canvas.requestFocus(); // Only needed for keystrokes
         });
     }
 
     public void repaint() {
+        // TODO: Set background color to black.
         canvas.clear();
+
         Entity player = map.query(Mobile.class).findFirst().get();
-        computeOffsets(player.cell());
+        computeBounds(player.cell());
 
         // FIRST, render the terrain
-        // TODO Limit the area: we only need to draw what's in sight.
-        for (int r = 0; r < map.getHeight(); r++) {
-            for (int c = 0; c < map.getWidth(); c++) {
+        for (int r = rowMin; r < rowMax; r++) {
+            for (int c = colMin; c < colMax; c++) {
                 TerrainTile tile = map.getTerrain(r, c);
                 canvas.drawImage(tile.image(), rc2xy(r, c));
             }
@@ -136,9 +129,13 @@ public class MapViewer extends StackPane {
 
     // Compute the row and column offsets so that the given cell is in the
     // middle of the view pane
-    private void computeOffsets(Cell cell) {
-        rowOffset = cell.row() - HEIGHT_IN_TILES/2;
-        colOffset = cell.col() - WIDTH_IN_TILES/2;
+    private void computeBounds(Cell cell) {
+        double heightInTiles = canvas.getHeight()/map.getTileHeight();
+        double widthInTiles = canvas.getWidth()/map.getTileWidth();
+        rowMin = cell.row() - (int)heightInTiles/2;
+        colMin = cell.col() - (int)widthInTiles/2;
+        rowMax = rowMin + (int)heightInTiles + 1;
+        colMax = colMin + (int)widthInTiles + 1;
     }
 
     // Convert cell coordinates to pixel coordinates.
@@ -147,14 +144,14 @@ public class MapViewer extends StackPane {
     }
 
     private Point2D rc2xy(int row, int col) {
-        int x = (col - colOffset) * map.getTileWidth();
-        int y = (row - rowOffset) * map.getTileHeight();
+        int x = (col - colMin) * map.getTileWidth();
+        int y = (row - rowMin) * map.getTileHeight();
         return new Point2D(x,y);
     }
 
     private Cell xy2rc(Point2D pt) {
-        int c = (int)(pt.getX() / map.getTileWidth()) + colOffset;
-        int r = (int)(pt.getY() / map.getTileHeight()) + rowOffset;
+        int c = (int)(pt.getX() / map.getTileWidth()) + colMin;
+        int r = (int)(pt.getY() / map.getTileHeight()) + rowMin;
 
         return new Cell(r,c);
     }
