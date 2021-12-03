@@ -6,6 +6,8 @@ import com.wjduquette.george.model.TerrainTile;
 import com.wjduquette.george.model.TerrainType;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 
 public class MapViewer extends StackPane {
@@ -30,43 +32,58 @@ public class MapViewer extends StackPane {
     public MapViewer() {
         canvas = new CanvasPane();
         getChildren().add(canvas);
-        canvas.setOnKeyPressed(evt -> {
-            int rDelta = 0;
-            int cDelta = 0;
-            System.out.println("key: " + evt.getCode());
+        canvas.setOnMouseClicked(me -> onMouseClick(me));
+        canvas.setOnKeyPressed(evt -> onKeyPressed(evt));
+    }
 
-            switch (evt.getCode()) {
-                case UP:
-                case KP_UP:
-                    rDelta = -1;
-                    break;
-                case RIGHT:
-                case KP_RIGHT:
-                    cDelta = 1;
-                    break;
-                case DOWN:
-                case KP_DOWN:
-                    rDelta = 1;
-                    break;
-                case LEFT:
-                case KP_LEFT:
-                    cDelta = -1;
-                    break;
-                default:
-                    return;
-            }
+    //-------------------------------------------------------------------------
+    // Event Handling
 
-            Entity player = map.query(Mobile.class).findFirst().get();
-            Cell cell = player.cell().adjust(rDelta, cDelta);
-            TerrainType terrain = map.getTerrainType(cell);
+    private void onKeyPressed(KeyEvent evt) {
+        int rDelta = 0;
+        int cDelta = 0;
+        System.out.println("key: " + evt.getCode());
 
-            if (terrain.isWalkable()) {
-                player.put(cell);
-            } else {
-                System.out.println("Bonk!");
-            }
-            repaint();
-        });
+        switch (evt.getCode()) {
+            case UP:
+            case KP_UP:
+                rDelta = -1;
+                break;
+            case RIGHT:
+            case KP_RIGHT:
+                cDelta = 1;
+                break;
+            case DOWN:
+            case KP_DOWN:
+                rDelta = 1;
+                break;
+            case LEFT:
+            case KP_LEFT:
+                cDelta = -1;
+                break;
+            default:
+                return;
+        }
+
+        Entity player = map.query(Mobile.class).findFirst().get();
+        Cell cell = player.cell().adjust(rDelta, cDelta);
+        TerrainType terrain = map.getTerrainType(cell);
+
+        if (terrain.isWalkable()) {
+            player.put(cell);
+        } else {
+            System.out.println("Bonk!");
+        }
+        repaint();
+    }
+
+    private void onMouseClick(MouseEvent evt) {
+        Point2D mouse = canvas.ofMouse(evt);
+        Cell cell = xy2rc(mouse);
+
+        if (map.contains(cell)) {
+            CellClickEvent.generate(cell, evt);
+        }
     }
 
     //-------------------------------------------------------------------------
@@ -133,5 +150,12 @@ public class MapViewer extends StackPane {
         int x = (col - colOffset) * map.getTileWidth();
         int y = (row - rowOffset) * map.getTileHeight();
         return new Point2D(x,y);
+    }
+
+    private Cell xy2rc(Point2D pt) {
+        int c = (int)(pt.getX() / map.getTileWidth()) + colOffset;
+        int r = (int)(pt.getY() / map.getTileHeight()) + rowOffset;
+
+        return new Cell(r,c);
     }
 }

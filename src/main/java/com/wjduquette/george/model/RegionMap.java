@@ -250,6 +250,17 @@ public class RegionMap {
     }
 
     /**
+     * Returns true if the cell is within the map's bounds, and false
+     * otherwise
+     * @param cell The cell
+     * @return true or false
+     */
+    public boolean contains(Cell cell) {
+        return cell.row() >= 0 && cell.row() <= height
+            && cell.col() >= 0 && cell.col() <= width;
+    }
+
+    /**
      * Gets the height of one tile in pixels.
      * @return the height.
      */

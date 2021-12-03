@@ -2,6 +2,7 @@ package com.wjduquette.george;
 
 import com.wjduquette.george.model.RegionMap;
 import com.wjduquette.george.ecs.*;
+import com.wjduquette.george.widgets.CellClickEvent;
 import com.wjduquette.george.widgets.MapViewer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -28,6 +29,9 @@ public class App extends Application {
         overworld.getEntities().dump();
 
         MapViewer viewer = new MapViewer();
+        viewer.addEventHandler(CellClickEvent.CELL_CLICK, evt -> {
+            System.out.println("user clicked on cell: " + evt.getCell());
+        });
         viewer.setMap(overworld);
 
         // NEXT, configure the GUI
