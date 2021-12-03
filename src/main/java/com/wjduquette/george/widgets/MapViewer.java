@@ -8,7 +8,10 @@ import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 
 public class MapViewer extends StackPane {
     public final static int HEIGHT_IN_TILES = 20;
@@ -40,6 +43,9 @@ public class MapViewer extends StackPane {
         canvas.setOnResize(() -> repaint());
         canvas.setOnMouseClicked(me -> onMouseClick(me));
         canvas.setOnKeyPressed(evt -> onKeyPressed(evt));
+
+        canvas.setBackground(new Background(
+            new BackgroundFill(Color.BLACK, null, null)));
     }
 
     //-------------------------------------------------------------------------
