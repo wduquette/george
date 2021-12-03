@@ -20,6 +20,9 @@ public class MapViewer extends StackPane {
     // The canvas on which the map is drawn.
     private final CanvasPane canvas;
 
+    private int rowOffset = 0;
+    private int colOffset = 0;
+
     private int rowMin = 0;
     private int rowMax = 0;
     private int colMin = 0;
@@ -132,10 +135,14 @@ public class MapViewer extends StackPane {
     private void computeBounds(Cell cell) {
         double heightInTiles = canvas.getHeight()/map.getTileHeight();
         double widthInTiles = canvas.getWidth()/map.getTileWidth();
-        rowMin = cell.row() - (int)heightInTiles/2;
-        colMin = cell.col() - (int)widthInTiles/2;
-        rowMax = rowMin + (int)heightInTiles + 1;
-        colMax = colMin + (int)widthInTiles + 1;
+        rowOffset = cell.row() - (int)heightInTiles/2;
+        colOffset = cell.col() - (int)widthInTiles/2;
+
+        rowMax = Math.min(map.getHeight(), rowOffset + (int)heightInTiles + 1);
+        colMax = Math.min(map.getHeight(), colOffset + (int)widthInTiles + 1);
+
+        rowMin = Math.max(0, rowOffset);
+        colMin = Math.max(0, colOffset);
     }
 
     // Convert cell coordinates to pixel coordinates.
@@ -144,14 +151,14 @@ public class MapViewer extends StackPane {
     }
 
     private Point2D rc2xy(int row, int col) {
-        int x = (col - colMin) * map.getTileWidth();
-        int y = (row - rowMin) * map.getTileHeight();
+        int x = (col - colOffset) * map.getTileWidth();
+        int y = (row - rowOffset) * map.getTileHeight();
         return new Point2D(x,y);
     }
 
     private Cell xy2rc(Point2D pt) {
-        int c = (int)(pt.getX() / map.getTileWidth()) + colMin;
-        int r = (int)(pt.getY() / map.getTileHeight()) + rowMin;
+        int c = (int)(pt.getX() / map.getTileWidth()) + colOffset;
+        int r = (int)(pt.getY() / map.getTileHeight()) + rowOffset;
 
         return new Cell(r,c);
     }
