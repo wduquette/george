@@ -297,10 +297,16 @@ public class RegionMap {
      * Get the terrain tile at the given row and column.
      * @param row The row index, 0 to height - 1
      * @param col The column index, 0 to width - 1
-     * @return The terrain tile
+     * @return The terrain tile of null if the coordinates are out of bounds.
      */
     public TerrainTile getTerrain(int row, int col) {
-        return terrain.get(row * width + col);
+        int index = row * width + col;
+
+        if (index < 0 || index >= terrain.size()) {
+            return null;
+        } else {
+            return terrain.get(row * width + col);
+        }
     }
 
     /**
@@ -325,6 +331,12 @@ public class RegionMap {
             .findFirst()
             .orElse(TerrainType.NONE);
 
-        return type != TerrainType.NONE ? type : getTerrain(cell).type();
+        if (type != TerrainType.NONE) {
+            return type;
+        } else {
+            TerrainTile tile = getTerrain(cell);
+
+            return tile != null ? tile.type() : TerrainType.UNKNOWN;
+        }
     }
 }

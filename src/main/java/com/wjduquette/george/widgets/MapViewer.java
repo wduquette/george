@@ -5,6 +5,7 @@ import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.RegionMap;
 import com.wjduquette.george.model.TerrainTile;
 import com.wjduquette.george.model.TerrainType;
+import com.wjduquette.george.util.AStar;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
@@ -13,6 +14,8 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+
+import java.util.List;
 
 public class MapViewer extends StackPane {
     public final static int HEIGHT_IN_TILES = 20;
@@ -35,15 +38,18 @@ public class MapViewer extends StackPane {
     // The map currently being displayed
     private RegionMap map = null;
 
+    // After a mouse click, the target cell.
+    private Cell target = null;
+
     //-------------------------------------------------------------------------
     // Constructor
 
     public MapViewer() {
         canvas = new CanvasPane();
         getChildren().add(canvas);
-        canvas.setOnResize(() -> repaint());
-        canvas.setOnMouseClicked(me -> onMouseClick(me));
-        canvas.setOnKeyPressed(evt -> onKeyPressed(evt));
+        canvas.setOnResize(this::repaint);
+        canvas.setOnMouseClicked(this::onMouseClick);
+        canvas.setOnKeyPressed(this::onKeyPressed);
 
         canvas.setBackground(new Background(
             new BackgroundFill(Color.BLACK, null, null)));
@@ -78,6 +84,7 @@ public class MapViewer extends StackPane {
                 return;
         }
 
+        // TEMP
         Entity player = map.query(Mobile.class).findFirst().get();
         Cell cell = player.cell().adjust(rDelta, cDelta);
         TerrainType terrain = map.getTerrainType(cell);
@@ -93,6 +100,10 @@ public class MapViewer extends StackPane {
     private void onMouseClick(MouseEvent evt) {
         Point2D mouse = canvas.ofMouse(evt);
         Cell cell = xy2rc(mouse);
+
+        // TEMP: So I can render the route
+        target = cell;
+        repaint();
 
         if (map.contains(cell)) {
             CellClickEvent.generate(cell, evt);
@@ -112,9 +123,9 @@ public class MapViewer extends StackPane {
     }
 
     public void repaint() {
-        // TODO: Set background color to black.
         canvas.clear();
 
+        // TEMP
         Entity player = map.query(Mobile.class).findFirst().get();
         computeBounds(player.cell());
 
@@ -131,9 +142,36 @@ public class MapViewer extends StackPane {
             canvas.drawImage(feature.tile().image(), cell2xy(feature.cell()));
         }
 
+        // NEXT, if there's a target compute the route.
+        if (target != null) {
+            List<Cell> route = AStar.findRoute(
+                player.cell(), target, this::isWalkable);
+
+            if  (!route.isEmpty()) {
+                route.add(0, player.cell());
+                drawRoute(route);
+            }
+        }
+
         // NEXT, render the mobiles on top
         for (Entity mobile : map.query(Mobile.class).toList()) {
             canvas.drawImage(mobile.tile().image(), cell2xy(mobile.cell()));
+        }
+    }
+
+    // Probably belongs in RegionMap
+    public boolean isWalkable(Cell cell) {
+        return map.getTerrainType(cell).isWalkable();
+    }
+
+    private void drawRoute(List<Cell> route) {
+        canvas.gc().setStroke(Color.WHITE);
+        canvas.gc().setLineWidth(3);
+
+        for (int i = 1; i < route.size(); i++) {
+            Point2D a = cell2centerxy(route.get(i - 1));
+            Point2D b = cell2centerxy(route.get(i));
+            canvas.gc().strokeLine(a.getX(), a.getY(), b.getX(), b.getY());
         }
     }
 
@@ -152,9 +190,19 @@ public class MapViewer extends StackPane {
         colMin = Math.max(0, colOffset);
     }
 
-    // Convert cell coordinates to pixel coordinates.
+    // Convert cell coordinates to the pixel coordinates of the upper-left
+    // corner of the cell
     private Point2D cell2xy(Cell cell) {
         return rc2xy(cell.row(), cell.col());
+    }
+
+    // Convert cell coordinates to the pixel coordinates of the center of the
+    // cell.
+    private Point2D cell2centerxy(Cell cell) {
+        Point2D p = rc2xy(cell.row(), cell.col());
+        return new Point2D(
+            p.getX() + (double)map.getTileWidth()/2,
+            p.getY() + (double)map.getTileHeight()/2);
     }
 
     private Point2D rc2xy(int row, int col) {

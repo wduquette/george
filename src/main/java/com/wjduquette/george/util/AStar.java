@@ -41,8 +41,8 @@ public class AStar {
      *     <li>Capabilities of the "mover"</li>
      * </ul>
      */
-    public interface Assessor {
-        <P extends Point<P>> boolean isPassable(P point);
+    public interface Assessor<P extends Point<P>> {
+        boolean isPassable(P point);
     }
 
     /**
@@ -60,7 +60,7 @@ public class AStar {
     public static <P extends Point<P>> List<P> findRoute(
         P start,
         P goal,
-        Assessor assessor)
+        Assessor<P> assessor)
     {
         // The set of nodes already evaluated
         Set<P> closedSet = new HashSet<>();
@@ -124,7 +124,7 @@ public class AStar {
             }
         }
 
-        return null;
+        return new ArrayList<>();
     }
 
     /**
