@@ -11,7 +11,7 @@ import java.util.List;
  * @param row The cell's row in the array of tiles
  * @param col The cell's column in the array of tiles
  */
-public record Cell(int row, int col) implements AStar.Point<Cell> {
+public record Cell(int row, int col) {
     /**
      * Creates new cell at a delta from this cell.
      * @param rowDelta The row delta
@@ -20,6 +20,17 @@ public record Cell(int row, int col) implements AStar.Point<Cell> {
      */
     public Cell adjust(int rowDelta, int colDelta) {
         return new Cell(row + rowDelta, col + colDelta);
+    }
+
+    /**
+     * Compute the Cartesian distance between this and the other cell for
+     * purposes of the A* algorithm.
+     *
+     * @param other The other cell.
+     * @return The Cartesian distance between the two cells.
+     */
+    public double distance(Cell other) {
+        return Cell.cartesianDistance(this, other);
     }
 
     /** Compute the "diagonal" distance between this and the other cell: the
@@ -45,21 +56,6 @@ public record Cell(int row, int col) implements AStar.Point<Cell> {
         list.sort(Comparator.comparingInt(this::diagonal));
     }
 
-    //-------------------------------------------------------------------------
-    // AStar.Point methods
-
-    /**
-     * Compute the Cartesian distance between this and the other cell for
-     * purposes of the A* algorithm.
-     *
-     * @param other The other cell.
-     * @return The Cartesian distance between the two cells.
-     */
-    @Override
-    public double distance(Cell other) {
-        return Cell.cartesianDistance(this, other);
-    }
-
     /**
      * Computes adjacent cells for the purposes of the A* algorithm.  It
      * doesn't matter whether or not the returned cells are out-of-bounds for
@@ -67,7 +63,6 @@ public record Cell(int row, int col) implements AStar.Point<Cell> {
      * impassable.
      * @return The list of adjacent points.
      */
-    @Override
     public List<Cell> getAdjacent() {
         List<Cell> neighbors = new ArrayList<>();
 

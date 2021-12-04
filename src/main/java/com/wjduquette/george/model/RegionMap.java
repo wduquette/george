@@ -7,10 +7,7 @@ import com.wjduquette.george.ecs.Feature;
 import com.wjduquette.george.graphics.TerrainTileSet;
 import com.wjduquette.george.tmx.TiledMapReader;
 import com.wjduquette.george.tmx.TiledMapReader.Layer;
-import com.wjduquette.george.util.KeywordParser;
-import com.wjduquette.george.util.Resource;
-import com.wjduquette.george.util.ResourceException;
-import com.wjduquette.george.util.StringsTable;
+import com.wjduquette.george.util.*;
 import javafx.scene.image.Image;
 
 import java.util.*;
@@ -48,6 +45,28 @@ public class RegionMap {
     // Object type strings
     private static final String POINT_OBJECT = "Point";
     private static final String SIGN_OBJECT = "Sign";
+
+    private static final AStar.MetricFrame<Cell> ASTAR_FRAME =
+        new AStar.MetricFrame<>() {
+            @Override
+            public double distance(Cell start, Cell end) {
+                return Cell.cartesianDistance(start, end);
+            }
+
+            @Override
+            public List<Cell> getAdjacent(Cell cell) {
+                return cell.getAdjacent();
+            }
+        };
+
+    //-------------------------------------------------------------------------
+    // Static Functions
+
+    public static List<Cell> findRoute(AStar.Assessor<Cell> assessor,
+        Cell start, Cell end)
+    {
+        return AStar.findRoute(ASTAR_FRAME, assessor, start, end);
+    }
 
     //-------------------------------------------------------------------------
     // Instance Variables
@@ -327,7 +346,7 @@ public class RegionMap {
     public TerrainType getTerrainType(Cell cell) {
         TerrainType type = entities.query(Feature.class)
             .filter(e -> e.isAt(cell))
-            .map(e -> e.terrainType())
+            .map(Entity::terrainType)
             .findFirst()
             .orElse(TerrainType.NONE);
 

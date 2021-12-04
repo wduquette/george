@@ -2,7 +2,6 @@ package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.model.*;
-import com.wjduquette.george.util.AStar;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
@@ -141,8 +140,8 @@ public class MapViewer extends StackPane {
 
         // NEXT, if there's a target compute the route.
         if (target != null) {
-            List<Cell> route = AStar.findRoute(
-                player.cell(), target, this::isWalkable);
+            List<Cell> route = RegionMap.findRoute(this::isWalkable,
+                player.cell(), target);
 
             if  (!route.isEmpty()) {
                 route.add(0, player.cell());

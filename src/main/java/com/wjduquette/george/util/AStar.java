@@ -3,31 +3,37 @@ package com.wjduquette.george.util;
 import java.util.*;
 
 /**
- * This static class implements the A* algorithm
+ * This static class implements the A* algorithm abstractly.
  */
 public class AStar {
     private AStar() {} // Not instantiable
 
     /**
-     * A Point is the index of a map cell (tile, hex, etc.) on a map.
+     * A MetricFrame is a scheme organizing points into a weighted adjacency
+     * graph.  Each point indexes a cell (a tile, a hex, a square, a graph
+     * node, etc., in a map).
+     * @param <P> The client's point class
      */
-    public interface Point<P extends Point<P>> {
-        /** Computes the nominal (e.g., cartesian) distance between this point
-         * and some other point.
-         * @param other The other point.
+    public interface MetricFrame<P> {
+        /** Computes the nominal (e.g., cartesian) distance between two
+         * points within this frame.
+         * @param start The starting point
+         * @param end The ending point
          * @return the distance.
          */
-        double distance(P other);
+        double distance(P start, P end);
 
         /**
-         * Returns the points adjacent to this point according to whatever
-         * indexing scheme is used.  The points need not be in-bounds on
-         * the map in question; the Assessor will handle that by marking
-         * out-of-bounds points impassable.
-         * @return The list of candidate neighbors.
+         * Returns the points adjacent to this point in the frame.
+         * The points need not be in-bounds on the map in question;
+         * the Assessor will handle that by indicating that out-of-bounds
+         * points are impassable.
+         * @param point The point
+         * @return The list of adjacent points.
          */
-        List<P> getAdjacent();
+        List<P> getAdjacent(P point);
     }
+
 
     /**
      * The Assessor is the algorithm's view of the map, <b>for the purposes
@@ -35,9 +41,9 @@ public class AStar {
      * is impassable:
      *
      * <ul>
-     *     <li>The point is out-of-bounds</li>
-     *     <li>Terrain features</li>
-     *     <li>Presence of enemies</li>
+     *     <li>The point is out-of-bounds on the map</li>
+     *     <li>Terrain features block movement</li>
+     *     <li>Enemies block movement</li>
      *     <li>Capabilities of the "mover"</li>
      * </ul>
      */
@@ -52,15 +58,17 @@ public class AStar {
      *
      * <p>TODO: Consider replacing isPassable with a cost function.</p>
      *
+     * @param frame The metrical frame
+     * @param assessor The terrain assessor function
      * @param start	The starting point (usually "here")
      * @param goal The point to go to.
-     * @param assessor The terrain assessor function
      * @return The route from start to goal, or the empty list
      */
-    public static <P extends Point<P>> List<P> findRoute(
+    public static <P> List<P> findRoute(
+        MetricFrame<P> frame,
+        Assessor<P> assessor,
         P start,
-        P goal,
-        Assessor<P> assessor)
+        P goal)
     {
         // The set of nodes already evaluated
         Set<P> closedSet = new HashSet<>();
@@ -80,7 +88,7 @@ public class AStar {
         gScore.put(start, 0.0);
 
         // Estimated total cost from start to goal through y
-        fScore.put(start, 0.0 + start.distance(goal));
+        fScore.put(start, 0.0 + frame.distance(start, goal));
 
         while (openSet.size() > 0) {
             // FIRST, find the node with the best fScore in the open set.
@@ -100,7 +108,7 @@ public class AStar {
             openSet.remove(current);
             closedSet.add(current);
 
-            List<P> neighbors = current.getAdjacent().stream()
+            List<P> neighbors = frame.getAdjacent(current).stream()
                 .filter(p -> p.equals(goal) || assessor.isPassable(p))
                 .toList();
 
@@ -109,7 +117,7 @@ public class AStar {
                     continue;
 
                 double tentativeGScore =
-                    gScore.get(current) + current.distance(neighbor);
+                    gScore.get(current) + frame.distance(current, neighbor);
 
                 if (!openSet.contains(neighbor) ||
                     tentativeGScore <= gScore.get(neighbor))
@@ -117,7 +125,7 @@ public class AStar {
                     cameFrom.put(neighbor, current);
                     gScore.put(neighbor, tentativeGScore);
                     fScore.put(neighbor,
-                        gScore.get(neighbor) + neighbor.distance(goal));
+                        gScore.get(neighbor) + frame.distance(neighbor, goal));
 
                     openSet.add(neighbor);
                 }
