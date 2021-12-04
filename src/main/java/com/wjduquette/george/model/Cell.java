@@ -3,6 +3,7 @@ package com.wjduquette.george.model;
 import com.wjduquette.george.util.AStar;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * @param row The cell's row in the array of tiles
  * @param col The cell's column in the array of tiles
  */
-public record Cell(int row, int col) implements AStar.Point {
+public record Cell(int row, int col) implements AStar.Point<Cell> {
     /**
      * Creates new cell at a delta from this cell.
      * @param rowDelta The row delta
@@ -19,16 +20,6 @@ public record Cell(int row, int col) implements AStar.Point {
      */
     public Cell adjust(int rowDelta, int colDelta) {
         return new Cell(row + rowDelta, col + colDelta);
-    }
-
-    /**
-     * Compute the Cartesian distance between this and the other cell.
-     *
-     * @param other The other cell.
-     * @return The Cartesian distance between the two cells.
-     */
-    public double distance(Cell other) {
-        return Cell.cartesianDistance(this, other);
     }
 
     /** Compute the "diagonal" distance between this and the other cell: the
@@ -51,7 +42,7 @@ public record Cell(int row, int col) implements AStar.Point {
      */
     public void sortByDiagonal(List<Cell> list) {
         // Sort cells by distance from this.
-        list.sort((c1,c2) -> diagonal(c1) - diagonal(c2));
+        list.sort(Comparator.comparingInt(this::diagonal));
     }
 
     //-------------------------------------------------------------------------
@@ -65,12 +56,8 @@ public record Cell(int row, int col) implements AStar.Point {
      * @return The Cartesian distance between the two cells.
      */
     @Override
-    public double astarDistance(AStar.Point other) {
-        if (other instanceof Cell) {
-            return Cell.cartesianDistance(this, (Cell) other);
-        } else {
-            return Double.MAX_VALUE;
-        }
+    public double distance(Cell other) {
+        return Cell.cartesianDistance(this, other);
     }
 
     /**
@@ -81,8 +68,8 @@ public record Cell(int row, int col) implements AStar.Point {
      * @return The list of adjacent points.
      */
     @Override
-    public List<AStar.Point> astarAdjacent() {
-        List<AStar.Point> neighbors = new ArrayList<>();
+    public List<Cell> getAdjacent() {
+        List<Cell> neighbors = new ArrayList<>();
 
         for (int r = row - 1; r <= row + 1; r++) {
             for (int c = col -1; c <= col + 1; c++) {

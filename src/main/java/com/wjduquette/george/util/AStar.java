@@ -11,13 +11,13 @@ public class AStar {
     /**
      * A Point is the index of a map cell (tile, hex, etc.) on a map.
      */
-    public interface Point {
+    public interface Point<P extends Point<P>> {
         /** Computes the nominal (e.g., cartesian) distance between this point
          * and some other point.
          * @param other The other point.
          * @return the distance.
          */
-        double astarDistance(Point other);
+        double distance(P other);
 
         /**
          * Returns the points adjacent to this point according to whatever
@@ -26,7 +26,7 @@ public class AStar {
          * out-of-bounds points impassable.
          * @return The list of candidate neighbors.
          */
-        List<Point> astarAdjacent();
+        List<P> getAdjacent();
     }
 
     /**
@@ -42,7 +42,7 @@ public class AStar {
      * </ul>
      */
     public interface Assessor {
-        <P extends Point> boolean isPassable(P point);
+        <P extends Point<P>> boolean isPassable(P point);
     }
 
     /**
@@ -57,7 +57,7 @@ public class AStar {
      * @param assessor The terrain assessor function
      * @return The route from start to goal, or the empty list
      */
-    public static <P extends Point> List<P> findRoute(
+    public static <P extends Point<P>> List<P> findRoute(
         P start,
         P goal,
         Assessor assessor)
@@ -80,7 +80,7 @@ public class AStar {
         gScore.put(start, 0.0);
 
         // Estimated total cost from start to goal through y
-        fScore.put(start, 0.0 + start.astarDistance(goal));
+        fScore.put(start, 0.0 + start.distance(goal));
 
         while (openSet.size() > 0) {
             // FIRST, find the node with the best fScore in the open set.
@@ -100,8 +100,7 @@ public class AStar {
             openSet.remove(current);
             closedSet.add(current);
 
-            List<P> neighbors = current.astarAdjacent().stream()
-                .map(p -> (P)p)
+            List<P> neighbors = current.getAdjacent().stream()
                 .filter(p -> p.equals(goal) || assessor.isPassable(p))
                 .toList();
 
@@ -110,7 +109,7 @@ public class AStar {
                     continue;
 
                 double tentativeGScore =
-                    gScore.get(current) + current.astarDistance(neighbor);
+                    gScore.get(current) + current.distance(neighbor);
 
                 if (!openSet.contains(neighbor) ||
                     tentativeGScore <= gScore.get(neighbor))
@@ -118,7 +117,7 @@ public class AStar {
                     cameFrom.put(neighbor, current);
                     gScore.put(neighbor, tentativeGScore);
                     fScore.put(neighbor,
-                        gScore.get(neighbor) + neighbor.astarDistance(goal));
+                        gScore.get(neighbor) + neighbor.distance(goal));
 
                     openSet.add(neighbor);
                 }
@@ -135,7 +134,7 @@ public class AStar {
      * @param endPoint The last node in the route (i.e, the goal)
      * @return A list of positions leading from the start point to the goal.
      */
-    private static <P extends Point> List<P> reconstructRoute(
+    private static <P extends Point<P>> List<P> reconstructRoute(
         Map<P,P> cameFrom,
         P endPoint)
     {
