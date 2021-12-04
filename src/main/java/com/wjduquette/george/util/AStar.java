@@ -41,7 +41,7 @@ public class AStar {
      *     <li>Capabilities of the "mover"</li>
      * </ul>
      */
-    public interface Assessor<P extends Point<P>> {
+    public interface Assessor<P> {
         boolean isPassable(P point);
     }
 
@@ -134,7 +134,7 @@ public class AStar {
      * @param endPoint The last node in the route (i.e, the goal)
      * @return A list of positions leading from the start point to the goal.
      */
-    private static <P extends Point<P>> List<P> reconstructRoute(
+    private static <P> List<P> reconstructRoute(
         Map<P,P> cameFrom,
         P endPoint)
     {
