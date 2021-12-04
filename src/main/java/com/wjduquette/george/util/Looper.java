@@ -12,9 +12,6 @@ public class Looper {
     // The timeline to control the timing
     private final Timeline timeline;
 
-    // The function to call on update
-    private final Runnable loopFunc;
-
     //-------------------------------------------------------------------------
     // Constructor
 
@@ -26,7 +23,6 @@ public class Looper {
      * @param loopFunc The function to call
      */
     public Looper(int msecs, Runnable loopFunc) {
-        this.loopFunc = loopFunc;
         var frame = new KeyFrame(Duration.millis(msecs), ae -> loopFunc.run());
         this.timeline = new Timeline(frame);
         timeline.setCycleCount(Animation.INDEFINITE);
