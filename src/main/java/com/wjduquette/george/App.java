@@ -1,6 +1,7 @@
 package com.wjduquette.george;
 
 import com.wjduquette.george.model.Cell;
+import com.wjduquette.george.model.Player;
 import com.wjduquette.george.model.RegionMap;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.widgets.CellClickEvent;
@@ -21,7 +22,10 @@ public class App extends Application {
             .findFirst()
             .orElse(new Cell(10,10));
 
+        Player george = new Player("George");
+
         overworld.getEntities().make().mobile("george")
+            .put(george)
             .put(origin)
             .tile(TileSets.MOBILES.get("mobile.george").orElseThrow());
 
@@ -36,7 +40,7 @@ public class App extends Application {
         viewer.setMap(overworld);
 
         // NEXT, configure the GUI
-        Scene scene = new Scene(viewer, 440, 440);
+        Scene scene = new Scene(viewer, 800, 600);
         stage.setTitle("George's Saga!");
         stage.setScene(scene);
         stage.show();

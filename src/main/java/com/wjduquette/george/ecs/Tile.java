@@ -12,4 +12,7 @@ public record Tile(Image image) {
         // We'd need the tile's name to do more than this.
         return "(Tile)";
     }
+
+    public double height() { return image.getHeight(); }
+    public double width() { return image.getWidth(); }
 }

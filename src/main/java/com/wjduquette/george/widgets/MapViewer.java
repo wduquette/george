@@ -1,10 +1,7 @@
 package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.ecs.*;
-import com.wjduquette.george.model.Cell;
-import com.wjduquette.george.model.RegionMap;
-import com.wjduquette.george.model.TerrainTile;
-import com.wjduquette.george.model.TerrainType;
+import com.wjduquette.george.model.*;
 import com.wjduquette.george.util.AStar;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
@@ -126,7 +123,7 @@ public class MapViewer extends StackPane {
         canvas.clear();
 
         // TEMP
-        Entity player = map.query(Mobile.class).findFirst().get();
+        Entity player = map.query(Player.class).findFirst().get();
         computeBounds(player.cell());
 
         // FIRST, render the terrain
@@ -157,12 +154,45 @@ public class MapViewer extends StackPane {
         for (Entity mobile : map.query(Mobile.class).toList()) {
             canvas.drawImage(mobile.tile().image(), cell2xy(mobile.cell()));
         }
+
+        // NEXT, render player status boxes
+        drawStatusBox(0, player);
     }
 
     // Probably belongs in RegionMap
     public boolean isWalkable(Cell cell) {
         return map.getTerrainType(cell).isWalkable();
     }
+
+    private void drawStatusBox(int index, Entity player) {
+        double oborder = 2;
+        double iborder = 1;
+        double border = oborder + iborder;
+        double hName = 12;
+        double gap = 5;
+        double boxHeight = player.tile().height() + 2*border + hName;
+        double boxWidth = player.tile().width() + 2*border;
+
+        double yTop = 10 + index*(boxHeight + gap);
+        double xLeft = 10;
+
+        canvas.gc().setFill(Color.BLACK);
+        canvas.gc().fillRect(xLeft, yTop, boxWidth, boxHeight);
+
+        canvas.gc().setFill(Color.WHITE);
+        canvas.gc().fillRect(
+            xLeft + oborder, yTop + oborder,
+            boxWidth - 2*oborder, boxHeight - 2*oborder);
+
+        canvas.gc().setFill(Color.CYAN);
+        canvas.gc().fillRect(
+            xLeft + border, yTop + border,
+            boxWidth - 2*border, boxHeight - 2*border);
+
+        canvas.gc().drawImage(player.tile().image(),
+            xLeft + border, yTop + border);
+    }
+
 
     private void drawRoute(List<Cell> route) {
         canvas.gc().setStroke(Color.WHITE);
