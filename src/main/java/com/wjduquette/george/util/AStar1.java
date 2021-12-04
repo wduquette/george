@@ -1,17 +1,23 @@
 package com.wjduquette.george.util;
 
-import com.wjduquette.george.ecs.Cell;
-
 import java.util.*;
 
 /**
  * This static class implements the A* algorithm
  */
-public class AStar {
-    private AStar() {} // Not instantiable
+public class AStar1 {
+    private AStar1() {} // Not instantiable
 
-    public interface Assessor {
-        boolean isPassable(Cell point);
+    public interface IsPassable<Point> {
+        boolean test(Point point);
+    }
+
+    public interface NeighborFunc<Point> {
+        List<Point> get(Point point);
+    }
+
+    public interface DistanceFunc<Point> {
+        double distance(Point a, Point b);
     }
 
     /**
@@ -24,39 +30,44 @@ public class AStar {
      *
      * @param start	The starting point (usually "here")
      * @param goal The point to go to.
-     * @param assessor a function to determine the passability of a cell.
+     * @param isPassable a function to determine the passability of a cell.
+     * @param distFunc a function to compute the nominal distance between
+     *        two cells
+     * @param neighborsOf a function to return candicates for the next step
      * @return The route from start to goal, or the empty list
      */
-    public List<Cell> findRoute(
-        Cell start,
-        Cell goal,
-        Assessor assessor)
+    public static <Point> List<Point> findRoute(
+        Point start,
+        Point goal,
+        IsPassable<Point> isPassable,
+        DistanceFunc<Point> distFunc,
+        NeighborFunc<Point> neighborsOf)
     {
         // The set of nodes already evaluated
-        Set<Cell> closedSet = new HashSet<>();
+        Set<Point> closedSet = new HashSet<>();
 
         // The set of tentative nodes to be evaluated.
-        Set<Cell> openSet = new HashSet<>();
+        Set<Point> openSet = new HashSet<>();
         openSet.add(start);
 
         // The map of navigated nodes
-        Map<Cell,Cell> cameFrom = new HashMap<>();
+        Map<Point,Point> cameFrom = new HashMap<>();
 
         // Scores for the positions
-        Map<Cell,Double> gScore = new HashMap<>();
-        Map<Cell,Double> fScore = new HashMap<>();
+        Map<Point,Double> gScore = new HashMap<>();
+        Map<Point,Double> fScore = new HashMap<>();
 
         // Cost from start along best known path.
         gScore.put(start, 0.0);
 
         // Estimated total cost from start to goal through y
-        fScore.put(start, 0.0 + start.cartesian(goal));
+        fScore.put(start, 0.0 + distFunc.distance(start, goal));
 
         while (openSet.size() > 0) {
             // FIRST, find the node with the best fScore in the open set.
-            Cell current = null;
+            Point current = null;
 
-            for (Cell pos : openSet) {
+            for (Point pos : openSet) {
                 if (current == null || fScore.get(pos) < fScore.get(current)) {
                     current = pos;
                 }
@@ -70,16 +81,16 @@ public class AStar {
             openSet.remove(current);
             closedSet.add(current);
 
-            List<Cell> neighbors = getAdjacent(current).stream()
-                .filter(p -> p.equals(goal) || assessor.isPassable(p))
+            List<Point> neighbors = neighborsOf.get(current).stream()
+                .filter(p -> p.equals(goal) || isPassable.test(p))
                 .toList();
 
-            for (Cell neighbor : neighbors) {
+            for (Point neighbor : neighbors) {
                 if (closedSet.contains(neighbor))
                     continue;
 
                 double tentativeGScore =
-                    gScore.get(current) + neighbor.cartesian(current);
+                    gScore.get(current) + distFunc.distance(current, neighbor);
 
                 if (!openSet.contains(neighbor) ||
                     tentativeGScore <= gScore.get(neighbor))
@@ -87,7 +98,7 @@ public class AStar {
                     cameFrom.put(neighbor, current);
                     gScore.put(neighbor, tentativeGScore);
                     fScore.put(neighbor, gScore.get(neighbor) +
-                        neighbor.cartesian(goal));
+                        distFunc.distance(neighbor, goal));
 
                     openSet.add(neighbor);
                 }
@@ -97,21 +108,6 @@ public class AStar {
         return null;
     }
 
-    // Get the adjacent cells.  Don't worry about map boundaries;
-    // the Assessor will handle that.
-    private List<Cell> getAdjacent(Cell cell) {
-        List<Cell> result = new ArrayList<>();
-
-        for (int r = cell.row() - 1; r <= cell.row() + 1; r++) {
-            for (int c = cell.col() - 1; c <= cell.col() + 1; c++) {
-                result.add(new Cell(r, c));
-            }
-        }
-        result.remove(cell);
-
-        return result;
-    }
-
     /**
      * Builds the actual route from the tree of routes computed by A*.
      *
@@ -119,11 +115,11 @@ public class AStar {
      * @param endPoint The last node in the route (i.e, the goal)
      * @return A list of positions leading from the start point to the goal.
      */
-    private static List<Cell> reconstructRoute(
-        Map<Cell,Cell> cameFrom,
-        Cell endPoint)
+    private static <Point> List<Point> reconstructRoute(
+        Map<Point,Point> cameFrom,
+        Point endPoint)
     {
-        List<Cell> route = new ArrayList<>(0);
+        List<Point> route = new ArrayList<>(0);
 
         while (cameFrom.containsKey(endPoint)) {
             route.add(endPoint);
