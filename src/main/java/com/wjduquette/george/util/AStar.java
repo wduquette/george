@@ -1,7 +1,5 @@
 package com.wjduquette.george.util;
 
-import com.wjduquette.george.ecs.Cell;
-
 import java.util.*;
 
 /**
@@ -10,53 +8,85 @@ import java.util.*;
 public class AStar {
     private AStar() {} // Not instantiable
 
+    /**
+     * A Point is the index of a map cell (tile, hex, etc.) on a map.
+     */
+    public interface Point {
+        /** Computes the nominal (e.g., cartesian) distance between this point
+         * and some other point.
+         * @param other The other point.
+         * @return the distance.
+         */
+        double astarDistance(Point other);
+
+        /**
+         * Returns the points adjacent to this point according to whatever
+         * indexing scheme is used.  The points need not be in-bounds on
+         * the map in question; the Assessor will handle that by marking
+         * out-of-bounds points impassable.
+         * @return The list of candidate neighbors.
+         */
+        List<Point> astarAdjacent();
+    }
+
+    /**
+     * The Assessor is the algorithm's view of the map, <b>for the purposes
+     * of the current route.</b>  Many factors can determine whether a cell
+     * is impassable:
+     *
+     * <ul>
+     *     <li>The point is out-of-bounds</li>
+     *     <li>Terrain features</li>
+     *     <li>Presence of enemies</li>
+     *     <li>Capabilities of the "mover"</li>
+     * </ul>
+     */
     public interface Assessor {
-        boolean isPassable(Cell point);
+        <P extends Point> boolean isPassable(P point);
     }
 
     /**
      * The A* algorithm, as described at Wikipedia.  Finds an efficient route
-     * from the starting point to the goal, if one exists. The algorithm
-     * is agnostic as to the relationship between the points. The computed route
+     * from the starting point to the goal, if one exists. The computed route
      * does not include the starting point.
      *
      * <p>TODO: Consider replacing isPassable with a cost function.</p>
      *
      * @param start	The starting point (usually "here")
      * @param goal The point to go to.
-     * @param assessor a function to determine the passability of a cell.
+     * @param assessor The terrain assessor function
      * @return The route from start to goal, or the empty list
      */
-    public List<Cell> findRoute(
-        Cell start,
-        Cell goal,
+    public static <P extends Point> List<P> findRoute(
+        P start,
+        P goal,
         Assessor assessor)
     {
         // The set of nodes already evaluated
-        Set<Cell> closedSet = new HashSet<>();
+        Set<P> closedSet = new HashSet<>();
 
         // The set of tentative nodes to be evaluated.
-        Set<Cell> openSet = new HashSet<>();
+        Set<P> openSet = new HashSet<>();
         openSet.add(start);
 
         // The map of navigated nodes
-        Map<Cell,Cell> cameFrom = new HashMap<>();
+        Map<P,P> cameFrom = new HashMap<>();
 
         // Scores for the positions
-        Map<Cell,Double> gScore = new HashMap<>();
-        Map<Cell,Double> fScore = new HashMap<>();
+        Map<P,Double> gScore = new HashMap<>();
+        Map<P,Double> fScore = new HashMap<>();
 
         // Cost from start along best known path.
         gScore.put(start, 0.0);
 
         // Estimated total cost from start to goal through y
-        fScore.put(start, 0.0 + start.cartesian(goal));
+        fScore.put(start, 0.0 + start.astarDistance(goal));
 
         while (openSet.size() > 0) {
             // FIRST, find the node with the best fScore in the open set.
-            Cell current = null;
+            P current = null;
 
-            for (Cell pos : openSet) {
+            for (P pos : openSet) {
                 if (current == null || fScore.get(pos) < fScore.get(current)) {
                     current = pos;
                 }
@@ -70,24 +100,25 @@ public class AStar {
             openSet.remove(current);
             closedSet.add(current);
 
-            List<Cell> neighbors = getAdjacent(current).stream()
+            List<P> neighbors = current.astarAdjacent().stream()
+                .map(p -> (P)p)
                 .filter(p -> p.equals(goal) || assessor.isPassable(p))
                 .toList();
 
-            for (Cell neighbor : neighbors) {
+            for (P neighbor : neighbors) {
                 if (closedSet.contains(neighbor))
                     continue;
 
                 double tentativeGScore =
-                    gScore.get(current) + neighbor.cartesian(current);
+                    gScore.get(current) + current.astarDistance(neighbor);
 
                 if (!openSet.contains(neighbor) ||
                     tentativeGScore <= gScore.get(neighbor))
                 {
                     cameFrom.put(neighbor, current);
                     gScore.put(neighbor, tentativeGScore);
-                    fScore.put(neighbor, gScore.get(neighbor) +
-                        neighbor.cartesian(goal));
+                    fScore.put(neighbor,
+                        gScore.get(neighbor) + neighbor.astarDistance(goal));
 
                     openSet.add(neighbor);
                 }
@@ -97,21 +128,6 @@ public class AStar {
         return null;
     }
 
-    // Get the adjacent cells.  Don't worry about map boundaries;
-    // the Assessor will handle that.
-    private List<Cell> getAdjacent(Cell cell) {
-        List<Cell> result = new ArrayList<>();
-
-        for (int r = cell.row() - 1; r <= cell.row() + 1; r++) {
-            for (int c = cell.col() - 1; c <= cell.col() + 1; c++) {
-                result.add(new Cell(r, c));
-            }
-        }
-        result.remove(cell);
-
-        return result;
-    }
-
     /**
      * Builds the actual route from the tree of routes computed by A*.
      *
@@ -119,11 +135,11 @@ public class AStar {
      * @param endPoint The last node in the route (i.e, the goal)
      * @return A list of positions leading from the start point to the goal.
      */
-    private static List<Cell> reconstructRoute(
-        Map<Cell,Cell> cameFrom,
-        Cell endPoint)
+    private static <P extends Point> List<P> reconstructRoute(
+        Map<P,P> cameFrom,
+        P endPoint)
     {
-        List<Cell> route = new ArrayList<>(0);
+        List<P> route = new ArrayList<>(0);
 
         while (cameFrom.containsKey(endPoint)) {
             route.add(endPoint);

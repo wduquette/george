@@ -1,6 +1,7 @@
 package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.ecs.*;
+import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.RegionMap;
 import com.wjduquette.george.model.TerrainTile;
 import com.wjduquette.george.model.TerrainType;

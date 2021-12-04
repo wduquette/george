@@ -1,5 +1,6 @@
 package com.wjduquette.george.ecs;
 
+import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.util.TypeMap;
 import javafx.scene.image.Image;
@@ -78,7 +79,7 @@ public class Entity {
         return Optional.ofNullable(components.get(cls));
     }
 
-    public Cell    cell()    { return components.get(Cell.class); }
+    public Cell cell()    { return components.get(Cell.class); }
     public Feature feature() { return components.get(Feature.class); }
     public Tile    tile()    { return components.get(Tile.class); }
     public Mobile  mobile()  { return components.get(Mobile.class); }

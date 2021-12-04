@@ -1,6 +1,6 @@
 package com.wjduquette.george.widgets;
 
-import com.wjduquette.george.ecs.Cell;
+import com.wjduquette.george.model.Cell;
 import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.scene.Node;

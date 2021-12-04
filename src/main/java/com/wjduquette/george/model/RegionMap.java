@@ -1,7 +1,6 @@
 package com.wjduquette.george.model;
 
 import com.wjduquette.george.TileSets;
-import com.wjduquette.george.ecs.Cell;
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.EntityTable;
 import com.wjduquette.george.ecs.Feature;

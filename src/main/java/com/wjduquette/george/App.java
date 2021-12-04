@@ -1,5 +1,6 @@
 package com.wjduquette.george;
 
+import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.RegionMap;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.widgets.CellClickEvent;
