@@ -6,7 +6,7 @@ This vault contains development documents for George's Saga.  Throughout, "Old G
 
 ## Designs
 
-- [[Tiled Maps]]: On using the output of the [Tiled Map Editor](https://mapeditor.org).
+- [[Tiled Map Editor]]: On using the output of the [Tiled Map Editor](https://mapeditor.org).
 - [[Region Maps]]: How region maps are defined in New George.
 
 _Created on 2021-11-27._

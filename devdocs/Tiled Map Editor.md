@@ -1,4 +1,4 @@
-# Region Maps and the Tiled Map Editor
+# Tiled Map Editor
 #design,
 
 Tiled is a tile map editor available from www.mapeditor.org.  I used it in 
@@ -9,45 +9,42 @@ has many powerful features:
 - Objects can be annotated with a variety of metadata.
 
 This document explains how we use Tiled's features to define region maps
-for George's Saga, and how we access the map data.  See [[Region Maps]] for more on  region definition.
+for George's Saga.  See [[Region Maps]] for conventions on how George makes use of Tiled map data.
 
-## See Also
+## JSON Schemas
 
-- [[Tiled JSON Schema 1.0]]
-- [[Tiled JSON Schema 1.6]]
+These pages describe the schemas for Tiled's JSON map export.
 
-**TODO**: The current Tiled JSON format is not identical to the old format; I'll need to update my code.
+- [[Tiled JSON Schema 1.0]], as used in Old George
+- [[Tiled JSON Schema 1.6]], as used in New George
+
 
 ## Tiled Map Data
 
 **Tile Sets**: Tiled works with an external tile set defined by a PNG file, like those created by PyxelEdit.  For convenience we define a tile set file for each region, containing the terrain and feature tiles needed by the region.
 
+Tiled can load multiple tile sets; it assigns a unique _GID_ to each tile, starting at 1 for the first tile and incrementing from there.  Each tile set in the JSON has a `firstgid` that's the starting index for that tile set.  GID = 0 indicates the empty tile.
+
 **Layers**: Most data in a Tiled map is on one _layer_ or another.  Tiled supports two kinds of layers:
 
-- Tile layers, containing tiles arranged on a grid.
-- Object groups, containing "object metadata" associated with arbitrary 
-  polygons.
+- Tile layers, containing a vector of GIDs representing tiles in the map grid.  Empty cells are indicated by 0.
+- Object groups, containing "object metadata" associated with rectangles.  The rectangle coordinates are in X/Y pixels.   
 
 George uses tile layers to set the basic appearance of the map, and object groups to add metadata that the region's code can use to position mobiles, signs, and triggers.
 
 ## Accessing Tiled Map Data
 
 A Java library, `libtiled`, is available to read Tiled `.tmx` files
-directly.  It has many XML-related dependencies, and I've been unable to get it
-to work with IntelliJ under the Java module system.  I really don't want to
-pull in that many dependencies anyway.
+directly.  It has many XML-related dependencies, and I've been unable to get it to work with IntelliJ under the Java module system.  I really don't want to pull in that many dependencies anyway.
 
 Tiled can also export to JSON; this is how Legacy George read maps, and 
 New George does the same.  See the `TiledMapReader` class.
 
-- **Note:** By default, the latest version of Tiled outputs data in compressed
-  form.  In principle I can read that using standard Java APIs, but the old
-  format can be restored by going to the map's Map Properties in Tiled and 
-  changing the `Tile Layer Format` to `CSV`.
 
-- **Note**: Tiles in the Tiled map are indexed 1 to N; 0 is the absence of
-  a tile.  Tiles in George are indexed 0 to N-1.
-  - The client of `TiledMapReader` must handle this offset properly.
+
+# OLD STUFF
+
+
 
 ## Project Conventions
 

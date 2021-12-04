@@ -7,8 +7,7 @@ My current To Do list.
 - [x] Refactor `TiledMapReader` to be clean. 
 - [x] `RegionMap` should save `TerrainTypes` to an array, not to `Terrain` components.
 - [x] Add some objects, e.g., signs and other triggers.
-- [ ] Revise `MapViewer` to only draw the "visible" area.
-	- In terms of rectangular radius, not line-of-sight.
+- [x] Revise `MapViewer` to only draw the "visible" area.
 - [x] Allow George to be moved by cursor keys, taking terrain type into account.
 - [ ] Allow George to be moved about the region by clicking, using A* for route finding, taking terrain type into account.
 	- Requires defining the basic [[Game Loop]], goals, movers, efficient terrain access.

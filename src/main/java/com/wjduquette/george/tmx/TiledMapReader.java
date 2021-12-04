@@ -33,7 +33,14 @@ public class TiledMapReader {
 	//-------------------------------------------------------------------------
 	// Nested Types
 
-	/** A layer in the tile map */
+	/**
+	 * A layer in the tile map.  For tilelayers, the data[] array contains
+	 * "gid", indices that are unique across all tile sets.  Each tile set
+	 * in the map has a "firstgid", which maps to tile 0 in the tile set image.
+	 * "firstgid" for the first tileset is always 1, leaving 0 to indicate the
+	 * absence of a tile.  At present we only use maps with a single tile set,
+	 * but if we change that we'll need to load the JSON TileSet data.
+	 */
 	public static class Layer {
 		public String name;           // The user-defined name
 		public String type;           // "tilelayer" or "objectgroup"
