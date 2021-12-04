@@ -1,10 +1,13 @@
 # README.md
 
-This project is intended to move George's Saga, originally written in a 
-pure OO-style for Swing, to an ECS with JavaFX.
+George's saga is a turn-based 2D dungeon crawler that I wrote in 2013 to 
+experiment with Java.  It was written in a pure OO-style using Swing for
+its GUI.  This project is intended to rewrite George's Saga in a more
+modern style, using a simple ECS, Java 17, and JavaFX.
 
-## TODO
+## Acknowledgments
 
-- Build the ECS structure for level information.
-  - Probably use type dictionary. 
-- Copy/revise the Tile infrastructure from the old Java code.
+- Many thanks to Twisol for advice, suggestions, and code reviews!
+
+
+
