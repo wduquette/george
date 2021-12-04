@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "Region Maps.md",
+            "file": "To Do.md",
             "mode": "source"
           }
         }
@@ -68,7 +68,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Region Maps.md",
+                "file": "To Do.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -85,7 +85,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Region Maps.md",
+                "file": "To Do.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -108,7 +108,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Region Maps.md"
+                "file": "To Do.md"
               }
             }
           }
@@ -121,15 +121,15 @@
   },
   "active": "0d825b141e76b8b0",
   "lastOpenFiles": [
+    "To Do.md",
+    "Game Loop.md",
+    "Supporting Geographic Algorithms.md",
     "Region Maps.md",
     "Tiled Map Editor.md",
-    "To Do.md",
     "Tiled JSON Schema 1.0.md",
     "Tiled JSON Schema 1.6.md",
-    "Supporting Geographic Algorithms.md",
     "CellMap.md",
     "Entity Table.md",
-    "Design Questions.md",
-    "Home.md"
+    "Design Questions.md"
   ]
 }

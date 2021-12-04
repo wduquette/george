@@ -1,7 +1,7 @@
 # Supporting Geographic Algorithms
 #design, #pending 
 
-The big question is how to efficiently to geographic calculations.
+The big question is how to efficiently do geographic calculations.
 
 For route-finding, for example, I need to be able to efficiently query the terrain between hither and yon.  I can't loop through the entity table each time I want to find a cell, so I'll need to compute some kind of lookup table.
 
@@ -36,7 +36,12 @@ I'm inclined to use cell maps, since they are flexible enough to cope with irreg
 
 **Rendered**: Each time through the game loop, recreate all needed lookup tables and pass to all systems that require them.  These tables only need to cover the region around the player.  This is the easiest thing to do.  It's always right, and it doesn't require tricky logic.
 
-**Conclusion**: If there is fixed data that never changes, it might be reasonable to save on load in a fixed cell array for easy lookup.  Other data should be rendered each time through the loop.
+## Conclusion
 
+The "Terrain" layer information should never change; we would change it by layering Features on top.  And the "Terrain" layer information is the big part: 10,000 cells in a 100x100 map.  Therefore,
+
+- Keep the "Terrain" tile info in an ArrayList, indexed by `row*width + col`.
+- Keep the "Features", and everything else, in the entity table.
+- Compute transient data as needed, and pass from system to system as needed.
 
 _Created on 2021-11-28._
