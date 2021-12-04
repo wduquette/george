@@ -1,10 +1,6 @@
 package com.wjduquette.george.util;
 
-import com.wjduquette.george.ecs.Point;
-
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * This static class implements the A* algorithm
