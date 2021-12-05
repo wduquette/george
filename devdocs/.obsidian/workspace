@@ -39,7 +39,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "RegionMap",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -48,8 +48,7 @@
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -123,14 +122,14 @@
   "active": "0d825b141e76b8b0",
   "lastOpenFiles": [
     "To Do.md",
-    "Tiled Map Editor.md",
-    "Region Maps.md",
-    "daily/2021-12-05.md",
-    "daily/template.md.md",
     "Game Loop.md",
-    "Supporting Geographic Algorithms.md",
-    "Tiled JSON Schema 1.0.md",
-    "Tiled JSON Schema 1.6.md",
-    "CellMap.md"
+    "daily/2021-12-05.md",
+    "Animation.md",
+    "Sprite.md",
+    "Component Types.md",
+    "Cell.md",
+    "Entity Types.md",
+    "Mobile.md",
+    "VisualEffect.md"
   ]
 }

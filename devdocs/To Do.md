@@ -18,9 +18,9 @@ My current To Do list.
 	- NOTE: Might be able to use Transitions for transient effects.
 - [x] Allow George to be moved about the region by clicking, using A* for route finding, taking terrain type into account.
 	- Requires defining the basic [[Game Loop]], goals, movers, efficient terrain access.
-- [x] Ponder how to define "systems" in Java
 - [x] Render player status on the map as a heads-up display
 	- Preliminary, but shows how to go on. 
+- [x] Ponder how to define "systems" in Java
 - [ ] Structure the app in terms of systems.
 - [ ] Render log messages on the map as a heads up display. (?)
 - [ ] Move the mobile smoothly across the map, rather than jumping. 
