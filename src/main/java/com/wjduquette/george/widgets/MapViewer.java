@@ -45,7 +45,6 @@ public class MapViewer extends StackPane {
         getChildren().add(canvas);
         canvas.setOnResize(this::repaint);
         canvas.setOnMouseClicked(this::onMouseClick);
-        canvas.setOnKeyPressed(this::onKeyPressed);
 
         canvas.setBackground(new Background(
             new BackgroundFill(Color.BLACK, null, null)));
@@ -53,45 +52,6 @@ public class MapViewer extends StackPane {
 
     //-------------------------------------------------------------------------
     // Event Handling
-
-    private void onKeyPressed(KeyEvent evt) {
-        int rDelta = 0;
-        int cDelta = 0;
-        System.out.println("key: " + evt.getCode());
-
-        switch (evt.getCode()) {
-            case UP:
-            case KP_UP:
-                rDelta = -1;
-                break;
-            case RIGHT:
-            case KP_RIGHT:
-                cDelta = 1;
-                break;
-            case DOWN:
-            case KP_DOWN:
-                rDelta = 1;
-                break;
-            case LEFT:
-            case KP_LEFT:
-                cDelta = -1;
-                break;
-            default:
-                return;
-        }
-
-        // TEMP
-        Entity player = map.query(Mobile.class).findFirst().get();
-        Cell cell = player.cell().adjust(rDelta, cDelta);
-        TerrainType terrain = map.getTerrainType(cell);
-
-        if (terrain.isWalkable()) {
-            player.put(cell);
-        } else {
-            System.out.println("Bonk!");
-        }
-        repaint();
-    }
 
     private void onMouseClick(MouseEvent evt) {
         Point2D mouse = canvas.ofMouse(evt);
