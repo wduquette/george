@@ -59,7 +59,7 @@ public class Mobile {
      * Do the next goal.  It's an error if there are none.
      */
     public void doNext() {
-        goals.getFirst().run();
+        goals.pollFirst().run();
     }
 
     /** Halt: clear the goal queue. */
