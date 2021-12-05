@@ -10,8 +10,7 @@ The game loop is always running.  Each time through the loop, it does the follow
 - Calls the [[Animation System]] system to update any [[Animation|animations]].
 	- [[Mobile|Mobiles]] and [[VisualEffect|Visual Effects]] can have animations.
 - Call the [[Movement System]] to execute any events.
-	- If a [[Mobile]]'s event queue has events in it, and the [[Mobile]]'s animation is `Stopped`, execute the next event.
-		- Or, all of its events with the next time tag.
+	- If a [[Mobile]]'s event queue has events in it, and the [[Mobile]]'s animation is `Stopped`, execute events until its animation is started.
 	- Executing an event can update any state: it can damage or kill a monster, start an  animation, change a cell location.
 - If there were no events executed, call the [[Planning System]] to let the next mover plan their move.
 	- If the mover is AI-controlled, compute its next move, i.e., plan and populate its event queue.
@@ -21,7 +20,15 @@ The game loop is always running.  Each time through the loop, it does the follow
 - Call the [[Purging System]] to delete dead entities.
 	- E.g., mobiles that have been killed; visual effects whose animations have stopped.
 
+## Notes and Open Questions
 
-As an optimization, we can pause the game loop if there are no active animations and we are waiting for player input.
+- As an optimization, we can pause the game loop if there are no active animations and we are waiting for player input.
+- How should we handle the jump to a different [[Region]]?
+	- Presumably:
+		- Prune the existing event queues and animations
+		- Set the app's `currentRegion` to the new region
+		- Position the player character(s) in the new region.
+		- Repaint.
+		- Wait for user input.
 
 _Created on 2021-11-28._
