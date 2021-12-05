@@ -5,7 +5,7 @@ My current To Do list.
 - [x] Ponder [[Supporting Geographic Algorithms]].
 - [x] Revise `TiledMapReader` to read the current Tiled `.json` format.
 - [x] Refactor `TiledMapReader` to be clean. 
-- [x] `RegionMap` should save `TerrainTypes` to an array, not to `Terrain` components.
+- [x] `Region` should save `TerrainTypes` to an array, not to `Terrain` components.
 - [x] Add some objects, e.g., signs and other triggers.
 - [x] Revise `MapViewer` to only draw the "visible" area.
 - [x] Allow George to be moved by cursor keys, taking terrain type into account.
@@ -16,11 +16,15 @@ My current To Do list.
 	- Has an update interval in milliseconds
 	- Calls the game update function.
 	- NOTE: Might be able to use Transitions for transient effects.
-- [ ] Allow George to be moved about the region by clicking, using A* for route finding, taking terrain type into account.
+- [x] Allow George to be moved about the region by clicking, using A* for route finding, taking terrain type into account.
 	- Requires defining the basic [[Game Loop]], goals, movers, efficient terrain access.
-- [ ] Render player status on the map as a heads-up display
+- [x] Ponder how to define "systems" in Java
+- [x] Render player status on the map as a heads-up display
+	- Preliminary, but shows how to go on. 
+- [ ] Structure the app in terms of systems.
+- [ ] Render log messages on the map as a heads up display. (?)
+- [ ] Move the mobile smoothly across the map, rather than jumping. 
 - [ ] Render quest status on the map as a heads-up display
-- [ ] Render log messages on the map as a heads up display.
 - [ ] Render signs as a blocking popup...drawn on the map until the user clicks.
 - [ ] Remove cursor key code.
 - [ ] Script to copy asset files to `resources`

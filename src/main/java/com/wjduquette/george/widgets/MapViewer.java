@@ -4,7 +4,6 @@ import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.model.*;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -32,7 +31,7 @@ public class MapViewer extends StackPane {
     private int colMax = 0;
 
     // The map currently being displayed
-    private RegionMap map = null;
+    private Region map = null;
 
     // After a mouse click, the target cell.
     private Cell target = null;
@@ -69,7 +68,7 @@ public class MapViewer extends StackPane {
     //-------------------------------------------------------------------------
     // Public Methods
 
-    public void setMap(RegionMap map) {
+    public void setMap(Region map) {
         this.map = map;
 
         Platform.runLater(() -> {
@@ -100,7 +99,7 @@ public class MapViewer extends StackPane {
 
         // NEXT, if there's a target compute the route.
         if (target != null) {
-            List<Cell> route = RegionMap.findRoute(c -> map.isWalkable(c),
+            List<Cell> route = Region.findRoute(c -> map.isWalkable(c),
                 player.cell(), target);
 
             if  (!route.isEmpty()) {

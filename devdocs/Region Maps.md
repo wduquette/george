@@ -1,7 +1,7 @@
 # Region Maps
 #design
 
-The `RegionMap` class is used to load a predefined region from resource files.  A region map requires:
+The `Region` class is used to load a predefined region from resource files and manage its entities.  A region map requires:
 
 - A `.region` file, which points at the following:
 	- A `.terrain` file that defines the region's terrain tiles; see the `TerrainTileSet` class.
@@ -14,7 +14,7 @@ The `RegionMap` class is used to load a predefined region from resource files.  
 The [[Tiled Map Editor|Tiled Map]] may contain the following tile layers:
 
 - The `Terrain` layer.  This is the basic map, consisting of opaque terrain tiles from the region's `.terrain` file.  It need not be regular, i.e., cells can be empty.  
-- Terrain cells are saved the `RegionMap`'s `terrain` array.
+- Terrain cells are saved the `Region`'s `terrain` array.
 - The `Features` layer.  This layer can add feature tiles, also from the region's `.terrain` file, which will be composed onto the basic terrain. This is usually used for static terrain features.
 
 These layers are used _only_ to determine the appearance and terrain type of the cells.

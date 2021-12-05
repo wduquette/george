@@ -2,7 +2,7 @@ package com.wjduquette.george;
 
 import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.Player;
-import com.wjduquette.george.model.RegionMap;
+import com.wjduquette.george.model.Region;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.util.Looper;
 import com.wjduquette.george.widgets.CellClickEvent;
@@ -30,14 +30,14 @@ public class App extends Application {
     private final Looper looper = new Looper(LOOP_MSECS, this::gameLoop);
 
     // The map we're currently wandering about on.
-    private RegionMap region = null;
+    private Region region = null;
 
     //-------------------------------------------------------------------------
     // Main Program
 
     @Override
     public void start(Stage stage) {
-        region = new RegionMap(getClass(),
+        region = new Region(getClass(),
             "assets/regions/overworld/overworld.region");
 
         Cell origin = region.query(Point.class)
@@ -86,7 +86,7 @@ public class App extends Application {
         }
 
         Entity player = region.query(Player.class).findFirst().get();
-        List<Cell> route = RegionMap.findRoute(c -> region.isWalkable(c),
+        List<Cell> route = Region.findRoute(c -> region.isWalkable(c),
             player.cell(), event.getCell());
 
         if  (!route.isEmpty()) {

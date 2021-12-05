@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "daily/2021-12-05.md",
+            "file": "To Do.md",
             "mode": "source"
           }
         }
@@ -39,7 +39,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "RegionMap",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -48,7 +48,8 @@
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -68,7 +69,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "daily/2021-12-05.md",
+                "file": "To Do.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -85,7 +86,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "daily/2021-12-05.md",
+                "file": "To Do.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -108,7 +109,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "daily/2021-12-05.md"
+                "file": "To Do.md"
               }
             }
           }
@@ -121,13 +122,13 @@
   },
   "active": "0d825b141e76b8b0",
   "lastOpenFiles": [
+    "To Do.md",
+    "Tiled Map Editor.md",
+    "Region Maps.md",
     "daily/2021-12-05.md",
     "daily/template.md.md",
-    "To Do.md",
     "Game Loop.md",
     "Supporting Geographic Algorithms.md",
-    "Region Maps.md",
-    "Tiled Map Editor.md",
     "Tiled JSON Schema 1.0.md",
     "Tiled JSON Schema 1.6.md",
     "CellMap.md"

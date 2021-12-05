@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  *         region that has a RegionMap object as a component?</li>
  * </ul>
  */
-public class RegionMap {
+public class Region {
     // The name of the Tiled tile layer containing the basic terrain.
     private static final String TERRAIN_LAYER = "Terrain";
 
@@ -98,7 +98,7 @@ public class RegionMap {
     //-------------------------------------------------------------------------
     // Constructor
 
-    public RegionMap(Class<?> cls, String relPath) {
+    public Region(Class<?> cls, String relPath) {
         try {
             loadData(cls, relPath);
         } catch (KeywordParser.KeywordException ex) {

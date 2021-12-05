@@ -132,7 +132,7 @@ used by the region.  This is all TBD, but uses might include:
 
 **NOTE:** This is all from Old George.  I need to verify how this is done, and record it in [[Region Map]].
 
-The `RegionMap` class does most of the work of translating a Tiled tile map.  This
+The `Region` class does most of the work of translating a Tiled tile map.  This
 section is a quick reference to the conventions used.
 
 * Placing a Sign
