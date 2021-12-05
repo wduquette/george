@@ -75,6 +75,12 @@ public class App extends Application {
 
     // Handle cells clicks
     private void onCellClick(CellClickEvent event) {
+        // Note: Eventually present, this will be the "Player Input" system.
+        //
+        // Note: At present we disallow clicks if any mobile is active; but
+        // George is the only Mobile.  Eventually we will need to have a
+        // Mover queue, and we will disallow clicks whenever a
+        // non-player-controlled mobile isn't the "current mover".
         if (mobilesAreActive()) {
             return;
         }
@@ -104,6 +110,9 @@ public class App extends Application {
 
         // NEXT, if there's no one with a goal, stop until we get some
         // user input.
+        //
+        // NOTE: When there are multiple movers, we will need to support
+        // moving to the next mover.
         if (!mobilesAreActive()) {
             looper.stop();
         }
