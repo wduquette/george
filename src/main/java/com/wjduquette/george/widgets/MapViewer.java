@@ -140,7 +140,7 @@ public class MapViewer extends StackPane {
 
         // NEXT, if there's a target compute the route.
         if (target != null) {
-            List<Cell> route = RegionMap.findRoute(this::isWalkable,
+            List<Cell> route = RegionMap.findRoute(c -> map.isWalkable(c),
                 player.cell(), target);
 
             if  (!route.isEmpty()) {
@@ -158,10 +158,6 @@ public class MapViewer extends StackPane {
         drawStatusBox(0, player);
     }
 
-    // Probably belongs in RegionMap
-    public boolean isWalkable(Cell cell) {
-        return map.getTerrainType(cell).isWalkable();
-    }
 
     private void drawStatusBox(int index, Entity player) {
         double oborder = 2;

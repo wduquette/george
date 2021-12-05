@@ -305,7 +305,6 @@ public class RegionMap {
 
     /**
      * Gets the region's entities table.
-     * TODO: Possibly, should return a copy.
      * @return The table.
      */
     public EntityTable getEntities() {
@@ -357,5 +356,15 @@ public class RegionMap {
 
             return tile != null ? tile.type() : TerrainType.UNKNOWN;
         }
+    }
+
+    /**
+     * Terrain Assessor: checks whether the cell exists and is simply
+     * walkable, without any other concerns.
+     * @param cell The cell
+     * @return true or false
+     */
+    public boolean isWalkable(Cell cell) {
+        return getTerrainType(cell).isWalkable();
     }
 }
