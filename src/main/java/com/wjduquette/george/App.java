@@ -88,6 +88,7 @@ public class App extends Application {
             List<Cell> route = Region.findRoute(c -> region.isWalkable(c),
                 player.cell(), event.getCell());
 
+            System.out.println("Planning: " + route);
             for (Cell cell : route) {
                 player.mobile().steps().add(new Step.MoveTo(cell));
             }
@@ -104,13 +105,7 @@ public class App extends Application {
 
     private void gameLoop() {
         // Movement System
-        List<Entity> activeMobiles = region.query(Mobile.class)
-            .filter(e -> e.mobile().isActive())
-            .toList();
-
-        for (Entity mob : activeMobiles) {
-            // Execute the next step
-        }
+        Movement.doMovement(region);
 
         // NEXT, animate any visual effects
         // TODO: The visual effects system.
