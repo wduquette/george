@@ -1,6 +1,6 @@
 package com.wjduquette.george.ecs;
 
-import javafx.animation.Animation;
+import com.wjduquette.george.model.Animation;
 
 /**
  * A visual effect component contains an animation that's in progress.

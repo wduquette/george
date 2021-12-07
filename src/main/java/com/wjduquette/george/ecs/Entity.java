@@ -76,7 +76,21 @@ public class Entity {
      * @param <T> The class
      * @return The component
      */
-    public <T> Optional<T> get(Class<T> cls) {
+    public <T> T get(Class<T> cls) {
+        T comp = components.get(cls);
+        if (comp == null) {
+            throw new IllegalArgumentException("Missing component: " + cls);
+        }
+        return comp;
+    }
+
+    /**
+     * Find any component of the given class
+     * @param cls The desired component class.
+     * @param <T> The class
+     * @return The component
+     */
+    public <T> Optional<T> find(Class<T> cls) {
         return Optional.ofNullable(components.get(cls));
     }
 
@@ -97,8 +111,8 @@ public class Entity {
     }
 
     public TerrainType terrainType() {
-        return get(Feature.class)
-            .map(f -> f.terrainType())
+        return find(Feature.class)
+            .map(Feature::terrainType)
             .orElse(TerrainType.NONE);
     }
 
@@ -149,7 +163,7 @@ public class Entity {
     @Override
     public String toString() {
         StringBuilder buff = new StringBuilder();
-        buff.append("(entity " + id);
+        buff.append("(entity ").append(id);
         for (Class<?> cls : components.keySet()) {
             buff.append("\n ")
                 .append(components.get(cls).toString());
