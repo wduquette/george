@@ -88,9 +88,9 @@ public class App extends Application {
             List<Cell> route = Region.findRoute(c -> region.isWalkable(c),
                 player.cell(), event.getCell());
 
-            System.out.println("Planning: " + route);
+            player.newPlan();
             for (Cell cell : route) {
-                player.mobile().steps().add(new Step.MoveTo(cell));
+                player.plan().steps().add(new Step.MoveTo(cell));
             }
         }
 
@@ -126,6 +126,6 @@ public class App extends Application {
     // Are there any mobiles with active goals?
     private boolean mobilesAreActive() {
         return region.query(Mobile.class)
-            .anyMatch(e -> e.mobile().isActive());
+            .anyMatch(e -> e.has(Plan.class));
     }
 }

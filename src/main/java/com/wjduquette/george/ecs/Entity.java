@@ -2,6 +2,7 @@ package com.wjduquette.george.ecs;
 
 import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.Player;
+import com.wjduquette.george.model.Step;
 import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.util.TypeMap;
 import javafx.scene.image.Image;
@@ -100,6 +101,7 @@ public class Entity {
     public Player  player()  { return components.get(Player.class); }
     public Mobile  mobile()  { return components.get(Mobile.class); }
     public Point   point()   { return components.get(Point.class); }
+    public Plan    plan()    { return components.get(Plan.class); }
 
     /**
      * Gets whether the entity is at the given cell or not.
@@ -130,6 +132,11 @@ public class Entity {
         return this;
     }
 
+    public Entity remove(Class<?> cls) {
+        components.remove(cls);
+        return this;
+    }
+
     public Entity cell(int row, int col) {
         put(new Cell(row, col));
         return this;
@@ -157,6 +164,11 @@ public class Entity {
 
     public Entity sign(String text) {
         put(new Sign(text));
+        return this;
+    }
+
+    public Entity newPlan() {
+        put(new Plan());
         return this;
     }
 

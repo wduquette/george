@@ -37,6 +37,14 @@ public final class TypeMap {
     }
 
     /**
+     * Remove the given class, if it's present.
+     * @param cls The class
+     */
+    public void remove(Class<?> cls) {
+        map.remove(cls);
+    }
+
+    /**
      * Retrieves the object of a given leaf type from the map.
      * @param cls The class
      * @param <T> The class type
