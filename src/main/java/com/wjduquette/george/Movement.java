@@ -39,31 +39,24 @@ public class Movement {
             assert nextStep != null;
 
             // Incompatible types. Found: 'com.wjduquette.george.model.Step', required: 'char, byte, short, int, Character, Byte, Short, Integer, String, or an enum'
-//            switch (nextStep) {
-//                case Step.MoveTo move:
-//                    break;
-//                case Step.SetCell setCell:
-//                    break;
-//                case Step.WaitForVisualEffect wait:
-//                    break;
-//            }
-
-            if (nextStep instanceof Step.WaitForVisualEffect step) {
-                // If the given visual effect entity is still present, we aren't
-                // done waiting.
-                if (region.find(step.id()).isPresent()) {
-                    mob.mobile().steps().addFirst(step);
+            switch (nextStep) {
+                case Step.WaitForVisualEffect step:
+                    if (region.find(step.id()).isPresent()) {
+                        mob.mobile().steps().addFirst(step);
+                        return;
+                    }
+                    break;
+                case Step.MoveTo step:
+                    // TODO: Later, create animation and wait for it.
+                    mob.put(step.cell());
                     return;
-                }
-            } else if (nextStep instanceof Step.MoveTo step) {
-                // TODO: Later, create animation and wait for it.
-                mob.put(step.cell());
-                return;
-            } else if (nextStep instanceof Step.SetCell step) {
-                // TODO: Not implemented yet
-                System.out.println("SetCell " + step.cell());
-            } else if (nextStep instanceof Step.Trigger step) {
-                System.out.println("Trigger " + step.id());
+                case Step.SetCell step:
+                    // TODO: Not implemented yet
+                    System.out.println("SetCell " + step.cell());
+                    break;
+                case Step.Trigger step:
+                    System.out.println("Trigger " + step.id());
+                    break;
             }
         }
     }
