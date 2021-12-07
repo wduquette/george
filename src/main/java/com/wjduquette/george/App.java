@@ -4,6 +4,7 @@ import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.Player;
 import com.wjduquette.george.model.Region;
 import com.wjduquette.george.ecs.*;
+import com.wjduquette.george.model.Step;
 import com.wjduquette.george.util.Looper;
 import com.wjduquette.george.widgets.CellClickEvent;
 import com.wjduquette.george.widgets.MapViewer;
@@ -81,16 +82,19 @@ public class App extends Application {
         // George is the only Mobile.  Eventually we will need to have a
         // Mover queue, and we will disallow clicks whenever a
         // non-player-controlled mobile isn't the "current mover".
-        if (mobilesAreActive()) {
-            return;
+        if (!mobilesAreActive()) {
+            // Planning System (for player characters)
+            Entity player = region.query(Player.class).findFirst().get();
+            List<Cell> route = Region.findRoute(c -> region.isWalkable(c),
+                player.cell(), event.getCell());
+
+            for (Cell cell : route) {
+                player.mobile().steps().add(new Step.MoveTo(cell));
+            }
         }
 
-        Entity player = region.query(Player.class).findFirst().get();
-        List<Cell> route = Region.findRoute(c -> region.isWalkable(c),
-            player.cell(), event.getCell());
-
-        if  (!route.isEmpty()) {
-            player.mobile().doFirst(() -> followRoute(player, route));
+        // NEXT, start the loop going.
+        if (!looper.isRunning()) {
             looper.run();
         }
     }
@@ -99,14 +103,17 @@ public class App extends Application {
     //  The Game Loop
 
     private void gameLoop() {
-        // FIRST, execute any goals
+        // Movement System
         List<Entity> activeMobiles = region.query(Mobile.class)
-            .filter(e -> e.mobile().hasGoal())
+            .filter(e -> e.mobile().isActive())
             .toList();
 
         for (Entity mob : activeMobiles) {
-            mob.mobile().doNext();
+            // Execute the next step
         }
+
+        // NEXT, animate any visual effects
+        // TODO: The visual effects system.
 
         // NEXT, if there's no one with a goal, stop until we get some
         // user input.
@@ -123,23 +130,7 @@ public class App extends Application {
 
     // Are there any mobiles with active goals?
     private boolean mobilesAreActive() {
-        return region.query(Mobile.class).anyMatch(e -> e.mobile().hasGoal());
+        return region.query(Mobile.class)
+            .anyMatch(e -> e.mobile().isActive());
     }
-
-    //-------------------------------------------------------------------------
-    // Goal functions for Mobiles
-
-    private void followRoute(Entity entity, List<Cell> route) {
-        Cell nextCell = route.remove(0);
-
-        System.out.println("Stepping to " + nextCell);
-        entity.put(nextCell);
-
-        if (!route.isEmpty()) {
-            entity.mobile().doFirst(() -> followRoute(entity, route));
-        }
-    }
-
-
-
 }

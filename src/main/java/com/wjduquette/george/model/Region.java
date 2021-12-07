@@ -294,6 +294,18 @@ public class Region {
         return tileWidth;
     }
 
+    public Entity get(int id) {
+        var e = entities.get(id);
+        if (e == null) {
+            throw new IllegalArgumentException("No such entity: " + id);
+        }
+        return e;
+    }
+
+    public Optional<Entity> find(int id) {
+        return Optional.ofNullable(entities.get(id));
+    }
+
     /**
      * Query the entities table for entities with matching components.
      * @param classes A list of component classes to match
