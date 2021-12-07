@@ -38,14 +38,15 @@ public class Movement {
             Step nextStep = mob.mobile().steps().pollFirst();
             assert nextStep != null;
 
-//        switch (nextStep) {
-//            case Step.MoveTo move:
-//                break;
-//            case Step.SetCell setCell:
-//                break;
-//            case Step.WaitForVisualEffect wait:
-//                break;
-//        }
+            // Incompatible types. Found: 'com.wjduquette.george.model.Step', required: 'char, byte, short, int, Character, Byte, Short, Integer, String, or an enum'
+//            switch (nextStep) {
+//                case Step.MoveTo move:
+//                    break;
+//                case Step.SetCell setCell:
+//                    break;
+//                case Step.WaitForVisualEffect wait:
+//                    break;
+//            }
 
             if (nextStep instanceof Step.WaitForVisualEffect step) {
                 // If the given visual effect entity is still present, we aren't
