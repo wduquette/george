@@ -6,18 +6,15 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 /**
- * A "mobile": a entity that can do things, e.g., move around the world.  It
- * has a step queue.  The Planning system schedules steps to execute; the
- * Movement system carries them out (and can add steps of its own).
- *
- * <p>Mobiles will usually have an associated Cell and Tile.</p>
+ * A Plan is a series of steps, usually created by the Planning system,
+ * to be carried out over a series of loop iterations by the Movement system
+ * (which can add steps of its own). Plans usually belong to Mobiles, but
+ * that's not required.  When a plan is completed, it, it is removed from
+ * the entity.
  */
-public class Plan {
+public class Plan extends ArrayDeque<Step> {
     //-------------------------------------------------------------------------
-    // Instance Data
-
-    // The step queue
-    private final Deque<Step> steps = new ArrayDeque<>();
+    // Constructor
 
     /**
      * Creates a new plan
@@ -30,21 +27,9 @@ public class Plan {
      * @param otherSteps The later steps.
      */
     public Plan(Step firstStep, Step... otherSteps) {
-        this.steps.add(firstStep);
+        this.add(firstStep);
         for (Step step : otherSteps) {
-            this.steps().addLast(step);
+            this.addLast(step);
         }
-    }
-
-    /**
-     * Gets the step queue.
-     * @return The queue
-     */
-    public Deque<Step> steps() {
-        return steps;
-    }
-
-    @Override public String toString() {
-        return "(Plan " + " " + steps + ")";
     }
 }

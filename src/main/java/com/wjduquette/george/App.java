@@ -90,7 +90,7 @@ public class App extends Application {
 
             player.newPlan();
             for (Cell cell : route) {
-                player.plan().steps().add(new Step.MoveTo(cell));
+                player.plan().add(new Step.MoveTo(cell));
             }
         }
 

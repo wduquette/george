@@ -34,15 +34,15 @@ public class Movement {
      */
     public static void step(Region region, Entity mob) {
         // Execute steps until there are no more or a step decides to return.
-        System.out.println(mob.mobile().name() + ": Plan=" + mob.plan().steps());
-        while (!mob.plan().steps().isEmpty()) {
-            Step nextStep = mob.plan().steps().pollFirst();
+        System.out.println(mob.mobile().name() + ": Plan=" + mob.plan());
+        while (!mob.plan().isEmpty()) {
+            Step nextStep = mob.plan().pollFirst();
             assert nextStep != null;
 
             switch (nextStep) {
                 case Step.WaitForVisualEffect step:
                     if (region.find(step.id()).isPresent()) {
-                        mob.plan().steps().addFirst(step);
+                        mob.plan().addFirst(step);
                         return;
                     }
                     break;
