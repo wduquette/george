@@ -66,7 +66,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.wjduquette.george/com.wjduquette.george.App</mainClass>
+                            <mainClass>com.wjduquette.george.App</mainClass>
                         </configuration>
                     </execution>
                 </executions>
