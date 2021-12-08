@@ -5,10 +5,10 @@ package com.wjduquette.george.model;
  */
 public sealed interface Step {
     /**
-     * Waits until VisualEffect id has finished.
-     * @param id The entity ID of a VisualEffect entity
+     * Waits until the entity with the given ID no longer exists.
+     * @param id An entity ID, e.g. of a VisualEffect entity
      */
-    record WaitForVisualEffect(int id) implements Step {}
+    record WaitUntilGone(long id) implements Step {}
 
     /**
      * The mobile moves smoothly to the cell using its current capabilities.
@@ -23,7 +23,7 @@ public sealed interface Step {
      * Triggering is the result of the basic "interact with" control.
      * @param id The ID of the entity to trigger.
      */
-    record Trigger(int id) implements Step {}
+    record Trigger(long id) implements Step {}
 
     /**
      * Simply sets the mobile's cell, with no other game effects.  This is

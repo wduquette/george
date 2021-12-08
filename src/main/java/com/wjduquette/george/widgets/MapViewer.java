@@ -94,15 +94,16 @@ public class MapViewer extends StackPane {
 
         // NEXT, render the features
         for (Entity feature : map.query(Feature.class).toList()) {
-            canvas.drawImage(feature.tile().image(), cell2xy(feature.cell()));
+            canvas.drawImage(feature.tile().image(), entity2xy(feature));
         }
 
         // NEXT, if there's a target compute the route.
+        // TODO: TEMP
         if (target != null) {
             List<Cell> route = Region.findRoute(c -> map.isWalkable(c),
                 player.cell(), target);
 
-            if  (!route.isEmpty()) {
+            if (!route.isEmpty()) {
                 route.add(0, player.cell());
                 drawRoute(route);
             }
@@ -110,7 +111,12 @@ public class MapViewer extends StackPane {
 
         // NEXT, render the mobiles on top
         for (Entity mobile : map.query(Mobile.class).toList()) {
-            canvas.drawImage(mobile.tile().image(), cell2xy(mobile.cell()));
+            canvas.drawImage(mobile.tile().image(), entity2xy(mobile));
+        }
+
+        // NEXT, render other visual effects that have their own tiles.
+        for (Entity effect : map.query(VisualEffect.class, Tile.class).toList()) {
+            canvas.drawImage(effect.tile().image(), entity2xy(effect));
         }
 
         // NEXT, render player status boxes
@@ -124,10 +130,10 @@ public class MapViewer extends StackPane {
         double border = oborder + iborder;
         double hName = 12;
         double gap = 5;
-        double boxHeight = player.tile().height() + 2*border + hName;
-        double boxWidth = player.tile().width() + 2*border;
+        double boxHeight = player.tile().height() + 2 * border + hName;
+        double boxWidth = player.tile().width() + 2 * border;
 
-        double yTop = 10 + index*(boxHeight + gap);
+        double yTop = 10 + index * (boxHeight + gap);
         double xLeft = 10;
 
         canvas.gc().setFill(Color.BLACK);
@@ -136,12 +142,12 @@ public class MapViewer extends StackPane {
         canvas.gc().setFill(Color.WHITE);
         canvas.gc().fillRect(
             xLeft + oborder, yTop + oborder,
-            boxWidth - 2*oborder, boxHeight - 2*oborder);
+            boxWidth - 2 * oborder, boxHeight - 2 * oborder);
 
         canvas.gc().setFill(Color.CYAN);
         canvas.gc().fillRect(
             xLeft + border, yTop + border,
-            boxWidth - 2*border, boxHeight - 2*border);
+            boxWidth - 2 * border, boxHeight - 2 * border);
 
         canvas.gc().drawImage(player.tile().image(),
             xLeft + border, yTop + border);
@@ -162,16 +168,30 @@ public class MapViewer extends StackPane {
     // Compute the row and column offsets so that the given cell is in the
     // middle of the view pane
     private void computeBounds(Cell cell) {
-        double heightInTiles = canvas.getHeight()/map.getTileHeight();
-        double widthInTiles = canvas.getWidth()/map.getTileWidth();
-        rowOffset = cell.row() - (int)heightInTiles/2;
-        colOffset = cell.col() - (int)widthInTiles/2;
+        double heightInTiles = canvas.getHeight() / map.getTileHeight();
+        double widthInTiles = canvas.getWidth() / map.getTileWidth();
+        rowOffset = cell.row() - (int) heightInTiles / 2;
+        colOffset = cell.col() - (int) widthInTiles / 2;
 
-        rowMax = Math.min(map.getHeight(), rowOffset + (int)heightInTiles + 1);
-        colMax = Math.min(map.getHeight(), colOffset + (int)widthInTiles + 1);
+        rowMax = Math.min(map.getHeight(), rowOffset + (int) heightInTiles + 1);
+        colMax = Math.min(map.getHeight(), colOffset + (int) widthInTiles + 1);
 
         rowMin = Math.max(0, rowOffset);
         colMin = Math.max(0, colOffset);
+    }
+
+    // An entity is drawn at its cell location plus any pixel offset.
+    private Point2D entity2xy(Entity entity) {
+        var point = cell2xy(entity.cell());
+        var offset = entity.find(TileOffset.class);
+
+        if (offset.isEmpty()) {
+            return point;
+        } else {
+            var deltaX = offset.get().colOffset()*map.getTileWidth();
+            var deltaY = offset.get().rowOffset()*map.getTileHeight();
+            return point.add(deltaX, deltaY);
+        }
     }
 
     // Convert cell coordinates to the pixel coordinates of the upper-left

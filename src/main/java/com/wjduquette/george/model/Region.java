@@ -294,7 +294,7 @@ public class Region {
         return tileWidth;
     }
 
-    public Entity get(int id) {
+    public Entity get(long id) {
         var e = entities.get(id);
         if (e == null) {
             throw new IllegalArgumentException("No such entity: " + id);
@@ -302,7 +302,7 @@ public class Region {
         return e;
     }
 
-    public Optional<Entity> find(int id) {
+    public Optional<Entity> find(long id) {
         return Optional.ofNullable(entities.get(id));
     }
 

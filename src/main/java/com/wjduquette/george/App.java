@@ -104,11 +104,11 @@ public class App extends Application {
     //  The Game Loop
 
     private void gameLoop() {
+        // Animate any visual effects
+        Animator.doAnimate(region);
+
         // Movement System
         Movement.doMovement(region);
-
-        // NEXT, animate any visual effects
-        // TODO: The visual effects system.
 
         // NEXT, if there's no one with a goal, stop until we get some
         // user input.

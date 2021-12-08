@@ -1,8 +1,10 @@
 package com.wjduquette.george;
 
 import com.wjduquette.george.ecs.Entity;
-import com.wjduquette.george.ecs.Mobile;
 import com.wjduquette.george.ecs.Plan;
+import com.wjduquette.george.ecs.TileOffset;
+import com.wjduquette.george.ecs.VisualEffect;
+import com.wjduquette.george.model.Animation;
 import com.wjduquette.george.model.Region;
 import com.wjduquette.george.model.Step;
 
@@ -34,25 +36,33 @@ public class Movement {
      */
     public static void step(Region region, Entity mob) {
         // Execute steps until there are no more or a step decides to return.
-        System.out.println(mob.mobile().name() + ": Plan=" + mob.plan());
         while (!mob.plan().isEmpty()) {
             Step nextStep = mob.plan().pollFirst();
             assert nextStep != null;
 
+            System.out.println("Executing " + nextStep);
             switch (nextStep) {
-                case Step.WaitForVisualEffect step:
+                case Step.WaitUntilGone step:
                     if (region.find(step.id()).isPresent()) {
+                        // Keep waiting
                         mob.plan().addFirst(step);
                         return;
                     }
                     break;
                 case Step.MoveTo step:
-                    // TODO: Later, create animation and wait for it.
-                    mob.put(step.cell());
+                    var anim = new Animation.Slide(
+                        mob.id(), mob.cell(), step.cell(), 1.0);
+                    var effect = region.getEntities().make()
+                        .put(new VisualEffect(anim));
+
+                    // These will execute in reverse order.
+                    mob.plan().addFirst(new Step.SetCell(step.cell()));
+                    mob.plan().addFirst(new Step.WaitUntilGone(effect.id()));
                     return;
                 case Step.SetCell step:
-                    // TODO: Not implemented yet
-                    System.out.println("SetCell " + step.cell());
+                    // This completes a motion; clear the tile offset.
+                    mob.put(step.cell());
+                    mob.remove(TileOffset.class);
                     break;
                 case Step.Trigger step:
                     System.out.println("Trigger " + step.id());

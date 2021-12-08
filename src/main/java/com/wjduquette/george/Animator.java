@@ -8,19 +8,19 @@ import com.wjduquette.george.model.Region;
 import java.util.List;
 
 /**
- * The visual effects system is responsible for animating effects over time.
+ * The animator system is responsible for animating effects over time.
  * Each effect is a `VisualEffect` entity containing an instance of the
  * sealed `Animation` interface.  For each effect, the system updates the
  * effect and deletes it if it is complete.
  */
-public class VisualEffects {
-    private VisualEffects() {} // Not instantiable.
+public class Animator {
+    private Animator() {} // Not instantiable.
 
     /**
      * Animates visual effects for the region.
      * @param region The region
      */
-    public void doAnimate(Region region) {
+    public static void doAnimate(Region region) {
         List<Entity> effects = region.query(VisualEffect.class).toList();
 
         for (Entity effect : effects) {
@@ -28,16 +28,15 @@ public class VisualEffects {
         }
     }
 
-    public void doUpdate(Region region, Entity entity) {
-        var effect = entity.get(VisualEffect.class);
-        assert effect != null;
+    public static void doUpdate(Region region, Entity effect) {
+        var animation = effect.get(VisualEffect.class).animation();
 
-        switch (effect.animation()) {
-            case Animation.Slide anim:
-                // Stuff needed here:
-                // A rate in pixels.
-                // The pixel offset of the mobile: new component?
-                break;
+        switch (animation) {
+            case Animation.Slide anim -> anim.update(region.get(anim.target()));
+        }
+
+        if (animation.isComplete()) {
+            region.getEntities().remove(effect.id());
         }
     }
 }
