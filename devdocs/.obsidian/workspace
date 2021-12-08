@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "Slide Animation.md",
+            "file": "daily/2021-12-07.md",
             "mode": "source"
           }
         }
@@ -68,7 +68,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Slide Animation.md",
+                "file": "daily/2021-12-07.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -85,7 +85,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Slide Animation.md",
+                "file": "daily/2021-12-07.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -108,7 +108,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Slide Animation.md"
+                "file": "daily/2021-12-07.md"
               }
             }
           }
@@ -121,6 +121,7 @@
   },
   "active": "0d825b141e76b8b0",
   "lastOpenFiles": [
+    "daily/2021-12-07.md",
     "Slide Animation.md",
     "Movement System.md",
     "Systems.md",
@@ -129,7 +130,6 @@
     "Animation.md",
     "To Do.md",
     "daily/2021-12-05.md",
-    "Sprite.md",
-    "Component Types.md"
+    "Sprite.md"
   ]
 }
