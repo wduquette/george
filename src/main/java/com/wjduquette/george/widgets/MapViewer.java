@@ -82,7 +82,10 @@ public class MapViewer extends StackPane {
 
         // TEMP
         Entity player = map.query(Player.class).findFirst().get();
-        computeBounds(player.cell());
+        // Don't recompute bounds if the player is executing a plan.
+        if (player.find(Plan.class).isEmpty()) {
+            computeBounds(player.cell());
+        }
 
         // FIRST, render the terrain
         for (int r = rowMin; r < rowMax; r++) {
@@ -99,15 +102,15 @@ public class MapViewer extends StackPane {
 
         // NEXT, if there's a target compute the route.
         // TODO: TEMP
-        if (target != null) {
-            List<Cell> route = Region.findRoute(c -> map.isWalkable(c),
-                player.cell(), target);
-
-            if (!route.isEmpty()) {
-                route.add(0, player.cell());
-                drawRoute(route);
-            }
-        }
+//        if (target != null) {
+//            List<Cell> route = Region.findRoute(c -> map.isWalkable(c),
+//                player.cell(), target);
+//
+//            if (!route.isEmpty()) {
+//                route.add(0, player.cell());
+//                drawRoute(route);
+//            }
+//        }
 
         // NEXT, render the mobiles on top
         for (Entity mobile : map.query(Mobile.class).toList()) {

@@ -38,7 +38,8 @@ public sealed interface Animation {
             double totalR = end.row() - start.row();
             double totalC = end.col() - start.col();
             var rate = baseRate * speed;
-            numSteps = (int)Math.abs(Math.ceil(Math.max(totalR/rate, totalC/rate)));
+            numSteps = (int)Math.ceil(Math.max(
+                Math.abs(totalR/rate), Math.abs(totalC/rate)));
             deltaR = totalR/numSteps;
             deltaC = totalC/numSteps;
         }

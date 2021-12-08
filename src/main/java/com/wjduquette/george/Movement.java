@@ -56,12 +56,14 @@ public class Movement {
                         .put(new VisualEffect(anim));
 
                     // These will execute in reverse order.
+                    // TODO: Need a method to add steps to the front, in order.
                     mob.plan().addFirst(new Step.SetCell(step.cell()));
                     mob.plan().addFirst(new Step.WaitUntilGone(effect.id()));
                     return;
                 case Step.SetCell step:
                     // This completes a motion; clear the tile offset.
                     mob.put(step.cell());
+                    // TODO: Not happy with having to do this.
                     mob.remove(TileOffset.class);
                     break;
                 case Step.Trigger step:
