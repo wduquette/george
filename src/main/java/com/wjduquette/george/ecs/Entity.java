@@ -40,19 +40,19 @@ public class Entity {
     // Getters/Setters
 
     /**
-     * Determines whether the entity has any components.
-     * @return true or false
-     */
-    public boolean isEmpty() {
-        return components.isEmpty();
-    }
-
-    /**
      * Gets the Entity's ID.
      * @return The ID
      */
     public long id() {
         return id;
+    }
+
+    /**
+     * Determines whether the entity has any components.
+     * @return true or false
+     */
+    public boolean isEmpty() {
+        return components.isEmpty();
     }
 
     /**
@@ -64,6 +64,11 @@ public class Entity {
         return components.keySet().containsAll(componentSet);
     }
 
+    /**
+     * Returns true if the entity has the given component.
+     * @param component The component class
+     * @return true or false
+     */
     public boolean has(Class<?> component) {
         return components.get(component) != null;
     }
@@ -112,6 +117,11 @@ public class Entity {
         return Objects.equals(cell(), cell);
     }
 
+    /**
+     * Gets the entity's terrain type, as read from its Feature component,
+     * or NONE if it has no terrain type.
+     * @return The TerrainType.
+     */
     public TerrainType terrainType() {
         return find(Feature.class)
             .map(Feature::terrainType)
@@ -120,6 +130,17 @@ public class Entity {
 
     //-------------------------------------------------------------------------
     // Component Setters
+
+    /**
+     * Remove the component of the given class, if any.
+     * TODO: Don't know if needs to return Entity.
+     * @param cls The class
+     * @return This, for fluency.
+     */
+    public Entity remove(Class<?> cls) {
+        components.remove(cls);
+        return this;
+    }
 
     /**
      * Puts a component into the entity, replacing any previous component
@@ -132,41 +153,71 @@ public class Entity {
         return this;
     }
 
-    public Entity remove(Class<?> cls) {
-        components.remove(cls);
-        return this;
-    }
-
+    /**
+     * Component constructor: sets the entity's cell given a row and column
+     * @param row The row index
+     * @param col The column index
+     * @return The entity
+     */
     public Entity cell(int row, int col) {
         put(new Cell(row, col));
         return this;
     }
 
+    /**
+     * Component constructor: sets the entity's Tile given an image.
+     * @param img The image
+     * @return The entity
+     */
     public Entity tile(Image img) {
         put(new Tile(img));
         return this;
     }
 
+    /**
+     * Component constructor: sets the Mobile given a name.
+     * @param name The name
+     * @return the entity
+     */
     public Entity mobile(String name) {
         put(new Mobile(name));
         return this;
     }
 
+    /**
+     * Sets a feature given a terrain type.
+     * @param type The type
+     * @return The entity
+     */
     public Entity feature(TerrainType type) {
         put(new Feature(type));
         return this;
     }
 
+    /**
+     * Sets the entity's Point by name.
+     * @param name The name
+     * @return The entity
+     */
     public Entity point(String name) {
         put(new Point(name));
         return this;
     }
 
+    /**
+     * Sets a Sign's text
+     * @param text The text
+     * @return The entity
+     */
     public Entity sign(String text) {
         put(new Sign(text));
         return this;
     }
 
+    /**
+     * Gives the entity a new empty Plan
+     * @return The entity
+     */
     public Entity newPlan() {
         put(new Plan());
         return this;

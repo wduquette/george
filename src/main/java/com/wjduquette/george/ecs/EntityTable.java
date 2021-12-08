@@ -4,23 +4,16 @@ import java.util.*;
 import java.util.stream.Stream;
 
 /**
- * A World contains the entities of an Entity/Component/System.  It
+ * An EntityTable contains the entities of an Entity/Component/System.  It
  * represents a data set that can be operated on by the app's
- * Systems: or, more specifically, an area in the game.
+ * Systems.
  *
- * <p>The World is organized as a rectangular (but potentially sparse) array
- * of (row,column) cells. Available components include:</p>
+ * <p>The EntityTable is organized as a map of Entity objects, each of which
+ * has a unique entity ID. Each Entity is a TypeMap from component types to
+ * component values.</p>
  *
- * <ul>
- *     <li>Cell: A location in the world</li>
- *     <li>Tile: The tile used to draw a thing</li>
- *     <li>Mobile: A visible thing that can move about the world</li>
- *     <li>Terrain: An underlying terrain tile</li>
- * </ul>
- *
- * <p>TODO: How to efficiently support route and proximity computations?
- * Aha! I have a System that computes the needed data and passes it along to
- * subsequent systems.  Not there yet.</p>
+ * <p>It bugs me that I'm using a Map rather than an array: we step over
+ * entities in no particular order.  Possibly it shouldn't bug be.</p>
  */
 public class EntityTable {
     //-------------------------------------------------------------------------
@@ -43,7 +36,32 @@ public class EntityTable {
     // Public Methods
 
     /**
-     * Makes a new entity in the world.
+     * Remove all data from the table, resetting the ID counter.
+     */
+    public void clear() {
+        entities.clear();
+        entityCounter = 0;
+    }
+
+    /**
+     * Gets the entity with the given ID.
+     * @param id The ID
+     * @return The entity, or null if not found.
+     */
+    public Entity get(long id) {
+        return entities.get(id);
+    }
+
+    /**
+     * Removes the entity with the given ID.
+     * @param id The ID
+     */
+    public void remove(long id) {
+        entities.remove(id);
+    }
+
+    /**
+     * Makes a new entity in the world, assigning it the next ID.
      * @return the entity
      */
     public Entity make() {
@@ -53,33 +71,9 @@ public class EntityTable {
     }
 
     /**
-     * Gets the entity with the given ID.
-     * @param id The ID
-     * @return The entity
-     */
-    public Entity get(long id) {
-        return entities.get(id);
-    }
-
-    /**
-     * Removes the entity from the world.
-     * @param id The ID
-     */
-    public void remove(long id) {
-        entities.remove(id);
-    }
-
-    /**
-     * Remove all data from the World, resetting the ID counter.
-     */
-    public void clear() {
-        entities.clear();
-        entityCounter = 0;
-    }
-
-    /**
-     * Query for the entities that contain all of the given components.  This
-     * allows systems to find the entities they care about.
+     * Query for the entities that contain all of the given componentsm and
+     * returns a stream. This allows systems to find the entities they care
+     * about.
      * @param components The list of component types
      * @return A stream of the entities
      */
@@ -91,13 +85,17 @@ public class EntityTable {
     }
 
     /**
-     * Gets a stream of entities.
-     * @return the stream.
+     * Gets a stream of entities.  This is equivalent to query() with no
+     * arguments.
+     * @return The stream
      */
     public Stream<Entity> stream() {
         return entities.values().stream();
     }
 
+    /**
+     * Dump the current set of entities to System.out.
+     */
     public void dump() {
         for (long i = 0; i <= entityCounter; i++) {
             Entity e = entities.get(i);
