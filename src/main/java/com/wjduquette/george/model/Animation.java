@@ -19,7 +19,7 @@ public sealed interface Animation {
      * at the given speed.
      */
     final class Slide implements Animation {
-        private final double baseRate = 0.2;
+        private final double baseRate = 0.05;
         private final long target;
         private final int numSteps;
         private final double deltaR;
@@ -63,7 +63,6 @@ public sealed interface Animation {
                 if (step < numSteps) { ++step; }
                 target.put(new TileOffset(step * deltaR, step * deltaC));
             }
-            System.out.println(this);
         }
 
         @Override

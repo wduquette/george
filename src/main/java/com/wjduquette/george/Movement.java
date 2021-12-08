@@ -40,7 +40,6 @@ public class Movement {
             Step nextStep = mob.plan().pollFirst();
             assert nextStep != null;
 
-            System.out.println("Executing " + nextStep);
             switch (nextStep) {
                 case Step.WaitUntilGone step:
                     if (region.find(step.id()).isPresent()) {
