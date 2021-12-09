@@ -61,7 +61,7 @@ public class Movement {
                     return;
                 case Step.SetCell step:
                     // Simply move the mobile to the given cell.
-                    mob.put(step.cell());
+                    mob.cell(step.cell());
                     break;
                 case Step.Trigger step:
                     System.out.println("Trigger " + step.id());
