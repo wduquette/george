@@ -185,7 +185,7 @@ public class MapViewer extends StackPane {
 
     // Gets the pixel coordinates at which to draw the entity's tile.
     private Point2D entity2xy(Entity entity) {
-        return cell2xy(entity.cell());
+        return loc2xy(entity.loc());
     }
 
     // Convert cell coordinates to the pixel coordinates at which it will
@@ -193,9 +193,13 @@ public class MapViewer extends StackPane {
     // the offsets are 0,0, the result will be the pixel coordinates of
     // the upper-left corner of the cell
     private Point2D cell2xy(Cell cell) {
+        return rc2xy(cell.row(), cell.col());
+    }
+
+    private Point2D loc2xy(Loc loc) {
         return rc2xy(
-            cell.row() + cell.rowOffset(),
-            cell.col() + cell.colOffset());
+            loc.cell().row() + loc.rowOffset(),
+            loc.cell().col() + loc.colOffset());
     }
 
     // Convert cell coordinates to the pixel coordinates of the center of the
@@ -218,6 +222,6 @@ public class MapViewer extends StackPane {
         int c = (int)(pt.getX() / map.getTileWidth()) + colOffset;
         int r = (int)(pt.getY() / map.getTileHeight()) + rowOffset;
 
-        return Cell.of(r,c);
+        return new Cell(r,c);
     }
 }

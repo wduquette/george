@@ -1,6 +1,7 @@
 package com.wjduquette.george.model;
 
 import com.wjduquette.george.ecs.Entity;
+import com.wjduquette.george.ecs.Loc;
 
 /**
  * This sealed interface contains variants that describe the kinds of
@@ -56,12 +57,13 @@ public sealed interface Animation {
          * @param target The target
          */
         public void update(Entity target) {
-            var cell = target.cell();
+            // TODO: Return the new loc
             if (target == null) {
                 step = numSteps;
             } else {
+                var cell = target.cell();
                 if (step < numSteps) { ++step; }
-                target.put(new Cell(cell.row(), cell.col(), step * deltaR, step * deltaC));
+                target.put(new Loc(cell, step * deltaR, step * deltaC));
             }
         }
 

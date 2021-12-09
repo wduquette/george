@@ -14,8 +14,8 @@ import java.util.*;
 import java.util.stream.Stream;
 
 /**
- * RegionMap is a class for loading and querying region definitions defined as
- * resources.  A RegionMap resource has several components:
+ * Region is a class for loading and querying region definitions defined as
+ * resources.  A Region resource has several components:
  *
  * <ul>
  *     <li>A TerrainTileSet.</li>
@@ -212,7 +212,7 @@ public class Region {
                     case POINT_OBJECT:
                         entities.make()
                             .point(obj.name)
-                            .put(object2cell(obj));
+                            .cell(object2cell(obj));
                         break;
                     case SIGN_OBJECT:
                         Image tile =
@@ -221,7 +221,7 @@ public class Region {
                             .feature(TerrainType.NONE)
                             .sign(obj.name)
                             .tile(tile)
-                            .put(object2cell(obj));
+                            .cell(object2cell(obj));
                         break;
                     default:
                         // Nothing to do
@@ -236,7 +236,7 @@ public class Region {
     // For normal objects, we assume that the x,y coordinate is the
     // pixel coordinate of the upper left corner of the cell.
     private Cell object2cell(TiledMapReader.MapObject object) {
-        return Cell.of(object.y / tileHeight, object.x / tileWidth);
+        return new Cell(object.y / tileHeight, object.x / tileWidth);
     }
 
 

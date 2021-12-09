@@ -3,7 +3,6 @@ package com.wjduquette.george.ecs;
 import com.wjduquette.george.model.Step;
 
 import java.util.ArrayDeque;
-import java.util.Deque;
 
 /**
  * A Plan is a series of steps, usually created by the Planning system,

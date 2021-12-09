@@ -2,7 +2,6 @@ package com.wjduquette.george.ecs;
 
 import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.Player;
-import com.wjduquette.george.model.Step;
 import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.util.TypeMap;
 import javafx.scene.image.Image;
@@ -122,22 +121,32 @@ public class Entity {
     }
 
     //-------------------------------------------------------------------------
-    // Cell Component Methods
+    // Location Component Methods
 
     /**
      * Returns the entity's cell, or null if it doesn't have one.
      * @return The cell
      */
-    public Cell cell() { return components.get(Cell.class); }
+    public Loc loc() { return components.get(Loc.class); }
+
+    public Cell cell() {
+        return components.get(Loc.class).cell();
+    }
+
+    public Entity cell(Cell cell) {
+        put(Loc.of(cell));
+        return this;
+    }
 
     /**
-     * Component constructor: sets the entity's cell given a row and column
+     * Component constructor: sets the entity's cell given a row and column,
+     * clearing any visual offset.
      * @param row The row index
      * @param col The column index
      * @return The entity
      */
     public Entity cell(int row, int col) {
-        put(Cell.of(row, col));
+        put(Loc.of(new Cell(row, col)));
         return this;
     }
 

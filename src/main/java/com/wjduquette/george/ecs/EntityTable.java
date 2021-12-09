@@ -23,7 +23,7 @@ public class EntityTable {
     private long entityCounter = 0;
 
     // The entities in the world
-    private Map<Long,Entity> entities = new HashMap<>();
+    private final Map<Long,Entity> entities = new HashMap<>();
 
     //-------------------------------------------------------------------------
     // Constructor

@@ -45,13 +45,13 @@ public class App extends Application {
             .filter(e -> e.point().name().equals("origin"))
             .map(Entity::cell)
             .findFirst()
-            .orElse(Cell.of(10,10));
+            .orElse(new Cell(10, 10));
 
         Player george = new Player("George");
 
         region.getEntities().make().mobile("george")
             .put(george)
-            .put(origin)
+            .cell(origin)
             .tile(TileSets.MOBILES.get("mobile.george").orElseThrow());
 
         // Dump the entities table
