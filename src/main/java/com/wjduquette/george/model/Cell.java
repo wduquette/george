@@ -1,17 +1,40 @@
 package com.wjduquette.george.model;
 
-import com.wjduquette.george.util.AStar;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * A (row,column) cell: the location of an entity in the world
- * @param row The cell's row in the array of tiles
- * @param col The cell's column in the array of tiles
+ * A (row,column) cell: the location of an entity in the world.
+ *
+ * <ul>
+ *     <li>The game rules look only at (row,col).</li>
+ *     <li>The rendering system draws the entity at (row + rowOffset,
+ *         col + colOffset).</li>
+ *     <li>The visual effects system can move the entity about on the
+ *         screen, relative to its cell, by setting the offsets.</li>
+ *     <li>When the game rules set an entity's cell, the offsets should be
+ *         zeroed.</li>
+ * </ul>
+ *
+ * <p>equals() and hashCode() look only at the logical row and column.</p>
+ * @param row The cell's row index
+ * @param col The cell's column index
+ * @param rowOffset The cell's visible row offset in fractional tiles
+ * @param colOffset The cell's visible column offset in fractional tiles
  */
-public record Cell(int row, int col) {
+public record Cell(int row, int col, double rowOffset, double colOffset) {
+    /**
+     * Creates a new Cell with offsets of 0.0.
+     * @param row The row index
+     * @param col The column index
+     * @return Creates a new Cell with zeroed offsets.
+     */
+    public static Cell of(int row, int col) {
+        return new Cell(row, col, 0, 0);
+    }
+
     /**
      * Creates new cell at a delta from this cell.
      * @param rowDelta The row delta
@@ -19,7 +42,7 @@ public record Cell(int row, int col) {
      * @return The new cell.
      */
     public Cell adjust(int rowDelta, int colDelta) {
-        return new Cell(row + rowDelta, col + colDelta);
+        return new Cell(row + rowDelta, col + colDelta, 0, 0);
     }
 
     /**
@@ -68,7 +91,7 @@ public record Cell(int row, int col) {
 
         for (int r = row - 1; r <= row + 1; r++) {
             for (int c = col -1; c <= col + 1; c++) {
-                Cell cell = new Cell(r,c);
+                Cell cell = new Cell(r,c, 0, 0);
                 if (!cell.equals(this)) {
                     neighbors.add(cell);
                 }
@@ -82,8 +105,30 @@ public record Cell(int row, int col) {
     // Object Methods
 
     @Override public String toString() {
-        return "(Cell " + row + " " + col + ")";
+        if (rowOffset == 0.0 && colOffset == 0) {
+            return "(Cell " + row + " " + col + ")";
+        } else {
+            return "(Cell " + row + " " + col + " " +
+                rowOffset + " " + colOffset + ")";
+        }
     }
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, col);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null)
+            return false;
+        if (getClass() != other.getClass())
+            return false;
+        Cell cell = (Cell) other;
+        return row == cell.row && col == cell.col;
+    }
+
 
     //-------------------------------------------------------------------------
     // Static Methods

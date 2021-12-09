@@ -74,10 +74,31 @@ public class Entity {
     }
 
     //-------------------------------------------------------------------------
-    // Component Getters
+    // Generic Component Operations
+
 
     /**
-     * Get the component of the given class
+     * Puts a component into the entity, replacing any previous component
+     * of the same type.
+     * @param component The new component value
+     * @param <T> The component type.
+     * @return The entity itself, for fluency.
+     */
+    public <T> Entity put(T component) {
+        components.put(component);
+        return this;
+    }
+
+    /**
+     * Remove the component of the given class, if any.
+     * @param cls The class
+     */
+    public void remove(Class<?> cls) {
+        components.remove(cls);
+    }
+
+    /**
+     * Get the component of the given class, requiring that it must exist.
      * @param cls The desired component class.
      * @param <T> The class
      * @return The component
@@ -91,7 +112,7 @@ public class Entity {
     }
 
     /**
-     * Find any component of the given class
+     * Finds the component of the given class if it exists, returning Optional.
      * @param cls The desired component class.
      * @param <T> The class
      * @return The component
@@ -100,21 +121,71 @@ public class Entity {
         return Optional.ofNullable(components.get(cls));
     }
 
-    public Cell    cell()    { return components.get(Cell.class); }
-    public Feature feature() { return components.get(Feature.class); }
-    public Tile    tile()    { return components.get(Tile.class); }
-    public Player  player()  { return components.get(Player.class); }
-    public Mobile  mobile()  { return components.get(Mobile.class); }
-    public Point   point()   { return components.get(Point.class); }
-    public Plan    plan()    { return components.get(Plan.class); }
+    //-------------------------------------------------------------------------
+    // Cell Component Methods
 
     /**
-     * Gets whether the entity is at the given cell or not.
+     * Returns the entity's cell, or null if it doesn't have one.
+     * @return The cell
+     */
+    public Cell cell() { return components.get(Cell.class); }
+
+    /**
+     * Component constructor: sets the entity's cell given a row and column
+     * @param row The row index
+     * @param col The column index
+     * @return The entity
+     */
+    public Entity cell(int row, int col) {
+        put(Cell.of(row, col));
+        return this;
+    }
+
+    /**
+     * Returns true if the entity is at the given cell, and false otherwise.
      * @param cell The cell
      * @return true or false
      */
     public boolean isAt(Cell cell) {
         return Objects.equals(cell(), cell);
+    }
+
+    //-------------------------------------------------------------------------
+    // Tile Component Methods
+
+    /**
+     * Gets the entity's Tile, or null if none.
+     * @return The tile, or null.
+     */
+    public Tile tile() { return components.get(Tile.class); }
+
+    /**
+     * Sets the entity's Tile given an image.
+     * @param img The image
+     * @return The entity
+     */
+    public Entity tile(Image img) {
+        put(new Tile(img));
+        return this;
+    }
+
+    //-------------------------------------------------------------------------
+    // Map Feature component
+
+    /**
+     * Gets the entity's terrain feature, or null if none.
+     * @return The feature, or null.
+     */
+    public Feature feature() { return components.get(Feature.class); }
+
+    /**
+     * Sets a feature given a terrain type.
+     * @param type The type
+     * @return The entity
+     */
+    public Entity feature(TerrainType type) {
+        put(new Feature(type));
+        return this;
     }
 
     /**
@@ -129,70 +200,13 @@ public class Entity {
     }
 
     //-------------------------------------------------------------------------
-    // Component Setters
+    // Points of Interest
 
     /**
-     * Remove the component of the given class, if any.
-     * TODO: Don't know if needs to return Entity.
-     * @param cls The class
-     * @return This, for fluency.
+     * Gets the entity's point of interest data, or null if none.
+     * @return The component, or null.
      */
-    public Entity remove(Class<?> cls) {
-        components.remove(cls);
-        return this;
-    }
-
-    /**
-     * Puts a component into the entity, replacing any previous component
-     * of the same type.
-     * @param component The new component value
-     * @param <T> The component type.
-     */
-    public <T> Entity put(T component) {
-        components.put(component);
-        return this;
-    }
-
-    /**
-     * Component constructor: sets the entity's cell given a row and column
-     * @param row The row index
-     * @param col The column index
-     * @return The entity
-     */
-    public Entity cell(int row, int col) {
-        put(new Cell(row, col));
-        return this;
-    }
-
-    /**
-     * Component constructor: sets the entity's Tile given an image.
-     * @param img The image
-     * @return The entity
-     */
-    public Entity tile(Image img) {
-        put(new Tile(img));
-        return this;
-    }
-
-    /**
-     * Component constructor: sets the Mobile given a name.
-     * @param name The name
-     * @return the entity
-     */
-    public Entity mobile(String name) {
-        put(new Mobile(name));
-        return this;
-    }
-
-    /**
-     * Sets a feature given a terrain type.
-     * @param type The type
-     * @return The entity
-     */
-    public Entity feature(TerrainType type) {
-        put(new Feature(type));
-        return this;
-    }
+    public Point point() { return components.get(Point.class); }
 
     /**
      * Sets the entity's Point by name.
@@ -204,6 +218,17 @@ public class Entity {
         return this;
     }
 
+    //-------------------------------------------------------------------------
+    // Trigger Components
+
+    // TODO Should probably be a more general Trigger entity.
+
+    /**
+     * Gets the entity's Sign data, or null if none.
+     * @return The component, or null.
+     */
+    public Sign sign() { return components.get(Sign.class); }
+
     /**
      * Sets a Sign's text
      * @param text The text
@@ -214,14 +239,48 @@ public class Entity {
         return this;
     }
 
+    //-------------------------------------------------------------------------
+    // Mobile Entity Methods
+
+    /**
+     * Gets the entity's mobile component, or null if none.
+     * @return The component, or null.
+     */
+    public Mobile mobile() { return components.get(Mobile.class); }
+
+    /**
+     * Component constructor: sets the Mobile given its name.
+     * @param name The name
+     * @return the entity
+     */
+    public Entity mobile(String name) {
+        put(new Mobile(name));
+        return this;
+    }
+
+    /**
+     * Gets the entity's plan component, or null if none.
+     * @return The component, or null.
+     */
+    public Plan plan() { return components.get(Plan.class); }
+
     /**
      * Gives the entity a new empty Plan
      * @return The entity
      */
+    @Deprecated
     public Entity newPlan() {
         put(new Plan());
         return this;
     }
+
+    //-------------------------------------------------------------------------
+    // Player Methods
+
+    public Player player() { return components.get(Player.class); }
+
+    //-------------------------------------------------------------------------
+    // Object Methods
 
     @Override
     public String toString() {

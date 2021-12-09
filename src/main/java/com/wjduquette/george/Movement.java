@@ -2,7 +2,6 @@ package com.wjduquette.george;
 
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.Plan;
-import com.wjduquette.george.ecs.TileOffset;
 import com.wjduquette.george.ecs.VisualEffect;
 import com.wjduquette.george.model.Animation;
 import com.wjduquette.george.model.Region;
@@ -49,21 +48,20 @@ public class Movement {
                     }
                     break;
                 case Step.MoveTo step:
+                    // TODO: More concise syntax
                     var anim = new Animation.Slide(
                         mob.id(), mob.cell(), step.cell(), 1.0);
-                    var effect = region.getEntities().make()
+                    var visualEffect = region.getEntities().make()
                         .put(new VisualEffect(anim));
 
                     // These will execute in reverse order.
-                    // TODO: Need a method to add steps to the front, in order.
+                    // TODO: Need a method to add steps to the front, in order?
                     mob.plan().addFirst(new Step.SetCell(step.cell()));
-                    mob.plan().addFirst(new Step.WaitUntilGone(effect.id()));
+                    mob.plan().addFirst(new Step.WaitUntilGone(visualEffect.id()));
                     return;
                 case Step.SetCell step:
-                    // This completes a motion; clear the tile offset.
+                    // Simply move the mobile to the given cell.
                     mob.put(step.cell());
-                    // TODO: Not happy with having to do this.
-                    mob.remove(TileOffset.class);
                     break;
                 case Step.Trigger step:
                     System.out.println("Trigger " + step.id());

@@ -236,7 +236,7 @@ public class Region {
     // For normal objects, we assume that the x,y coordinate is the
     // pixel coordinate of the upper left corner of the cell.
     private Cell object2cell(TiledMapReader.MapObject object) {
-        return new Cell(object.y / tileHeight, object.x / tileWidth);
+        return Cell.of(object.y / tileHeight, object.x / tileWidth);
     }
 
 

@@ -183,24 +183,19 @@ public class MapViewer extends StackPane {
         colMin = Math.max(0, colOffset);
     }
 
-    // An entity is drawn at its cell location plus any pixel offset.
+    // Gets the pixel coordinates at which to draw the entity's tile.
     private Point2D entity2xy(Entity entity) {
-        var point = cell2xy(entity.cell());
-        var offset = entity.find(TileOffset.class);
-
-        if (offset.isEmpty()) {
-            return point;
-        } else {
-            var deltaX = offset.get().colOffset()*map.getTileWidth();
-            var deltaY = offset.get().rowOffset()*map.getTileHeight();
-            return point.add(deltaX, deltaY);
-        }
+        return cell2xy(entity.cell());
     }
 
-    // Convert cell coordinates to the pixel coordinates of the upper-left
-    // corner of the cell
+    // Convert cell coordinates to the pixel coordinates at which it will
+    // be drawn, taking the cell's row and column offset into account.  If
+    // the offsets are 0,0, the result will be the pixel coordinates of
+    // the upper-left corner of the cell
     private Point2D cell2xy(Cell cell) {
-        return rc2xy(cell.row(), cell.col());
+        return rc2xy(
+            cell.row() + cell.rowOffset(),
+            cell.col() + cell.colOffset());
     }
 
     // Convert cell coordinates to the pixel coordinates of the center of the
@@ -212,16 +207,17 @@ public class MapViewer extends StackPane {
             p.getY() + (double)map.getTileHeight()/2);
     }
 
-    private Point2D rc2xy(int row, int col) {
-        int x = (col - colOffset) * map.getTileWidth();
-        int y = (row - rowOffset) * map.getTileHeight();
+    private Point2D rc2xy(double row, double col) {
+        double x = (col - colOffset) * map.getTileWidth();
+        double y = (row - rowOffset) * map.getTileHeight();
         return new Point2D(x,y);
     }
 
+    // Converts a point in pixel coordinates to a logical cell.
     private Cell xy2rc(Point2D pt) {
         int c = (int)(pt.getX() / map.getTileWidth()) + colOffset;
         int r = (int)(pt.getY() / map.getTileHeight()) + rowOffset;
 
-        return new Cell(r,c);
+        return Cell.of(r,c);
     }
 }

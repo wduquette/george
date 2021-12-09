@@ -45,7 +45,7 @@ public class App extends Application {
             .filter(e -> e.point().name().equals("origin"))
             .map(Entity::cell)
             .findFirst()
-            .orElse(new Cell(10,10));
+            .orElse(Cell.of(10,10));
 
         Player george = new Player("George");
 
@@ -88,10 +88,11 @@ public class App extends Application {
             List<Cell> route = Region.findRoute(c -> region.isWalkable(c),
                 player.cell(), event.getCell());
 
-            player.newPlan();
+            var plan = new Plan();
             for (Cell cell : route) {
-                player.plan().add(new Step.MoveTo(cell));
+                plan.add(new Step.MoveTo(cell));
             }
+            player.put(plan);
         }
 
         // NEXT, start the loop going.
