@@ -214,8 +214,7 @@ public class Region {
                         .point(obj.name)
                         .cell(object2cell(obj));
                     case SIGN_OBJECT -> {
-                        Image tile = TileSets.FEATURES.get("feature.sign")
-                            .orElseThrow();
+                        Image tile = TileSets.FEATURES.get("feature.sign");
                         entities.make()
                             .feature(TerrainType.NONE)
                             .sign(obj.name)

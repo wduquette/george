@@ -52,7 +52,7 @@ public class App extends Application {
         region.getEntities().make().mobile("george")
             .put(george)
             .cell(origin)
-            .tile(TileSets.MOBILES.get("mobile.george").orElseThrow());
+            .tile(TileSets.MOBILES.get("mobile.george"));
 
         // Dump the entities table
         region.getEntities().dump();
