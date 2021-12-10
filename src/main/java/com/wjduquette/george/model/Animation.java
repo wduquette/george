@@ -19,7 +19,7 @@ public sealed interface Animation {
      * at the given speed.
      */
     final class Slide implements Animation {
-        private final double baseRate = 0.05;
+        private final double baseRate = 0.2;
         private final long target;
         private final int numSteps;
         private final double deltaR;
@@ -57,7 +57,6 @@ public sealed interface Animation {
          * @param target The target
          */
         public Loc update(Entity target) {
-            // TODO: Return the new loc
             if (target == null) {
                 step = numSteps;
                 return target.loc();

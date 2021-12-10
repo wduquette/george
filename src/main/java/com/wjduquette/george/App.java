@@ -19,7 +19,7 @@ public class App extends Application {
     // Constants
 
     // How often the game loop executes
-    private final int LOOP_MSECS = 25;
+    private final int LOOP_MSECS = 50;
 
     //-------------------------------------------------------------------------
     // Instance Variables
