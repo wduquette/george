@@ -11,7 +11,7 @@ import java.util.ArrayDeque;
  * that's not required.  When a plan is completed, it, it is removed from
  * the entity.
  */
-public class Plan extends ArrayDeque<Step> {
+public class Plan extends ArrayDeque<Step> implements Component {
     //-------------------------------------------------------------------------
     // Constructor
 

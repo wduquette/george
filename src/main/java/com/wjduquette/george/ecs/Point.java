@@ -6,7 +6,7 @@ package com.wjduquette.george.ecs;
  * player can warp.  A Point will be associated with a Cell.
  * @param name The name
  */
-public record Point(String name) {
+public record Point(String name) implements Component {
     @Override public String toString() {
         return "(Point " + name + ")";
     }

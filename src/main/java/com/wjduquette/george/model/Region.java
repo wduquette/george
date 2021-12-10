@@ -1,6 +1,7 @@
 package com.wjduquette.george.model;
 
 import com.wjduquette.george.TileSets;
+import com.wjduquette.george.ecs.Component;
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.EntityTable;
 import com.wjduquette.george.ecs.Feature;
@@ -311,7 +312,7 @@ public class Region {
      * @param classes A list of component classes to match
      * @return The stream of found entities.
      */
-    public Stream<Entity> query(Class<?>... classes) {
+    public Stream<Entity> query(Class<? extends Component>... classes) {
         return entities.query(classes);
     }
 

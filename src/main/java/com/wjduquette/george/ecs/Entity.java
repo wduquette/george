@@ -59,7 +59,7 @@ public class Entity {
      * @param componentSet A set of component classes
      * @return true or false
      */
-    public boolean hasAll(Set<Class<?>> componentSet) {
+    public boolean hasAll(Set<Class<? extends Component>> componentSet) {
         return components.keySet().containsAll(componentSet);
     }
 
@@ -68,7 +68,7 @@ public class Entity {
      * @param component The component class
      * @return true or false
      */
-    public boolean has(Class<?> component) {
+    public boolean has(Class<? extends Component> component) {
         return components.get(component) != null;
     }
 
@@ -83,7 +83,7 @@ public class Entity {
      * @param <T> The component type.
      * @return The entity itself, for fluency.
      */
-    public <T> Entity put(T component) {
+    public <T extends Component> Entity put(T component) {
         components.put(component);
         return this;
     }
@@ -92,7 +92,7 @@ public class Entity {
      * Remove the component of the given class, if any.
      * @param cls The class
      */
-    public void remove(Class<?> cls) {
+    public void remove(Class<? extends Component> cls) {
         components.remove(cls);
     }
 
@@ -102,7 +102,7 @@ public class Entity {
      * @param <T> The class
      * @return The component
      */
-    public <T> T get(Class<T> cls) {
+    public <T extends Component> T get(Class<T> cls) {
         T comp = components.get(cls);
         if (comp == null) {
             throw new IllegalArgumentException("Missing component: " + cls);
@@ -116,7 +116,7 @@ public class Entity {
      * @param <T> The class
      * @return The component
      */
-    public <T> Optional<T> find(Class<T> cls) {
+    public <T extends Component> Optional<T> find(Class<T> cls) {
         return Optional.ofNullable(components.get(cls));
     }
 
@@ -272,16 +272,6 @@ public class Entity {
      * @return The component, or null.
      */
     public Plan plan() { return components.get(Plan.class); }
-
-    /**
-     * Gives the entity a new empty Plan
-     * @return The entity
-     */
-    @Deprecated
-    public Entity newPlan() {
-        put(new Plan());
-        return this;
-    }
 
     //-------------------------------------------------------------------------
     // Player Methods

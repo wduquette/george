@@ -6,8 +6,8 @@ My current To Do list.
 - [x] Move the mobile smoothly across the map, rather than jumping. 
 - [x] Include a row/col offset in `Cell`
 - [x] Revise map view to draw based on the visual cell: the row and col + offsets.
-- [ ] Define `Loc` component, combining a `Cell` with an offset.
-- [ ] Make all components implement Component interface, and only allow components in the Entity's map.
+- [x] Define `Loc` component, combining a `Cell` with an offset.
+- [x] Make all components implement Component interface, and only allow components in the Entity's map.
 - [ ] Decide whether to retain basic movement animation
 	- And if so, at what speed.
 - [ ] Trigger signs as a blocking popup...drawn on the map until the user clicks.

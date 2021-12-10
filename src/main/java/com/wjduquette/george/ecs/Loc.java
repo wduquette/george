@@ -10,7 +10,9 @@ import com.wjduquette.george.model.Cell;
  * @param rowOffset The row offset, in fractional rows
  * @param colOffset The column offset, in fractional columns
  */
-public record Loc(Cell cell, double rowOffset, double colOffset) {
+public record Loc(Cell cell, double rowOffset, double colOffset)
+    implements Component
+{
     /**
      * Creates a new location at the cell with zero offsets.
      * @param cell The cell

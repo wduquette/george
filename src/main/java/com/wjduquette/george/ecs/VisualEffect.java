@@ -7,4 +7,4 @@ import com.wjduquette.george.model.Animation;
  * The VisualEffects system will animate the animation over successive game
  * loop iterations, and delete the effect when it is finished.
  */
-public record VisualEffect(Animation animation) { }
+public record VisualEffect(Animation animation) implements Component { }
