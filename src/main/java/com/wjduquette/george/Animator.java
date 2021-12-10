@@ -32,7 +32,13 @@ public class Animator {
         var animation = effect.get(VisualEffect.class).animation();
 
         switch (animation) {
-            case Animation.Slide anim -> anim.update(region.get(anim.target()));
+            case Animation.Slide anim:
+                var target = region.get(anim.target());
+                var newLoc = anim.update(target);
+                target.put(newLoc);
+
+                break;
+
         }
 
         if (animation.isComplete()) {

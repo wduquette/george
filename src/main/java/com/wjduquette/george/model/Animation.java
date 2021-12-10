@@ -56,14 +56,15 @@ public sealed interface Animation {
          * Updates the target entity.
          * @param target The target
          */
-        public void update(Entity target) {
+        public Loc update(Entity target) {
             // TODO: Return the new loc
             if (target == null) {
                 step = numSteps;
+                return target.loc();
             } else {
                 var cell = target.cell();
                 if (step < numSteps) { ++step; }
-                target.put(new Loc(cell, step * deltaR, step * deltaC));
+                return new Loc(cell, step * deltaR, step * deltaC);
             }
         }
 

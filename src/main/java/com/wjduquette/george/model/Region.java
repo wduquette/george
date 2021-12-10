@@ -312,6 +312,7 @@ public class Region {
      * @param classes A list of component classes to match
      * @return The stream of found entities.
      */
+    @SuppressWarnings("unchecked")
     public Stream<Entity> query(Class<? extends Component>... classes) {
         return entities.query(classes);
     }
