@@ -34,12 +34,14 @@ public class Planner {
             List<Cell> route = Region.findRoute(c -> region.isWalkable(c),
                 george.cell(), targetCell);
 
-            // TODO Is there an addAll?
             var plan = new Plan();
-            for (Cell cell : route) {
-                plan.add(new Step.MoveTo(cell));
-            }
+            addRoute(plan, route);
             george.put(plan);
         }
+    }
+
+    // Adds the route to the end of the given plan as a series of MoveTo steps.
+    private static void addRoute(Plan plan, List<Cell> route) {
+        route.forEach(cell -> plan.add(new Step.MoveTo(cell)));
     }
 }
