@@ -9,6 +9,7 @@ import com.wjduquette.george.util.Looper;
 import com.wjduquette.george.widgets.CellClickEvent;
 import com.wjduquette.george.widgets.MapViewer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -32,6 +33,10 @@ public class App extends Application {
 
     // The map we're currently wandering about on.
     private Region region = null;
+
+    // The cell the user most recently clicked on, or null.
+    // Eventually this should probably be something more complicated.
+    private Cell targetCell = null;
 
     //-------------------------------------------------------------------------
     // Main Program
@@ -65,6 +70,8 @@ public class App extends Application {
         stage.setTitle("George's Saga!");
         stage.setScene(scene);
         stage.show();
+
+        Platform.runLater(() -> looper.run());
     }
 
     public static void main(String[] args) {
@@ -76,57 +83,26 @@ public class App extends Application {
 
     // Handle cells clicks
     private void onCellClick(CellClickEvent event) {
-        // Note: Eventually present, this will be the "Player Input" system.
-        //
-        // Note: At present we disallow clicks if any mobile is active; but
-        // George is the only Mobile.  Eventually we will need to have a
-        // Mover queue, and we will disallow clicks whenever a
-        // non-player-controlled mobile isn't the "current mover".
-        if (!mobilesAreActive()) {
-            // Planning System (for player characters)
-            Entity player = region.query(Player.class).findFirst().orElseThrow();
-            List<Cell> route = Region.findRoute(c -> region.isWalkable(c),
-                player.cell(), event.getCell());
-
-            var plan = new Plan();
-            for (Cell cell : route) {
-                plan.add(new Step.MoveTo(cell));
-            }
-            player.put(plan);
-        }
-
-        // NEXT, start the loop going.
-        if (!looper.isRunning()) {
-            looper.run();
-        }
+        // FIRST, save the target cell.  It will be assessed by the
+        // Planner on the next iteration of the GameLoop.
+        targetCell = event.getCell();
     }
 
     //-------------------------------------------------------------------------
     //  The Game Loop
 
     private void gameLoop() {
+        // Do planning, based on current input.
+        Planner.doPlanning(targetCell, region);
+        targetCell = null;
+
         // Animate any visual effects
         Animator.doAnimate(region);
 
         // Movement System
         Movement.doMovement(region);
 
-        // NEXT, if there's no one with a goal, stop until we get some
-        // user input.
-        //
-        // NOTE: When there are multiple movers, we will need to support
-        // moving to the next mover.
-        if (!mobilesAreActive()) {
-            looper.stop();
-        }
-
         // FINALLY, repaint.
         viewer.repaint();
-    }
-
-    // Are there any mobiles with active goals?
-    private boolean mobilesAreActive() {
-        return region.query(Mobile.class)
-            .anyMatch(e -> e.has(Plan.class));
     }
 }
