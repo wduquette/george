@@ -310,7 +310,7 @@ public class Region {
      * @return The stream of found entities.
      */
     @SuppressWarnings("unchecked")
-    public Stream<Entity> query(Class<? extends Component>... classes) {
+    public Stream<Entity> query(Class<?>... classes) {
         return entities.query(classes);
     }
 

@@ -77,7 +77,7 @@ public class EntityTable {
      * @param components The list of component types
      * @return A stream of the entities
      */
-    public Stream<Entity> query(Class<? extends Component>... components) {
+    public Stream<Entity> query(Class<?>... components) {
         var set = Set.of(components);
 
         return entities.values().stream()

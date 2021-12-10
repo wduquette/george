@@ -84,7 +84,7 @@ public class App extends Application {
         // non-player-controlled mobile isn't the "current mover".
         if (!mobilesAreActive()) {
             // Planning System (for player characters)
-            Entity player = region.query(Player.class).findFirst().get();
+            Entity player = region.query(Player.class).findFirst().orElseThrow();
             List<Cell> route = Region.findRoute(c -> region.isWalkable(c),
                 player.cell(), event.getCell());
 

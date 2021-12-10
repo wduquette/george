@@ -59,7 +59,7 @@ public class Entity {
      * @param componentSet A set of component classes
      * @return true or false
      */
-    public boolean hasAll(Set<Class<? extends Component>> componentSet) {
+    public boolean hasAll(Set<Class<?>> componentSet) {
         return components.keySet().containsAll(componentSet);
     }
 
