@@ -210,23 +210,21 @@ public class Region {
                 Cell cell = object2cell(obj);
 
                 switch (obj.type) {
-                    case POINT_OBJECT:
-                        entities.make()
-                            .point(obj.name)
-                            .cell(object2cell(obj));
-                        break;
-                    case SIGN_OBJECT:
-                        Image tile =
-                            TileSets.FEATURES.get("feature.sign").orElseThrow();
+                    case POINT_OBJECT -> entities.make()
+                        .point(obj.name)
+                        .cell(object2cell(obj));
+                    case SIGN_OBJECT -> {
+                        Image tile = TileSets.FEATURES.get("feature.sign")
+                            .orElseThrow();
                         entities.make()
                             .feature(TerrainType.NONE)
                             .sign(obj.name)
                             .tile(tile)
                             .cell(object2cell(obj));
-                        break;
-                    default:
+                    }
+                    default -> {
                         // Nothing to do
-                        break;
+                    }
                 }
             }
         }
