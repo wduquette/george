@@ -209,12 +209,22 @@ public class TerrainTileSet {
     }
 
     /**
+     * Get a tile's data given its name.  Throws an exception if the tile
+     * doesn't exist.
+     * @param name The name, including the prefix.
+     * @return The data
+     */
+    public TerrainTile get(String name) {
+        return find(name).orElseThrow();
+    }
+
+    /**
      * Get a tile's data given its name.
      * @param name The name, including the prefix.
      * @return The data
      */
-    public Optional<TerrainTile> get(String name) {
-        return Optional.of(tileMap.get(name));
+    public Optional<TerrainTile> find(String name) {
+        return Optional.ofNullable(tileMap.get(name));
     }
 
     /**
