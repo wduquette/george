@@ -81,12 +81,15 @@ public final class StringsTable {
         throws KeywordParser.KeywordException
     {
         var parser = new KeywordParser();
-        parser.defineKeyword("%parser", (scanner, $) -> {
+        parser.defineKeyword("%prefix", (scanner, $) -> {
             this.prefix = scanner.next();
         });
         parser.defineBlock("%string", "%end", (scanner, block) -> {
             var key = scanner.next();
-            table.put(prefix + "." + key, block);
+            if (prefix != null) {
+                key = prefix + "." + key;
+            }
+            table.put(key, block);
         });
 
         parser.parse(Resource.getLines(cls, relPath));

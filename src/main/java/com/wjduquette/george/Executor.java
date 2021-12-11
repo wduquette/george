@@ -68,7 +68,28 @@ public class Executor {
                     mob.cell(step.cell());
                     break;
                 case Step.Trigger step:
-                    System.out.println("Trigger " + step.id());
+                    var targetCell = region.get(step.id()).cell();
+                    var route = Region.findRoute(c -> isPassable(region, mob, c),
+                        mob.cell(), targetCell);
+                    if (route.isEmpty()) {
+                        // We can't get there
+                        return;
+                    } else if (route.size() == 1) {
+                        // We're adjacent
+                        var signName = region.get(step.id()).sign().name();
+                        System.out.println("The sign reads: " +
+                            region.getString(signName));
+                    } else {
+                        // We have to move.
+                        var nextCell = route.get(0);
+                        Entity effect = slideTo(region, mob, nextCell);
+                        // These will execute in reverse order: we complete
+                        // the slide, move the next cell, and repeat our initial
+                        // goal
+                        mob.plan().addFirst(step);
+                        mob.plan().addFirst(new Step.SetCell(nextCell));
+                        mob.plan().addFirst(new Step.WaitUntilGone(effect.id()));
+                    }
                     break;
             }
         }

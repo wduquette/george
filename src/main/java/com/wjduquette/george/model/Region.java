@@ -378,4 +378,14 @@ public class Region {
     public boolean isWalkable(Cell cell) {
         return getTerrainType(cell).isWalkable();
     }
+
+    /**
+     * Gets the string, which must exist.
+     * @param name The string's name in the table
+     * @return The string we found.
+     */
+    public String getString(String name) {
+        System.out.println("Looking for string: " + name + "=" + strings.get(name));
+        return strings.get(name).orElseThrow();
+    }
 }
