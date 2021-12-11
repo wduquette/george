@@ -1,6 +1,7 @@
 package com.wjduquette.george;
 
 import com.wjduquette.george.ecs.Entity;
+import com.wjduquette.george.ecs.Mobile;
 import com.wjduquette.george.ecs.Plan;
 import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.Player;
@@ -44,4 +45,29 @@ public class Planner {
     private static void addRoute(Plan plan, List<Cell> route) {
         route.forEach(cell -> plan.add(new Step.MoveTo(cell)));
     }
+
+    // From a planning perspective, can this mobile expect to be able to
+    // enter the given cell given the player's current capabilities and the
+    // cell's content?
+    //
+    // At present, all mobiles can walk, and that's all they can do.
+    private static boolean isPassable(Region region, Entity mob, Cell cell) {
+        // FIRST, if there's a mobile blocking the cell, he can't enter.
+        // Is the mobile trying to block?  Can the mover move around it?
+        // NOTE: If mobiles can move simultaneously, we can maybe ignore
+        // mobiles.
+        // THOUGHT: Perhaps we don't need to save the route.  There are two
+        // questions: is there a route, and what's the first cell?  We could
+        // give him a Step.MoveTo(target, nextCell).  He won't try if there's
+        // no path right now; but if there is, he'll take the next step and
+        // replan.  Hmmm.
+        if (region.query(Mobile.class).anyMatch(m -> m.isAt(cell))) {
+            return false;
+        }
+
+        // NEXT, otherwise it's a matter of the effective terrain and the
+        // mover's capabilities.
+        return region.getTerrainType(cell).isWalkable();
+    }
+
 }

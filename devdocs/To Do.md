@@ -9,7 +9,7 @@ My current To Do list.
 - [x] Define `Loc` component, combining a `Cell` with an offset.
 - [x] Make all components implement Component interface, and only allow components in the Entity's map.
 - [x] Decide whether to retain basic movement animation
-- [ ] Move planning into game loop 
+- [x] Move planning into game loop (such as it currently is)
 - [ ] Trigger signs as a blocking popup...drawn on the map until the user clicks.
 - [ ] Render log messages on the map as a heads up display. (?)
 - [ ] Render quest status on the map as a heads-up display
