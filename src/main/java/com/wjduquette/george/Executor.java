@@ -12,10 +12,10 @@ import com.wjduquette.george.model.Step;
 import java.util.List;
 
 /**
- * This is the Movement system.
+ * This is the Executor system; it executes the plans made by the Planner.
  */
-public class Movement {
-    private Movement() {} // Not instantiable
+public class Executor {
+    private Executor() {} // Not instantiable
 
     /**
      * Execute the movement system for the region.

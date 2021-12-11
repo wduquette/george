@@ -4,7 +4,6 @@ import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.Player;
 import com.wjduquette.george.model.Region;
 import com.wjduquette.george.ecs.*;
-import com.wjduquette.george.model.Step;
 import com.wjduquette.george.util.Looper;
 import com.wjduquette.george.widgets.CellClickEvent;
 import com.wjduquette.george.widgets.MapViewer;
@@ -12,8 +11,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.util.List;
 
 public class App extends Application {
     //-------------------------------------------------------------------------
@@ -99,8 +96,8 @@ public class App extends Application {
         // Animate any visual effects
         Animator.doAnimate(region);
 
-        // Movement System
-        Movement.doMovement(region);
+        // Execute any plans
+        Executor.doMovement(region);
 
         // FINALLY, repaint.
         viewer.repaint();
