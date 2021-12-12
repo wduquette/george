@@ -1,6 +1,7 @@
 package com.wjduquette.george;
 
 import com.wjduquette.george.model.Cell;
+import com.wjduquette.george.model.Interrupt;
 import com.wjduquette.george.model.Player;
 import com.wjduquette.george.model.Region;
 import com.wjduquette.george.ecs.*;
@@ -12,6 +13,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.util.Stack;
 
 public class App extends Application {
     //-------------------------------------------------------------------------
@@ -34,6 +37,9 @@ public class App extends Application {
 
     // The most recent user input.
     private UserInput userInput = null;
+
+    // The Interrupt stack
+    private Stack<Interrupt> interrupts = new Stack<>();
 
     //-------------------------------------------------------------------------
     // Main Program
@@ -89,19 +95,41 @@ public class App extends Application {
     //  The Game Loop
 
     private void gameLoop() {
+        // FIRST, handle any interrupts.
+        if (!interrupts.isEmpty()) {
+            handleInterrupts(userInput);
+            userInput = null;
+            return;
+        }
+
         // Do planning, based on current input.
         if (userInput != null) {
-            Planner.doPlanning(userInput, region);
+            var interrupt = Planner.doPlanning(userInput, region);
             userInput = null;
+
+            if (interrupt.isPresent()) {
+                interrupts.add(interrupt.get());
+                return;
+            }
         }
 
         // Animate any visual effects
         Animator.doAnimate(region);
 
         // Execute any plans
-        Executor.doMovement(region);
+        Executor.doMovement(region).ifPresent(i -> interrupts.add(i));
 
         // FINALLY, repaint.
         viewer.repaint();
+    }
+
+    private void handleInterrupts(UserInput input) {
+        switch (interrupts.pop()) {
+            case Interrupt.DisplaySign sign -> {
+                var signName = region.get(sign.signId()).sign().name();
+                System.out.println("The sign reads: " +
+                    region.getString(signName));
+            }
+        }
     }
 }

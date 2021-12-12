@@ -4,10 +4,7 @@ import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.Mobile;
 import com.wjduquette.george.ecs.Plan;
 import com.wjduquette.george.ecs.Sign;
-import com.wjduquette.george.model.Cell;
-import com.wjduquette.george.model.Player;
-import com.wjduquette.george.model.Region;
-import com.wjduquette.george.model.Step;
+import com.wjduquette.george.model.*;
 import com.wjduquette.george.widgets.UserInput;
 
 import java.util.List;
@@ -27,7 +24,7 @@ public class Planner {
     //-------------------------------------------------------------------------
     // The System
 
-    public static void doPlanning(UserInput input, Region region) {
+    public static Optional<Interrupt> doPlanning(UserInput input, Region region) {
         Entity george = region.query(Player.class).findFirst().orElseThrow();
 
         switch (input) {
@@ -38,6 +35,8 @@ public class Planner {
                 System.out.println("Clicked on status box for " + status.playerId());
             }
         }
+
+        return Optional.empty();
     }
 
     private static void doPlanMove(Region region, Entity player, Cell targetCell) {

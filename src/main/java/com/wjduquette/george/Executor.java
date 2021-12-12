@@ -4,12 +4,10 @@ import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.Mobile;
 import com.wjduquette.george.ecs.Plan;
 import com.wjduquette.george.ecs.VisualEffect;
-import com.wjduquette.george.model.Animation;
-import com.wjduquette.george.model.Cell;
-import com.wjduquette.george.model.Region;
-import com.wjduquette.george.model.Step;
+import com.wjduquette.george.model.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This is the Executor system; it executes the plans made by the Planner.
@@ -21,13 +19,18 @@ public class Executor {
      * Execute the movement system for the region.
      * @param region The region
      */
-    public static void doMovement(Region region) {
+    public static Optional<Interrupt> doMovement(Region region) {
         List<Entity> active = region.query(Plan.class)
             .toList();
 
         for (Entity mob : active) {
-            step(region, mob);
+            var interrupt = step(region, mob);
+            if (interrupt.isPresent()) {
+                return interrupt;
+            }
         }
+
+        return Optional.empty();
     }
 
     /**
@@ -35,7 +38,7 @@ public class Executor {
      * @param region The region
      * @param mob A mobile within that region
      */
-    public static void step(Region region, Entity mob) {
+    public static Optional<Interrupt> step(Region region, Entity mob) {
         // Execute steps until there are no more or a step decides to return.
         while (!mob.plan().isEmpty()) {
             Step nextStep = mob.plan().pollFirst();
@@ -55,7 +58,7 @@ public class Executor {
                     if (route.size() == 1) {
                         if (isPassable(region, mob, route.get(0))) {
                             slideTo(region, mob, route.get(0));
-                            return;
+                            return Optional.empty();
                         } else {
                             System.out.println("Bonk!");
                         }
@@ -63,7 +66,7 @@ public class Executor {
                         // We aren't there yet.  Take the next step.
                         mob.plan().addFirst(goal);
                         slideTo(region, mob, route.get(0));
-                        return;
+                        return Optional.empty();
                     } else {
                         // Nothing to do; we can't get there.
                     }
@@ -75,15 +78,12 @@ public class Executor {
 
                     if (route.size() == 1) {
                         // We're adjacent
-                        var signName = region.get(goal.id()).sign().name();
-                        // TODO: Figure out how to display signs
-                        System.out.println("The sign reads: " +
-                            region.getString(signName));
+                        return Optional.of(new Interrupt.DisplaySign(goal.id()));
                     } else if (route.size() > 1) {
                         // We aren't there yet.  Take the next step.
                         mob.plan().addFirst(goal);
                         slideTo(region, mob, route.get(0));
-                        return;
+                        return Optional.empty();
                     } else {
                         // Nothing to do; we can't get there.
                     }
@@ -99,13 +99,14 @@ public class Executor {
                 case Step.WaitUntilGone wait:
                     if (region.find(wait.id()).isPresent()) {
                         mob.plan().addFirst(wait); // Keep waiting
-                        return;
+                        return Optional.empty();
                     }
                     break;
             }
         }
 
         mob.remove(Plan.class);
+        return Optional.empty();
     }
 
     // Can this mobile enter the given cell given the player's capabilities
