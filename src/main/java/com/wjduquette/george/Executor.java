@@ -41,55 +41,66 @@ public class Executor {
             Step nextStep = mob.plan().pollFirst();
             assert nextStep != null;
 
+            Cell targetCell;
+            List<Cell> route;
+
             switch (nextStep) {
-                case Step.WaitUntilGone step:
-                    if (region.find(step.id()).isPresent()) {
-                        // Keep waiting
-                        mob.plan().addFirst(step);
+                //
+                // Planned Steps
+                //
+                case Step.MoveTo goal:
+                    route = Region.findRoute(c -> isPassable(region, mob, c),
+                        mob.cell(), goal.cell());
+
+                    if (route.size() == 1) {
+                        if (isPassable(region, mob, route.get(0))) {
+                            slideTo(region, mob, route.get(0));
+                            return;
+                        } else {
+                            System.out.println("Bonk!");
+                        }
+                    } else if (route.size() > 1) {
+                        // We aren't there yet.  Take the next step.
+                        mob.plan().addFirst(goal);
+                        slideTo(region, mob, route.get(0));
                         return;
-                    }
-                    break;
-                case Step.MoveTo step:
-                    // FIRST, can the mobile move there?
-                    if (isPassable(region, mob, step.cell())) {
-                        Entity effect = slideTo(region, mob, step.cell());
-                        // These will execute in reverse order.
-                        // TODO: Need a method to add steps to the front, in order?
-                        mob.plan().addFirst(new Step.SetCell(step.cell()));
-                        mob.plan().addFirst(new Step.WaitUntilGone(effect.id()));
                     } else {
-                        mob.remove(Plan.class);
-                        System.out.println("Bonk!");
-                        // TODO: Add an animation, where appropriate
+                        // Nothing to do; we can't get there.
                     }
-                    return;
-                case Step.SetCell step:
-                    // Simply move the mobile to the given cell.
-                    mob.cell(step.cell());
                     break;
-                case Step.Trigger step:
-                    var targetCell = region.get(step.id()).cell();
-                    var route = Region.findRoute(c -> isPassable(region, mob, c),
+                case Step.Trigger goal:
+                    targetCell = region.get(goal.id()).cell();
+                    route = Region.findRoute(c -> isPassable(region, mob, c),
                         mob.cell(), targetCell);
-                    if (route.isEmpty()) {
-                        // We can't get there
-                        return;
-                    } else if (route.size() == 1) {
+
+                    if (route.size() == 1) {
                         // We're adjacent
-                        var signName = region.get(step.id()).sign().name();
+                        var signName = region.get(goal.id()).sign().name();
+                        // TODO: Figure out how to display signs
                         System.out.println("The sign reads: " +
                             region.getString(signName));
+                    } else if (route.size() > 1) {
+                        // We aren't there yet.  Take the next step.
+                        mob.plan().addFirst(goal);
+                        slideTo(region, mob, route.get(0));
+                        return;
                     } else {
-                        // We have to move.
-                        var nextCell = route.get(0);
-                        Entity effect = slideTo(region, mob, nextCell);
-                        // These will execute in reverse order: we complete
-                        // the slide, move the next cell, and repeat our initial
-                        // goal
-                        mob.plan().addFirst(step);
-                        mob.plan().addFirst(new Step.SetCell(nextCell));
-                        mob.plan().addFirst(new Step.WaitUntilGone(effect.id()));
+                        // Nothing to do; we can't get there.
                     }
+                    break;
+
+                //
+                // Primitive Operations: these are used to implement the planned
+                // steps
+                //
+                case Step.WaitUntilGone wait:
+                    if (region.find(wait.id()).isPresent()) {
+                        mob.plan().addFirst(wait); // Keep waiting
+                        return;
+                    }
+                    break;
+                case Step.SetCell step:
+                    mob.cell(step.cell());  // Go there.
                     break;
             }
         }
@@ -113,9 +124,20 @@ public class Executor {
         return region.getTerrainType(cell).isWalkable();
     }
 
-    private static Entity slideTo(Region region, Entity mob, Cell cell) {
+    // Moves the mob smoothly to the given cell:
+    //
+    // - Creates a Slide animation
+    // - Waits until it is complete
+    // - Puts the mob in the cell
+    private static void slideTo(Region region, Entity mob, Cell cell) {
         var anim = new Animation.Slide(
             mob.id(), mob.cell(), cell, 1.0);
-        return region.getEntities().make().put(new VisualEffect(anim));
+        var effect = region.getEntities().make().put(new VisualEffect(anim));
+
+        // These will execute in reverse order: we complete
+        // the slide, move the next cell, and repeat our initial
+        // goal
+        mob.plan().addFirst(new Step.SetCell(cell));
+        mob.plan().addFirst(new Step.WaitUntilGone(effect.id()));
     }
 }

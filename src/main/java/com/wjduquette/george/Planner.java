@@ -53,8 +53,7 @@ public class Planner {
             if (sign.isPresent()) {
                 plan.add(new Step.Trigger(sign.get().id()));
             } else {
-                // Nothing, so we just move there.
-                addRoute(plan, route);
+                plan.add(new Step.MoveTo(targetCell));
             }
 
             george.put(plan);

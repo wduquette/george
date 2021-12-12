@@ -12,15 +12,14 @@ public sealed interface Step {
 
     /**
      * The mobile moves smoothly to the cell using its current capabilities.
-     * This will usually expand to a VisualEffect plus the steps
-     * WaitForVisualEffect and SetCell.
      * @param cell The cell to which to move the mobile.
      */
     record MoveTo(Cell cell) implements Step {}
 
     /**
-     * The mobile "triggers" the entity with the given ID, e.g., reads a sign.
-     * Triggering is the result of the basic "interact with" control.
+     * The mobile moves adjacent to the entity with the given ID and triggers
+     * it, e.g., reads a sign. Triggering is the result of the basic
+     * "interact with" control.
      * @param id The ID of the entity to trigger.
      */
     record Trigger(long id) implements Step {}
