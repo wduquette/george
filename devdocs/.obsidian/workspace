@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "daily/2021-12-10.md",
+            "file": "daily/2021-12-12.md",
             "mode": "source"
           }
         }
@@ -68,7 +68,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "daily/2021-12-10.md",
+                "file": "daily/2021-12-12.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -85,7 +85,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "daily/2021-12-10.md",
+                "file": "daily/2021-12-12.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -108,7 +108,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "daily/2021-12-10.md"
+                "file": "daily/2021-12-12.md"
               }
             }
           }
@@ -121,15 +121,15 @@
   },
   "active": "0d825b141e76b8b0",
   "lastOpenFiles": [
-    "daily/2021-12-10.md",
+    "daily/2021-12-12.md",
     "To Do.md",
+    "daily/2021-12-10.md",
     "Saving the Game.md",
     "daily/2021-12-09.md",
     "daily/2021-12-07.md",
     "Slide Animation.md",
     "Movement System.md",
     "Systems.md",
-    "Home.md",
-    "Game Loop.md"
+    "Home.md"
   ]
 }

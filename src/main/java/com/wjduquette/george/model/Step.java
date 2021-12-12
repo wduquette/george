@@ -4,11 +4,9 @@ package com.wjduquette.george.model;
  * Steps that can be scheduled for Mobiles.
  */
 public sealed interface Step {
-    /**
-     * Waits until the entity with the given ID no longer exists.
-     * @param id An entity ID, e.g. of a VisualEffect entity
-     */
-    record WaitUntilGone(long id) implements Step {}
+    //
+    // Goals: Steps scheduled by the planner
+    //
 
     /**
      * The mobile moves smoothly to the cell using its current capabilities.
@@ -24,6 +22,10 @@ public sealed interface Step {
      */
     record Trigger(long id) implements Step {}
 
+    //
+    // Primitive Operations: Scheduled by the Executor while executing
+    // goals
+
     /**
      * Simply sets the mobile's cell, with no other game effects.  This is
      * often used following a movement animation to actually update the mobile's
@@ -31,4 +33,16 @@ public sealed interface Step {
      * @param cell The cell
      */
     record SetCell(Cell cell) implements Step {}
+
+    /**
+     * Waits until the entity with the given ID no longer exists.
+     * @param id An entity ID, e.g. of a VisualEffect entity
+     */
+    record WaitUntilGone(long id) implements Step {}
+
+    /**
+     * Pauses the game loop until the user clicks.  Used for displaying
+     * signs, NPC dialog, etc.
+     */
+    record Pause() implements Step {}
 }
