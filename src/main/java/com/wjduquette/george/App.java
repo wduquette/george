@@ -7,7 +7,7 @@ import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.util.Looper;
 import com.wjduquette.george.widgets.UserInput;
 import com.wjduquette.george.widgets.UserInputEvent;
-import com.wjduquette.george.widgets.MapViewer;
+import com.wjduquette.george.widgets.GameView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -24,7 +24,7 @@ public class App extends Application {
     // Instance Variables
 
     // The GUI component
-    private final MapViewer viewer = new MapViewer();
+    private final GameView viewer = new GameView();
 
     // The timer for the game loop
     private final Looper looper = new Looper(LOOP_MSECS, this::gameLoop);
@@ -60,7 +60,7 @@ public class App extends Application {
 //        region.getEntities().dump();
 
         viewer.addEventHandler(UserInputEvent.USER_INPUT, this::onUserInput);
-        viewer.setMap(region);
+        viewer.setRegion(region);
 
         // NEXT, configure the GUI
         Scene scene = new Scene(viewer, 800, 600);
