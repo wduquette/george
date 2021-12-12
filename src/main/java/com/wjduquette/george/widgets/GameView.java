@@ -3,6 +3,8 @@ package com.wjduquette.george.widgets;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.model.*;
 import javafx.application.Platform;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -10,6 +12,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameView extends StackPane {
@@ -33,6 +36,8 @@ public class GameView extends StackPane {
     // The region currently being displayed
     private Region region = null;
 
+    private List<ClickTarget> targets = new ArrayList<>();
+
     //-------------------------------------------------------------------------
     // Constructor
 
@@ -51,6 +56,16 @@ public class GameView extends StackPane {
 
     private void onMouseClick(MouseEvent evt) {
         Point2D mouse = canvas.ofMouse(evt);
+
+        // FIRST, did they click a specific target?
+        for (ClickTarget target : targets) {
+            if (target.bounds().contains(mouse)) {
+                UserInputEvent.generate(target.input(), evt);
+                return;
+            }
+        }
+
+        // NEXT, did they click a cell?
         Cell cell = xy2rc(mouse);
 
         if (region.contains(cell)) {
@@ -72,6 +87,7 @@ public class GameView extends StackPane {
 
     public void repaint() {
         canvas.clear();
+        targets.clear();
 
         // TEMP
         Entity player = region.query(Player.class).findFirst().get();
@@ -131,6 +147,10 @@ public class GameView extends StackPane {
 
         double yTop = 10 + index * (boxHeight + gap);
         double xLeft = 10;
+
+        var box = new BoundingBox(xLeft, yTop, boxWidth, boxHeight);
+        var input = new UserInput.StatusBox(player.id());
+        targets.add(new ClickTarget(box, input));
 
         canvas.gc().setFill(Color.BLACK);
         canvas.gc().fillRect(xLeft, yTop, boxWidth, boxHeight);
@@ -217,4 +237,10 @@ public class GameView extends StackPane {
 
         return new Cell(r,c);
     }
+
+    //-------------------------------------------------------------------------
+    // ClickTarget: canned bounds on which the user can click.
+
+    // If the user clicks in the bounds, the user input is sent.
+    private record ClickTarget(Bounds bounds, UserInput input) {}
 }

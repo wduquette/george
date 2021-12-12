@@ -30,43 +30,48 @@ public class Planner {
     public static void doPlanning(UserInput input, Region region) {
         Entity george = region.query(Player.class).findFirst().orElseThrow();
 
-        Cell targetCell;
-
-        if (input instanceof UserInput.CellClick click) {
-            targetCell = click.cell();
-        } else {
-            return;
+        switch (input) {
+            case UserInput.CellClick click -> {
+                doPlanMove(region, george, click.cell());
+            }
+            case UserInput.StatusBox status -> {
+                System.out.println("Clicked on status box for " + status.playerId());
+            }
         }
+    }
 
+    private static void doPlanMove(Region region, Entity player, Cell targetCell) {
         // Eventually: if the mover is a user-controlled character,
         // and the mover is currently moving, and the target cell is
         // not null, then replan using the current click.  Maybe.
-        if (george.plan() == null && targetCell != null) {
-            // Planning System (for player characters)
-
-            // FIRST, is there a route?
-            // TODO: Define predicate.
-            var route = Region.findRoute(c -> isPassable(region, george, c),
-                george.cell(), targetCell);
-
-            if (route.isEmpty()) {
-                return;
-            }
-
-            // NEXT, what's there?
-            var plan = new Plan();
-
-            Optional<Entity> sign = region.query(Sign.class)
-                .filter(e -> e.isAt(targetCell)).findFirst();
-
-            if (sign.isPresent()) {
-                plan.add(new Step.Trigger(sign.get().id()));
-            } else {
-                plan.add(new Step.MoveTo(targetCell));
-            }
-
-            george.put(plan);
+        if (player.plan() != null || targetCell == null) {
+            return;
         }
+
+        // Planning System (for player characters)
+
+        // FIRST, is there a route?
+        // TODO: Define predicate.
+        var route = Region.findRoute(c -> isPassable(region, player, c),
+            player.cell(), targetCell);
+
+        if (route.isEmpty()) {
+            return;
+        }
+
+        // NEXT, what's there?
+        var plan = new Plan();
+
+        Optional<Entity> sign = region.query(Sign.class)
+            .filter(e -> e.isAt(targetCell)).findFirst();
+
+        if (sign.isPresent()) {
+            plan.add(new Step.Trigger(sign.get().id()));
+        } else {
+            plan.add(new Step.MoveTo(targetCell));
+        }
+
+        player.put(plan);
     }
 
     // Adds the route to the end of the given plan as a series of MoveTo steps.

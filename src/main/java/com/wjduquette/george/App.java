@@ -90,8 +90,10 @@ public class App extends Application {
 
     private void gameLoop() {
         // Do planning, based on current input.
-        Planner.doPlanning(userInput, region);
-        userInput = null;
+        if (userInput != null) {
+            Planner.doPlanning(userInput, region);
+            userInput = null;
+        }
 
         // Animate any visual effects
         Animator.doAnimate(region);
