@@ -385,7 +385,6 @@ public class Region {
      * @return The string we found.
      */
     public String getString(String name) {
-        System.out.println("Looking for string: " + name + "=" + strings.get(name));
         return strings.get(name).orElseThrow();
     }
 }

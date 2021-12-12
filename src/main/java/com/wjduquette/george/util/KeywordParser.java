@@ -92,6 +92,8 @@ public final class KeywordParser {
             var blockLine = queue.poll();
             if (blockLine.trim().equals(endKeyword)) {
                 return String.join("\n", block).trim();
+            } else {
+                block.add(blockLine);
             }
         }
 

@@ -57,7 +57,7 @@ public class App extends Application {
             .tile(TileSets.MOBILES.get("mobile.george"));
 
         // Dump the entities table
-        region.getEntities().dump();
+//        region.getEntities().dump();
 
         viewer.addEventHandler(CellClickEvent.CELL_CLICK, this::onCellClick);
         viewer.setMap(region);
