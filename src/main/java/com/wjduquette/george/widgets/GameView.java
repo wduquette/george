@@ -33,9 +33,6 @@ public class GameView extends StackPane {
     // The region currently being displayed
     private Region region = null;
 
-    // After a mouse click, the target cell.
-    private Cell target = null;
-
     //-------------------------------------------------------------------------
     // Constructor
 
@@ -55,10 +52,6 @@ public class GameView extends StackPane {
     private void onMouseClick(MouseEvent evt) {
         Point2D mouse = canvas.ofMouse(evt);
         Cell cell = xy2rc(mouse);
-
-        // TEMP: So I can render the route
-        target = cell;
-        repaint();
 
         if (region.contains(cell)) {
             UserInputEvent.generate(new UserInput.CellClick(cell), evt);
