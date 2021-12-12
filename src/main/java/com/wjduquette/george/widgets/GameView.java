@@ -11,6 +11,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,27 @@ public class GameView extends StackPane {
             repaint();
             canvas.requestFocus(); // Only needed for keystrokes
         });
+    }
+
+    public void displaySign(String text) {
+        repaint();
+        var xLeft = 50.0;
+        var yTop = 50.0;
+        var width = canvas.getWidth() - 100;
+        var height= canvas.getHeight() - 100;
+
+        // This is really raw.
+        canvas.gc().setFill(Color.BROWN);
+        canvas.gc().fillRect(xLeft, yTop, width, height);
+
+        canvas.gc().setFill(Color.WHITE);
+        canvas.gc().setFont(Font.font("Helvetica", 18));
+        canvas.gc().fillText(text, xLeft + 20, yTop + 40);
+
+        canvas.gc().setFont(Font.font("Helvetica", 14));
+        canvas.gc().fillText("Click to continue...",
+            xLeft + 20,
+            yTop + height - 20);
     }
 
     public void repaint() {

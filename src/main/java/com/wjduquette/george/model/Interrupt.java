@@ -7,7 +7,14 @@ package com.wjduquette.george.model;
  */
 public sealed interface Interrupt {
     /**
+     * Used to just wait for a click.
+     */
+    public record WaitForInput() implements Interrupt {}
+
+    /**
      * Display a sign in a box over the map; wait for user input.
      */
     public record DisplaySign(long signId) implements Interrupt {}
+
+
 }

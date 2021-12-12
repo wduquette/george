@@ -125,10 +125,19 @@ public class App extends Application {
 
     private void handleInterrupts(UserInput input) {
         switch (interrupts.pop()) {
+            case Interrupt.WaitForInput wait -> {
+                if (input == null) {
+                    interrupts.push(wait);
+                }
+            }
+
             case Interrupt.DisplaySign sign -> {
                 var signName = region.get(sign.signId()).sign().name();
-                System.out.println("The sign reads: " +
-                    region.getString(signName));
+                var text = region.getString(signName);
+                viewer.displaySign(text);
+
+                // Wait for click.
+                interrupts.add(new Interrupt.WaitForInput());
             }
         }
     }
