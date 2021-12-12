@@ -39,10 +39,4 @@ public sealed interface Step {
      * @param id An entity ID, e.g. of a VisualEffect entity
      */
     record WaitUntilGone(long id) implements Step {}
-
-    /**
-     * Pauses the game loop until the user clicks.  Used for displaying
-     * signs, NPC dialog, etc.
-     */
-    record Pause() implements Step {}
 }

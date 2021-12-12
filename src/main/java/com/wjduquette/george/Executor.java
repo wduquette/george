@@ -21,12 +21,12 @@ public class Executor {
      * Execute the movement system for the region.
      * @param region The region
      */
-    public static void doMovement(App app, Region region) {
+    public static void doMovement(Region region) {
         List<Entity> active = region.query(Plan.class)
             .toList();
 
         for (Entity mob : active) {
-            step(app, region, mob);
+            step(region, mob);
         }
     }
 
@@ -35,7 +35,7 @@ public class Executor {
      * @param region The region
      * @param mob A mobile within that region
      */
-    public static void step(App app, Region region, Entity mob) {
+    public static void step(Region region, Entity mob) {
         // Execute steps until there are no more or a step decides to return.
         while (!mob.plan().isEmpty()) {
             Step nextStep = mob.plan().pollFirst();
@@ -101,9 +101,6 @@ public class Executor {
                         mob.plan().addFirst(wait); // Keep waiting
                         return;
                     }
-                    break;
-                case Step.Pause step:
-                    app.pause();
                     break;
             }
         }

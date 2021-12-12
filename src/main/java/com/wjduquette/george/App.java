@@ -80,28 +80,13 @@ public class App extends Application {
 
     // Handle cells clicks
     private void onCellClick(CellClickEvent event) {
-        // FIRST, if the loop isn't running, start it.  Something is
-        // waiting for the user to click.
-        if (!looper.isRunning()) {
-            targetCell = null;
-            looper.run();
-            return;
-        }
-
-        // NEXT, save the target cell.  It will be assessed by the
+        // FIRST, save the target cell.  It will be assessed by the
         // Planner on the next iteration of the GameLoop.
         targetCell = event.getCell();
     }
 
     //-------------------------------------------------------------------------
     //  The Game Loop
-
-    /**
-     * Pause the game loop until the user clicks.
-     */
-    public void pause() {
-        looper.stop();
-    }
 
     private void gameLoop() {
         // Do planning, based on current input.
@@ -112,7 +97,7 @@ public class App extends Application {
         Animator.doAnimate(region);
 
         // Execute any plans
-        Executor.doMovement(this, region);
+        Executor.doMovement(region);
 
         // FINALLY, repaint.
         viewer.repaint();
