@@ -8,6 +8,7 @@ import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.Player;
 import com.wjduquette.george.model.Region;
 import com.wjduquette.george.model.Step;
+import com.wjduquette.george.widgets.UserInput;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +27,16 @@ public class Planner {
     //-------------------------------------------------------------------------
     // The System
 
-    public static void doPlanning(Cell targetCell, Region region) {
+    public static void doPlanning(UserInput input, Region region) {
         Entity george = region.query(Player.class).findFirst().orElseThrow();
+
+        Cell targetCell;
+
+        if (input instanceof UserInput.CellClick click) {
+            targetCell = click.cell();
+        } else {
+            return;
+        }
 
         // Eventually: if the mover is a user-controlled character,
         // and the mover is currently moving, and the target cell is

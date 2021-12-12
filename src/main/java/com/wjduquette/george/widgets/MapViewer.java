@@ -61,7 +61,7 @@ public class MapViewer extends StackPane {
         repaint();
 
         if (map.contains(cell)) {
-            CellClickEvent.generate(cell, evt);
+            UserInputEvent.generate(new UserInput.CellClick(cell), evt);
         }
     }
 

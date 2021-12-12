@@ -9,28 +9,28 @@ import javafx.scene.input.MouseEvent;
 /**
  * The user clicked on a map cell; notify listeners.
  */
-public class CellClickEvent extends Event {
-    public static final EventType<CellClickEvent> CELL_CLICK =
-        new EventType<>("CELL_CLICK");
+public class UserInputEvent extends Event {
+    public static final EventType<UserInputEvent> USER_INPUT =
+        new EventType<>("USER_INPUT");
 
     //-------------------------------------------------------------------------
     // Instance variables
 
-    private final Cell cell;
+    private final UserInput input;
     private final MouseEvent mouseEvent;
 
     //-------------------------------------------------------------------------
     // Constructor
 
     /**
-     * Creates a new CellClickEvent for the given map cell and underlying
+     * Creates a new event for the given input and underlying
      * mouse event.
-     * @param cell The cell
+     * @param input The input
      * @param mouseEvent The event
      */
-    public CellClickEvent(Cell cell, MouseEvent mouseEvent) {
-        super(CELL_CLICK);
-        this.cell = cell;
+    public UserInputEvent(UserInput input, MouseEvent mouseEvent) {
+        super(USER_INPUT);
+        this.input = input;
         this.mouseEvent = mouseEvent;
     }
 
@@ -38,11 +38,11 @@ public class CellClickEvent extends Event {
     // Accessors
 
     /**
-     * Get the coordinates of the map cell they clicked on
-     * @return The cell
+     * Get the user input.
+     * @return The input
      */
-    public Cell getCell() {
-        return cell;
+    public UserInput getInput() {
+        return input;
     }
 
     /**
@@ -54,12 +54,12 @@ public class CellClickEvent extends Event {
     }
 
     /**
-     * Generate a CellClickEvent for the node they clicked on.
-     * @param cell The cell
+     * Generate an event
+     * @param input The input
      * @param evt The mouse event
      */
-    public static void generate(Cell cell, MouseEvent evt) {
+    public static void generate(UserInput input, MouseEvent evt) {
         Node node = evt.getPickResult().getIntersectedNode();
-        node.fireEvent(new CellClickEvent(cell, evt));
+        node.fireEvent(new UserInputEvent(input, evt));
     }
 }

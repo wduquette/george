@@ -5,7 +5,8 @@ import com.wjduquette.george.model.Player;
 import com.wjduquette.george.model.Region;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.util.Looper;
-import com.wjduquette.george.widgets.CellClickEvent;
+import com.wjduquette.george.widgets.UserInput;
+import com.wjduquette.george.widgets.UserInputEvent;
 import com.wjduquette.george.widgets.MapViewer;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -31,9 +32,8 @@ public class App extends Application {
     // The map we're currently wandering about on.
     private Region region = null;
 
-    // The cell the user most recently clicked on, or null.
-    // Eventually this should probably be something more complicated.
-    private Cell targetCell = null;
+    // The most recent user input.
+    private UserInput userInput = null;
 
     //-------------------------------------------------------------------------
     // Main Program
@@ -59,7 +59,7 @@ public class App extends Application {
         // Dump the entities table
 //        region.getEntities().dump();
 
-        viewer.addEventHandler(CellClickEvent.CELL_CLICK, this::onCellClick);
+        viewer.addEventHandler(UserInputEvent.USER_INPUT, this::onUserInput);
         viewer.setMap(region);
 
         // NEXT, configure the GUI
@@ -79,10 +79,10 @@ public class App extends Application {
     // Click Handling
 
     // Handle cells clicks
-    private void onCellClick(CellClickEvent event) {
+    private void onUserInput(UserInputEvent event) {
         // FIRST, save the target cell.  It will be assessed by the
         // Planner on the next iteration of the GameLoop.
-        targetCell = event.getCell();
+        userInput = event.getInput();
     }
 
     //-------------------------------------------------------------------------
@@ -90,8 +90,8 @@ public class App extends Application {
 
     private void gameLoop() {
         // Do planning, based on current input.
-        Planner.doPlanning(targetCell, region);
-        targetCell = null;
+        Planner.doPlanning(userInput, region);
+        userInput = null;
 
         // Animate any visual effects
         Animator.doAnimate(region);
