@@ -132,9 +132,7 @@ public class App extends Application {
             }
 
             case Interrupt.DisplaySign sign -> {
-                var signName = region.get(sign.signId()).sign().name();
-                var text = region.getString(signName);
-                viewer.displaySign(text);
+                viewer.displaySign(sign.signId());
 
                 // Wait for click.
                 interrupts.add(new Interrupt.WaitForInput());

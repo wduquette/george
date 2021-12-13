@@ -1,17 +1,18 @@
 package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.ecs.*;
+import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.model.*;
 import javafx.application.Platform;
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
+import javafx.geometry.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,7 @@ public class GameView extends StackPane {
     // Constructor
 
     public GameView() {
+        // Configure the Canvas
         canvas = new CanvasPane();
         getChildren().add(canvas);
         canvas.setOnResize(this::repaint);
@@ -50,6 +52,7 @@ public class GameView extends StackPane {
 
         canvas.setBackground(new Background(
             new BackgroundFill(Color.BLACK, null, null)));
+
     }
 
     //-------------------------------------------------------------------------
@@ -86,30 +89,49 @@ public class GameView extends StackPane {
         });
     }
 
-    public void displaySign(String text) {
+    public void displaySign(long signId) {
         repaint();
+        var sign = region.get(signId);
+        var signName = sign.sign().name();
+        var text = region.getString(signName);
         var xLeft = 50.0;
         var yTop = 50.0;
         var width = canvas.getWidth() - 100;
         var height= canvas.getHeight() - 100;
 
-        // This is really raw.
-        canvas.gc().setFill(Color.BROWN);
+        // The background
+        canvas.gc().setFill(Color.DARKBLUE);
         canvas.gc().fillRect(xLeft, yTop, width, height);
 
-        canvas.gc().setFill(Color.WHITE);
-        canvas.gc().setFont(Font.font("Helvetica", 18));
-        canvas.gc().fillText(text, xLeft + 20, yTop + 40);
+        // The image
+        var ix = xLeft + 20;
+        var iy = yTop + 40;
+        var terrain = region.getTerrain(sign.cell());
+        canvas.gc().drawImage(ImageUtils.embiggen(terrain.image(), 2), ix, iy);
+        canvas.gc().drawImage(ImageUtils.embiggen(sign.tile().image(), 2), ix, iy);
 
+        // The "click to continue"
+        canvas.gc().setFill(Color.WHITE);
         canvas.gc().setFont(Font.font("Helvetica", 14));
         canvas.gc().fillText("Click to continue...",
             xLeft + 20,
             yTop + height - 20);
+
+        // The game text
+        Text block = new Text(text);
+        block.setFont(Font.font("Helvetica", 18));
+        block.setWrappingWidth(width - 80);
+        block.setFill(Color.WHITE);
+        StackPane.setAlignment(block, Pos.TOP_LEFT);
+        StackPane.setMargin(block, new Insets(yTop + 40, 90, 120, 180));
+
+        getChildren().setAll(canvas, block);
     }
 
     public void repaint() {
         canvas.clear();
         targets.clear();
+        getChildren().setAll(canvas);
 
         // TEMP
         Entity player = region.query(Player.class).findFirst().get();
@@ -130,18 +152,6 @@ public class GameView extends StackPane {
         for (Entity feature : region.query(Feature.class).toList()) {
             canvas.drawImage(feature.tile().image(), entity2xy(feature));
         }
-
-        // NEXT, if there's a target compute the route.
-        // TODO: TEMP
-//        if (target != null) {
-//            List<Cell> route = Region.findRoute(c -> map.isWalkable(c),
-//                player.cell(), target);
-//
-//            if (!route.isEmpty()) {
-//                route.add(0, player.cell());
-//                drawRoute(route);
-//            }
-//        }
 
         // NEXT, render the mobiles on top
         for (Entity mobile : region.query(Mobile.class).toList()) {
