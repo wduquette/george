@@ -12,7 +12,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,7 @@ public class GameView extends StackPane {
     // The region currently being displayed
     private Region region = null;
 
-    private List<ClickTarget> targets = new ArrayList<>();
+    private final List<ClickTarget> targets = new ArrayList<>();
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -123,7 +122,11 @@ public class GameView extends StackPane {
         block.setWrappingWidth(width - 80);
         block.setFill(Color.WHITE);
         StackPane.setAlignment(block, Pos.TOP_LEFT);
-        StackPane.setMargin(block, new Insets(yTop + 40, 90, 120, 180));
+        StackPane.setMargin(block, new Insets(
+            yTop + 40,            // Top
+            xLeft + width - 20,   // Right
+            yTop + height - 40,   // Bottom
+            xLeft + 130));        // Left
 
         getChildren().setAll(canvas, block);
     }
