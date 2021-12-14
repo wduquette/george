@@ -2,19 +2,16 @@
 
 My current To Do list.
 
-- [x] Structure the app in terms of systems.
-- [x] Move the mobile smoothly across the map, rather than jumping. 
-- [x] Include a row/col offset in `Cell`
-- [x] Revise map view to draw based on the visual cell: the row and col + offsets.
-- [x] Define `Loc` component, combining a `Cell` with an offset.
-- [x] Make all components implement Component interface, and only allow components in the Entity's map.
-- [x] Decide whether to retain basic movement animation
-- [x] Move planning into game loop (such as it currently is)
-- [x] Trigger signs as a blocking popup...drawn on the map until the user clicks.
-- [x] Improve sign infrastructure.
+- [ ] Add another region, e.g., Floobham, Bugland
+- [ ] Add Exits to the entities table
+- [ ] Support moving to another region, e.g., Floobham, Bugland
+- [ ] Implement movement limits (the player can only move so far)
+- [ ] Implement Mover list
+	- Probably a `Mover` sealed type.  
+	- `Mover.Leader(playerId)`
+	- `Mover.Monsters()` (if all monsters move at the same time)
 - [ ] Render log messages on the map as a heads up display. (?)
 - [ ] Render quest status on the map as a heads-up display
-- [ ] Remove cursor key code.
 - [ ] Script to copy asset files to `resources`
 - [ ] Implement Old George's Line-of-Sight algorithm generically.
 - [ ] Ponder [[Saving the Game]]
