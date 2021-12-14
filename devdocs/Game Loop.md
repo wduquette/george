@@ -7,10 +7,10 @@ George is a turn-based game; but each move needs to be animated.  We get a basic
 
 The game loop is always running.  Each time through the loop, it does something like the following:
 
-- Call the [[Movement System]] to execute any events.
+- Call the [[Executor System]] to execute any events.
 	- If a [[Mobile]]'s event queue has events in it, and the [[Mobile]] has no animation, execute events until there are no more or it has an animation
 	- Executing an event can update any state: it can damage or kill a monster, start an  animation, change a cell location.
-- If need be, call the [[Planning System]] to let the next mover plan their move.
+- If need be, call the [[Planner System]] to let the next mover plan their move.
 	- Needed when the current mover has no events and no active animation.
 	- If the mover is AI-controlled, compute its next move, i.e., plan and populate its event queue.
 	- If the mover is player-controlled, set the flag that allows user-clicks to take effect.
