@@ -14,7 +14,10 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
+import java.util.function.Supplier;
 
 public class App extends Application {
     //-------------------------------------------------------------------------
@@ -32,6 +35,13 @@ public class App extends Application {
     // The timer for the game loop
     private final Looper looper = new Looper(LOOP_MSECS, this::gameLoop);
 
+    // A lookup table for region factories for region name
+    private final Map<String, Supplier<Region>> regionFactories =
+        new HashMap<>();
+
+    // A lookup table for regions by name
+    private final Map<String,Region> regions = new HashMap<>();
+
     // The map we're currently wandering about on.
     private Region region = null;
 
@@ -39,15 +49,20 @@ public class App extends Application {
     private UserInput userInput = null;
 
     // The Interrupt stack
-    private Stack<Interrupt> interrupts = new Stack<>();
+    private final Stack<Interrupt> interrupts = new Stack<>();
 
     //-------------------------------------------------------------------------
     // Main Program
 
     @Override
     public void start(Stage stage) {
-        region = new Region(getClass(),
-            "assets/regions/overworld/overworld.region");
+        populateRegionFactories();
+
+        // TEMP
+        var floobham = getRegion("floobham");
+        floobham.getEntities().dump();
+
+        region = getRegion("overworld");
 
         Cell origin = region.query(Point.class)
             .filter(e -> e.point().name().equals("origin"))
@@ -63,7 +78,7 @@ public class App extends Application {
             .tile(TileSets.MOBILES.get("mobile.george"));
 
         // Dump the entities table
-        region.getEntities().dump();
+//        region.getEntities().dump();
 
         viewer.addEventHandler(UserInputEvent.USER_INPUT, this::onUserInput);
         viewer.setRegion(region);
@@ -74,7 +89,7 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
 
-        Platform.runLater(() -> looper.run());
+        Platform.runLater(looper::run);
     }
 
     public static void main(String[] args) {
@@ -117,7 +132,7 @@ public class App extends Application {
         Animator.doAnimate(region);
 
         // Execute any plans
-        Executor.doMovement(region).ifPresent(i -> interrupts.add(i));
+        Executor.doMovement(region).ifPresent(interrupts::add);
 
         // FINALLY, repaint.
         viewer.repaint();
@@ -138,5 +153,30 @@ public class App extends Application {
                 interrupts.add(new Interrupt.WaitForInput());
             }
         }
+    }
+
+    //-------------------------------------------------------------------------
+    // Region Definitions
+
+    private void populateRegionFactories() {
+        regionFactories.put("overworld",
+            () -> new Region(getClass(),
+                "assets/regions/overworld/overworld.region")
+        );
+        regionFactories.put("floobham",
+            () -> new Region(getClass(),
+                "assets/regions/floobham/floobham.region")
+        );
+    }
+
+    private Region getRegion(String name) {
+        Region region = regions.get(name);
+
+        if (region == null) {
+            region = regionFactories.get(name).get();
+            regions.put(name, region);
+        }
+
+        return region;
     }
 }
