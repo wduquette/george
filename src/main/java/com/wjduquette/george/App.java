@@ -1,9 +1,6 @@
 package com.wjduquette.george;
 
-import com.wjduquette.george.model.Cell;
-import com.wjduquette.george.model.Interrupt;
-import com.wjduquette.george.model.Player;
-import com.wjduquette.george.model.Region;
+import com.wjduquette.george.model.*;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.util.Looper;
 import com.wjduquette.george.widgets.UserInput;
@@ -176,6 +173,7 @@ public class App extends Application {
         if (region == null) {
             region = regionFactories.get(name).get();
             regions.put(name, region);
+            Sprites.ALL.add(region.getTerrainTileSet());
         }
 
         return region;

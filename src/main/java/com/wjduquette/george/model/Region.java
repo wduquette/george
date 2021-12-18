@@ -196,7 +196,6 @@ public class Region {
         }
     }
 
-
     private void readObjects(TiledMapReader map) {
         for (Layer layer : map.layers()) {
             if (!layer.type.equals(TiledMapReader.OBJECT_GROUP)) {
@@ -304,6 +303,14 @@ public class Region {
      */
     public int getTileWidth() {
         return tileWidth;
+    }
+
+    /**
+     * Gets the region's terrain tile set.
+     * @return The tile set.
+     */
+    public TerrainTileSet getTerrainTileSet() {
+        return terrainTileSet;
     }
 
     public Entity get(long id) {
