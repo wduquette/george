@@ -4,8 +4,12 @@ My current To Do list.
 
 - [x] Look at the Old George "World" map code and see if there's anything special I missed.
 - [x] Add Exits to the entities table
-- [ ] Add another region, e.g., Floobham, Bugland
-- [ ] Support moving to another region, e.g., Floobham, Bugland
+- [x] Add another region, e.g., Floobham
+- [ ] Support moving to another region, e.g., Floobham
+- [ ] Implement Floobham "mannikins"
+- [ ] Implement Floobham NPCs
+- [ ] See how Floobham defines features
+	- Should terrain layer features have behavior, or only object group features?
 - [ ] Create global tile set solution
 	- [ ] Tiles loaded from any region or tileset should be globally accessible by name.
 	- [ ] Normal tiles and terrain tiles should share an interface. 
