@@ -1,5 +1,6 @@
 package com.wjduquette.george.graphics;
 
+import com.wjduquette.george.model.TerrainTile;
 import com.wjduquette.george.util.KeywordParser;
 import com.wjduquette.george.util.Resource;
 import com.wjduquette.george.util.ResourceException;
@@ -145,6 +146,31 @@ public class SpriteSet {
 
     //-------------------------------------------------------------------------
     // Public Methods
+
+    /**
+     * Adds another sprite set into this one.
+     * @param other The other set
+     */
+    public void add(SpriteSet other) {
+        if (other.height != this.height || other.width != this.width) {
+            throw new IllegalArgumentException("Mismatched dimensions");
+        }
+        spriteMap.putAll(other.spriteMap);
+    }
+
+    /**
+     * Adds a terrain tile set's tiles into the sprite set as sprites.
+     * @param set The terrain tile set.
+     */
+    public void add(TerrainTileSet set) {
+        if (set.height() != this.height || set.width() != this.width) {
+            throw new IllegalArgumentException("Mismatched dimensions");
+        }
+        for (Map.Entry<String, TerrainTile> e : set.getInfoMap().entrySet()) {
+            SpriteInfo info = new SpriteInfo(e.getKey(), e.getValue().image());
+            spriteMap.put(e.getKey(), info);
+        }
+    }
 
     /**
      * Returns the SpriteSet's resource identifier.

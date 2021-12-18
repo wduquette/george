@@ -218,7 +218,7 @@ public class Region {
                         entities.make()
                             .feature(TerrainType.NONE)
                             .sign(obj.name)
-                            .sprite(Sprites.FEATURES.getInfo("feature.sign"))
+                            .sprite(Sprites.ALL.getInfo("feature.sign"))
                             .cell(object2cell(obj));
                     }
                     default -> {
