@@ -1,0 +1,6 @@
+# Overworld region definition file
+
+# The %tilemap must go last.
+%terrain floobham.terrain
+%strings floobham.strings
+%tilemap floobham.json
