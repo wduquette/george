@@ -192,7 +192,7 @@ public class Region {
 
             Entity feature = entities.make()
                 .feature(tile.type())
-                .tile(tile.image())
+                .tile(tile)
                 .cell(r, c);
         }
     }
@@ -215,11 +215,11 @@ public class Region {
                         .point(obj.name)
                         .cell(object2cell(obj));
                     case SIGN_OBJECT -> {
-                        Image tile = TileSets.FEATURES.get("feature.sign");
+                        // TODO: Allow tile to be set from properties.
                         entities.make()
                             .feature(TerrainType.NONE)
                             .sign(obj.name)
-                            .tile(tile)
+                            .tile(TileSets.FEATURES.getInfo("feature.sign"))
                             .cell(object2cell(obj));
                     }
                     default -> {

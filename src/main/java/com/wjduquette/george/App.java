@@ -62,7 +62,8 @@ public class App extends Application {
         var floobham = getRegion("floobham");
         floobham.getEntities().dump();
 
-        region = getRegion("overworld");
+//        region = getRegion("overworld");
+        region = floobham;
 
         Cell origin = region.query(Point.class)
             .filter(e -> e.point().name().equals("origin"))
@@ -75,7 +76,7 @@ public class App extends Application {
         region.getEntities().make().mobile("george")
             .put(george)
             .cell(origin)
-            .tile(TileSets.MOBILES.get("mobile.george"));
+            .tile(TileSets.MOBILES.getInfo("mobile.george"));
 
         // Dump the entities table
 //        region.getEntities().dump();

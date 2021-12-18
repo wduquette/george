@@ -1,7 +1,9 @@
 package com.wjduquette.george.ecs;
 
+import com.wjduquette.george.graphics.TileSet;
 import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.Player;
+import com.wjduquette.george.model.TerrainTile;
 import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.util.TypeMap;
 import javafx.scene.image.Image;
@@ -169,12 +171,33 @@ public class Entity {
     public Tile tile() { return components.get(Tile.class); }
 
     /**
-     * Sets the entity's Tile given an image.
+     * Sets the entity's Tile given an image and its name
      * @param img The image
+     * @param name The tile name
      * @return The entity
      */
-    public Entity tile(Image img) {
-        put(new Tile(img));
+    public Entity tile(Image img, String name) {
+        put(new Tile(img, name));
+        return this;
+    }
+
+    /**
+     * Sets the entity's Tile given a TileSet entry.
+     * @param info The TileSet entry.
+     * @return The entity
+     */
+    public Entity tile(TileSet.TileInfo info) {
+        put(new Tile(info.image(), info.name()));
+        return this;
+    }
+
+    /**
+     * Sets the entity's Tile given a TerrainTile.
+     * @param tile The TerrainTile entry.
+     * @return The entity
+     */
+    public Entity tile(TerrainTile tile) {
+        put(new Tile(tile.image(), tile.name()));
         return this;
     }
 

@@ -6,6 +6,9 @@ My current To Do list.
 - [x] Add Exits to the entities table
 - [ ] Add another region, e.g., Floobham, Bugland
 - [ ] Support moving to another region, e.g., Floobham, Bugland
+- [ ] Create global tile set solution
+	- [ ] Tiles loaded from any region or tileset should be globally accessible by name.
+	- [ ] Normal tiles and terrain tiles should share an interface. 
 - [ ] Implement movement limits (the player can only move so far)
 - [ ] Implement Mover list
 	- Probably a `Mover` sealed type.  

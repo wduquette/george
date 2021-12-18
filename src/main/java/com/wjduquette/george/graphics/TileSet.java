@@ -194,6 +194,25 @@ public class TileSet {
     }
 
     /**
+     * Get a tile's info given its name.  Throws an exception if the name
+     * is unknown.
+     * @param name The name, including the prefix.
+     * @return The image
+     */
+    public TileInfo getInfo(String name) {
+        return findInfo(name).orElseThrow();
+    }
+
+    /**
+     * Get a tile's info given its name.
+     * @param name The name, including the prefix.
+     * @return The info
+     */
+    public Optional<TileInfo> findInfo(String name) {
+        return Optional.ofNullable(tileMap.get(name));
+    }
+
+    /**
      * Get a tile image given its name.
      * @param name The name, including the prefix.
      * @return The image
