@@ -1,0 +1,60 @@
+# Items.txt -- See TileSet.java for syntax
+%prefix item
+%size 40 40
+%file Items.png
+%tile sandals
+%tile shoes
+%tile boots
+%tile chain_boots
+%tile plate_boots
+%tile lord_boots
+%tile leather_armor
+%tile chain_armor
+%tile plate_armor
+%tile lord_armor
+%tile leather_helmet
+%tile pot_helmet
+%tile chain_helmet
+%tile plate_helmet
+%tile lord_helmet
+%tile dagger
+%tile short_sword
+%tile long_sword
+%tile pizza_pan
+%tile backpack
+%tile wooden_shield
+%tile leather_shield
+%tile plate_shield
+%tile lord_shield
+%tile bow
+%tile fancy_bow
+%tile staple_gun
+%tile hat
+%tile overalls
+%tile pitchfork
+%tile monk_habit
+%tile holy_book
+%tile staff
+%tile holy_orb
+%tile gold_key
+%tile trophy
+%tile word_scroll
+%tile map_scroll
+%tile red_vial
+%tile red_flask
+%tile blue_vial
+%tile blue_flask
+%tile green_vial
+%tile green_flask
+%tile gold_vial
+%tile gold_flask
+%tile purple_vial
+%tile purple_flask
+%tile small_wrench
+%tile skull
+%tile gold_coin
+%tile handkerchief
+%tile spittoon
+%unused
+%unused
+%unused

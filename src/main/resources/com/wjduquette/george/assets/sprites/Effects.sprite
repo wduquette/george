@@ -2,12 +2,12 @@
 %prefix effect
 %size 40 40
 %file Effects.png
-%tile bullet    # arbitrary ranged missile
-%tile target    # arbitrary ranged hit
-%tile fireball  # ranged magic
-%tile jaws      # biting attack
-%tile fist      # unarmed attack
-%tile swoosh    # a miss
-%tile claw      # claw attack
-%tile slime     # slime attack
-%tile zzz       # sleep attack
+%sprite bullet    # arbitrary ranged missile
+%sprite target    # arbitrary ranged hit
+%sprite fireball  # ranged magic
+%sprite jaws      # biting attack
+%sprite fist      # unarmed attack
+%sprite swoosh    # a miss
+%sprite claw      # claw attack
+%sprite slime     # slime attack
+%sprite zzz       # sleep attack

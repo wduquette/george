@@ -1,0 +1,12 @@
+# Button tiles
+%prefix button
+%size 40 40
+%file Buttons.png
+%tile backpack
+%tile combat
+%tile normal
+%tile scroll
+%tile map
+%tile magnifier
+%tile load
+%tile save

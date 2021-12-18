@@ -2,10 +2,10 @@
 %prefix slot
 %size 40 40
 %file Slots.png
-%tile weapon_slot
-%tile bow_slot
-%tile armor_slot
-%tile shield_slot
-%tile helmet_slot
-%tile footwear_slot
-%tile item_slot
+%sprite weapon_slot
+%sprite bow_slot
+%sprite armor_slot
+%sprite shield_slot
+%sprite helmet_slot
+%sprite footwear_slot
+%sprite item_slot

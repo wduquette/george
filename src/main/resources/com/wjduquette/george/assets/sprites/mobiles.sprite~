@@ -1,0 +1,103 @@
+# mobiles tiles
+%prefix mobile
+%size 40 40
+
+# Humans
+%file mobile_human.png
+%tile george
+%tile knight
+%tile friar
+%tile wizard1
+%tile thief
+%tile desk_wizard
+%tile fillmore
+%tile gold_fillmore
+%tile dark_wizard
+%tile peasant1
+%tile peasant2
+%tile peasant3
+%tile peasant4
+%tile peasant5
+%tile princess
+%tile wizard2
+
+# Animals
+%file mobile_animal.png
+%tile gray_snake
+%tile orange_snake
+%tile red_snake
+%tile green_snake
+%tile blue_snake
+%tile purple_snake
+%tile xmas_snake
+%tile spotted_snake
+%tile bat
+%tile black_bat
+%tile fire_bat
+%tile ice_bat
+%tile green_bat
+%tile purple_bat
+%tile electric_bat
+%tile jet_bat
+%tile rat
+%tile giant_rat
+%tile newt
+
+# Demons
+%file mobile_demon.png
+%tile imp
+%tile imp_wizard
+%tile imp_fighter
+%tile imp_lord
+%tile fire_demon
+%tile cthulhu
+
+# Fairies
+%file mobile_fairy.png
+%tile blue_fairy
+%tile orange_fairy
+%tile green_fairy
+
+# Humanoids
+%file mobile_humanoid.png
+%tile kobold
+%tile goblin
+%tile orc
+%tile ogre
+%tile troll
+%tile fire_cultist
+%tile fire_priest
+%tile cthulhu_cultist
+%tile cthulhu_priest
+
+# Insects
+%file mobile_insect.png
+%tile roach
+%tile lady_bug
+%tile manly_bug
+%tile gold_bug
+%tile spider
+
+# Robots
+%file mobile_robot.png
+%tile peasant_robot
+%tile robot
+%tile war_robot
+
+# Slimes
+%file mobile_slime.png
+%tile white_slime
+%tile yellow_slime
+%tile blue_slime
+%tile red_slime
+%tile orange_slime
+%tile purple_slime
+%tile green_slime
+%tile metal_slime
+
+# Undead
+%file mobile_undead.png
+%tile zombie
+%tile skeleton
+%tile reaper
+

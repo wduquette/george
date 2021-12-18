@@ -1,0 +1,13 @@
+# Effects tiles
+%prefix effect
+%size 40 40
+%file Effects.png
+%tile bullet    # arbitrary ranged missile
+%tile target    # arbitrary ranged hit
+%tile fireball  # ranged magic
+%tile jaws      # biting attack
+%tile fist      # unarmed attack
+%tile swoosh    # a miss
+%tile claw      # claw attack
+%tile slime     # slime attack
+%tile zzz       # sleep attack

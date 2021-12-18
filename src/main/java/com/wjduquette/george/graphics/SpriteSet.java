@@ -15,44 +15,44 @@ import java.util.*;
  * memory, each sprite is accessible by index, 0 to N - 1, and by name.
  *
  * <p>A keyword file may include multiple PNG files, each with its own
- * tiles, provided that all files have the same size.</p>
+ * sprites, provided that all files contain sprites of the same size.</p>
  *
  * <h3>Keyword File Syntax</h3>
  *
- * <p>By convention, a TileSet keyword file has a `.tileset` file type.
- * A TileSet file looks like this:</p>
+ * <p>By convention, a SpriteSet keyword file has a `.sprite` file type.
+ * A SpriteSet file looks like this:</p>
  *
  * <pre>
- * %prefix {tileset prefix}
- * %size {tile width} {tile height}
+ * %prefix {set prefix}
+ * %size {sprite width} {sprite height}
  * %file {name of PNG file}
- * %tile {name of tile}
+ * %sprite {name of sprite}
  * ...
  * %skip
  * </pre>
  *
- * <p>The {@code %prefix} keyword gives the tile set's prefix.  Each tile
- * is identified by a string "{prefix}.{tilename}, so that tiles from
+ * <p>The {@code %prefix} keyword gives the set's prefix.  Each sprite
+ * is identified by a string "{prefix}.{sprite name}, so that sprites from
  * multiple sets won't have name collisions.</p>
  *
- * <p>The {@code %size} keyword gives the size of the tile set's tiles in
+ * <p>The {@code %size} keyword gives the size of the set's sprites in
  * pixels.</p>
  *
- * <p>The {@code %file} keyword specifies a file containing tile
+ * <p>The {@code %file} keyword specifies a file containing sprite
  * images.  It is a PNG file of rectangular tiles of the given {@code %size},
- * such as might be created by PyxelEdit.  The PNG file must be in the same
- * folder as the keyword file.  A tile set may contain tiles from multiple
- * files.</p>
+ * one tile per sprite, such as might be created by PyxelEdit.  The PNG file
+ * must be in the same folder as the keyword file.  A set may contain sprites
+ * from multiple files.</p>
  *
- * <p>The {@code %tile} keyword gives the name of a tile in the
- * current {@code %file}.  {%tile} keywords are matched to the tiles in the
+ * <p>The {@code %sprite} keyword gives the name of a sprite in the
+ * current {@code %file}.  {%sprite} keywords are matched to the sprites in the
  * file from left to right and top to bottom.  Indices are assigned in the
  * same order.</p>
  *
- * <p>The {@code %unused} keyword is used to skip blank or unwanted tiles, so
+ * <p>The {@code %unused} keyword is used to skip blank or unwanted sprites, so
  * as to preserve the relation of indices to PNG file tiles (as this is
  * important to external tools like the Tiled map editor).  The {@code %unused}
- * keyword is only required in the middle of a {@code %file}'s tiles.</p>
+ * keyword is only required in the middle of a {@code %file}'s sprites.</p>
  */
 public class SpriteSet {
     //-------------------------------------------------------------------------
@@ -68,11 +68,8 @@ public class SpriteSet {
     private int width;
     private int height;
 
-    // The list of sprites, by name.
-    private final List<SpriteInfo> sprites = new ArrayList<>();
-
-    // The map from name to tile.
-    private final Map<String, SpriteInfo> tileMap = new HashMap<>();
+    // The map from name to sprite, in order of definition
+    private final Map<String, SpriteInfo> spriteMap = new LinkedHashMap<>();
 
     // Transient; used during parsing.
     private transient List<Image> images;
@@ -107,34 +104,34 @@ public class SpriteSet {
         var parser = new KeywordParser();
 
         parser.defineKeyword("%prefix", (scanner, $) -> {
+            // TODO allow only once
             prefix = scanner.next();
         });
         parser.defineKeyword("%size", (scanner, $) -> {
+            // TODO allow only once
             width = scanner.nextInt();
             height = scanner.nextInt();
         });
         parser.defineKeyword("%file", (scanner, $) -> {
             String filename = Resource.relativeTo(relPath, scanner.next());
-            Image fileImage = loadTileSetImage(cls, relPath, filename);
+            Image fileImage = loadSpriteSetImage(cls, relPath, filename);
             images = ImageUtils.getTiles(fileImage, width, height);
             nextIndex = 0;
         });
-        parser.defineKeyword("%tile", (scanner, $) -> {
+        parser.defineKeyword("%sprite", (scanner, $) -> {
             var name = prefix + "." + scanner.next();
             var info = new SpriteInfo(name, images.get(nextIndex++));
-            sprites.add(info);
-            tileMap.put(info.name(), info);
+            spriteMap.put(info.name(), info);
         });
         parser.defineKeyword("%unused", (scanner, $) -> {
-            var unused = new SpriteInfo("unused", images.get(nextIndex++));
-            sprites.add(unused);
             // Do not add to name lookup.
+            nextIndex++;
         });
 
         parser.parse(Resource.getLines(cls, relPath));
     }
 
-    private Image loadTileSetImage(
+    private Image loadSpriteSetImage(
         Class<?> cls,
         String relPath,
         String imgPath)
@@ -150,7 +147,7 @@ public class SpriteSet {
     // Public Methods
 
     /**
-     * Returns the TileSet's resource identifier.
+     * Returns the SpriteSet's resource identifier.
      * @return The string
      */
     public String resource() {
@@ -158,7 +155,7 @@ public class SpriteSet {
     }
 
     /**
-     * Gets the tile set's prefix string.
+     * Gets the set's prefix string.
      * @return The prefix
      */
     public String prefix() {
@@ -166,20 +163,11 @@ public class SpriteSet {
     }
 
     /**
-     * Gets the number of tiles in the set.
+     * Gets the number of sprites in the set.
      * @return The size
      */
     public int size() {
-        return sprites.size();
-    }
-
-    /**
-     * Get a tile image given its index.
-     * @param index The index
-     * @return The image.
-     */
-    public Image get(int index) {
-        return sprites.get(index).image();
+        return spriteMap.size();
     }
 
     /**
@@ -208,7 +196,7 @@ public class SpriteSet {
      * @return The info
      */
     public Optional<SpriteInfo> findInfo(String name) {
-        return Optional.ofNullable(tileMap.get(name));
+        return Optional.ofNullable(spriteMap.get(name));
     }
 
     /**
@@ -217,16 +205,16 @@ public class SpriteSet {
      * @return The image
      */
     public Optional<Image> find(String name) {
-        SpriteInfo info = tileMap.get(name);
+        SpriteInfo info = spriteMap.get(name);
         return info != null ? Optional.of(info.image()) : Optional.empty();
     }
 
     /**
-     * Get a read-only list of the tile set's tile info.
-     * @return The list
+     * Get a read-only map of the set's contents
+     * @return The map
      */
-    public List<SpriteInfo> getInfo() {
-        return Collections.unmodifiableList(sprites);
+    public Map<String,SpriteInfo> getInfo() {
+        return Collections.unmodifiableMap(spriteMap);
     }
 
     //-------------------------------------------------------------------------
