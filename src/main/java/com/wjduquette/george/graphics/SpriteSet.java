@@ -5,15 +5,14 @@ import com.wjduquette.george.util.Resource;
 import com.wjduquette.george.util.ResourceException;
 import javafx.scene.image.Image;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
 /**
- * A TileSet represents a set of tiles loaded from disk.  On the disk, a
- * TileSet is represented by a keyword file and a PNG image.  In memory,
- * each tile is accessible by index, 0 to N - 1, and by name.
+ * A SpriteSet represents a set of sprites loaded from disk.  On the disk, a
+ * SpriteSet is represented by a ".sprite" keyword file and a PNG image.  In
+ * memory, each sprite is accessible by index, 0 to N - 1, and by name.
  *
  * <p>A keyword file may include multiple PNG files, each with its own
  * tiles, provided that all files have the same size.</p>
@@ -55,7 +54,7 @@ import java.util.*;
  * important to external tools like the Tiled map editor).  The {@code %unused}
  * keyword is only required in the middle of a {@code %file}'s tiles.</p>
  */
-public class TileSet {
+public class SpriteSet {
     //-------------------------------------------------------------------------
     // Instance Variables
 
@@ -65,15 +64,15 @@ public class TileSet {
     // The prefix string
     private String prefix;
 
-    // The sizes
-    private int tileWidth;
-    private int tileHeight;
+    // The sprite width and height in pixels
+    private int width;
+    private int height;
 
-    // The list of tiles, by name.
-    private final List<TileInfo> tileList = new ArrayList<>();
+    // The list of sprites, by name.
+    private final List<SpriteInfo> sprites = new ArrayList<>();
 
     // The map from name to tile.
-    private final Map<String,TileInfo> tileMap = new HashMap<>();
+    private final Map<String, SpriteInfo> tileMap = new HashMap<>();
 
     // Transient; used during parsing.
     private transient List<Image> images;
@@ -82,7 +81,7 @@ public class TileSet {
     //-------------------------------------------------------------------------
     // Constructor
 
-    public TileSet(Class<?> cls, String relPath) {
+    public SpriteSet(Class<?> cls, String relPath) {
         try {
             loadData(cls, relPath);
         } catch (KeywordParser.KeywordException ex) {
@@ -101,8 +100,8 @@ public class TileSet {
         this.resource = (relPath.startsWith("/"))
             ? relPath : cls.getCanonicalName() + ":" + relPath;
         this.prefix = null;
-        this.tileWidth = -1;
-        this.tileHeight = -1;
+        this.width = -1;
+        this.height = -1;
 
         // NEXT, parse the data.
         var parser = new KeywordParser();
@@ -111,24 +110,24 @@ public class TileSet {
             prefix = scanner.next();
         });
         parser.defineKeyword("%size", (scanner, $) -> {
-            tileWidth = scanner.nextInt();
-            tileHeight = scanner.nextInt();
+            width = scanner.nextInt();
+            height = scanner.nextInt();
         });
         parser.defineKeyword("%file", (scanner, $) -> {
             String filename = Resource.relativeTo(relPath, scanner.next());
             Image fileImage = loadTileSetImage(cls, relPath, filename);
-            images = ImageUtils.getTiles(fileImage, tileWidth, tileHeight);
+            images = ImageUtils.getTiles(fileImage, width, height);
             nextIndex = 0;
         });
         parser.defineKeyword("%tile", (scanner, $) -> {
             var name = prefix + "." + scanner.next();
-            var info = new TileInfo(name, images.get(nextIndex++));
-            tileList.add(info);
+            var info = new SpriteInfo(name, images.get(nextIndex++));
+            sprites.add(info);
             tileMap.put(info.name(), info);
         });
         parser.defineKeyword("%unused", (scanner, $) -> {
-            var unused = new TileInfo("unused", images.get(nextIndex++));
-            tileList.add(unused);
+            var unused = new SpriteInfo("unused", images.get(nextIndex++));
+            sprites.add(unused);
             // Do not add to name lookup.
         });
 
@@ -171,7 +170,7 @@ public class TileSet {
      * @return The size
      */
     public int size() {
-        return tileList.size();
+        return sprites.size();
     }
 
     /**
@@ -180,7 +179,7 @@ public class TileSet {
      * @return The image.
      */
     public Image get(int index) {
-        return tileList.get(index).image();
+        return sprites.get(index).image();
     }
 
     /**
@@ -199,7 +198,7 @@ public class TileSet {
      * @param name The name, including the prefix.
      * @return The image
      */
-    public TileInfo getInfo(String name) {
+    public SpriteInfo getInfo(String name) {
         return findInfo(name).orElseThrow();
     }
 
@@ -208,7 +207,7 @@ public class TileSet {
      * @param name The name, including the prefix.
      * @return The info
      */
-    public Optional<TileInfo> findInfo(String name) {
+    public Optional<SpriteInfo> findInfo(String name) {
         return Optional.ofNullable(tileMap.get(name));
     }
 
@@ -218,7 +217,7 @@ public class TileSet {
      * @return The image
      */
     public Optional<Image> find(String name) {
-        TileInfo info = tileMap.get(name);
+        SpriteInfo info = tileMap.get(name);
         return info != null ? Optional.of(info.image()) : Optional.empty();
     }
 
@@ -226,8 +225,8 @@ public class TileSet {
      * Get a read-only list of the tile set's tile info.
      * @return The list
      */
-    public List<TileInfo> getInfo() {
-        return Collections.unmodifiableList(tileList);
+    public List<SpriteInfo> getInfo() {
+        return Collections.unmodifiableList(sprites);
     }
 
     //-------------------------------------------------------------------------
@@ -238,5 +237,5 @@ public class TileSet {
      * @param name The name by which it's known in the tile set.
      * @param image The actual image.
      */
-    public static record TileInfo(String name, Image image) {}
+    public record SpriteInfo(String name, Image image) implements ImageInfo {}
 }

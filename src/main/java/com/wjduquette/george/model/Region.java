@@ -1,6 +1,6 @@
 package com.wjduquette.george.model;
 
-import com.wjduquette.george.TileSets;
+import com.wjduquette.george.Sprites;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.TerrainTileSet;
 import com.wjduquette.george.tmx.TiledMapReader;
@@ -218,7 +218,7 @@ public class Region {
                         entities.make()
                             .feature(TerrainType.NONE)
                             .sign(obj.name)
-                            .sprite(TileSets.FEATURES.getInfo("feature.sign"))
+                            .sprite(Sprites.FEATURES.getInfo("feature.sign"))
                             .cell(object2cell(obj));
                     }
                     default -> {

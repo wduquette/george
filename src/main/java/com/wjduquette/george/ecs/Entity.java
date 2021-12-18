@@ -1,10 +1,8 @@
 package com.wjduquette.george.ecs;
 
 import com.wjduquette.george.graphics.ImageInfo;
-import com.wjduquette.george.graphics.TileSet;
 import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.Player;
-import com.wjduquette.george.model.TerrainTile;
 import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.util.TypeMap;
 import javafx.scene.image.Image;
@@ -179,16 +177,6 @@ public class Entity {
      */
     public Entity sprite(Image img, String name) {
         put(new Sprite(img, name));
-        return this;
-    }
-
-    /**
-     * Sets the entity's Sprite given a TileSet entry.
-     * @param info The TileSet entry.
-     * @return The entity
-     */
-    public Entity sprite(TileSet.TileInfo info) {
-        put(new Sprite(info.image(), info.name()));
         return this;
     }
 
