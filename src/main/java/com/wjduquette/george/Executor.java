@@ -95,6 +95,7 @@ public class Executor {
                 //
                 case Step.SetCell step:
                     mob.cell(step.cell());  // Go there.
+                    System.out.println("At " + step.cell());
                     break;
                 case Step.WaitUntilGone wait:
                     if (region.find(wait.id()).isPresent()) {
