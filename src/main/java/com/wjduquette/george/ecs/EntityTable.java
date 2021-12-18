@@ -1,5 +1,7 @@
 package com.wjduquette.george.ecs;
 
+import com.wjduquette.george.model.Cell;
+
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -82,6 +84,17 @@ public class EntityTable {
 
         return entities.values().stream()
             .filter(e -> e.hasAll(set));
+    }
+
+    /**
+     * Finds the first entity with a given set of components at the given
+     * cell.
+     * @param cell The cell
+     * @param components The required components
+     * @return The entity, if found
+     */
+    public Optional<Entity> findAt(Cell cell, Class<?>...components) {
+        return query(components).filter(e -> e.isAt(cell)).findFirst();
     }
 
     /**

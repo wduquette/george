@@ -1,8 +1,6 @@
 package com.wjduquette.george.util;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public final class TypeMap {
     //-------------------------------------------------------------------------
@@ -60,7 +58,15 @@ public final class TypeMap {
      * @return The set
      */
     public Set<Class<?>> keySet() {
-        return map.keySet();
+        return Collections.unmodifiableSet(map.keySet());
+    }
+
+    /**
+     * The TypeMap's values.
+     * @return The collection of values
+     */
+    public Collection<Object> values() {
+        return Collections.unmodifiableCollection(map.values());
     }
 }
 

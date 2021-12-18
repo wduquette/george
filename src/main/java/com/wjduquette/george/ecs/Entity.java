@@ -98,6 +98,22 @@ public class Entity {
     }
 
     /**
+     * Remove the component, if defined.
+     * @param component The component
+     * @throws IllegalArgumentException if this component doesn't belong to
+     * the entity.
+     */
+    public void remove(Component component) {
+        // TODO: consider defining TypeMap.values(), and using that.
+        var old = components.get(component.getClass());
+        if (!old.equals(component)) {
+            throw new IllegalArgumentException(
+                "Attempt to remove un-owned component: " + component);
+        }
+        components.remove(component.getClass());
+    }
+
+    /**
      * Get the component of the given class, requiring that it must exist.
      * @param cls The desired component class.
      * @param <T> The class

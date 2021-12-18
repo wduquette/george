@@ -6,6 +6,7 @@ My current To Do list.
 - [x] Add Exits to the entities table
 - [x] Add another region, e.g., Floobham
 - [x] See how Floobham defines features
+- [ ] Implement doors
 - [ ] Support moving to another region, e.g., Floobham
 - [ ] Implement Floobham "mannikins"
 - [ ] Implement Floobham NPCs

@@ -329,6 +329,16 @@ public class Region {
     }
 
     /**
+     * Query the entities table for entities with matching components.
+     * @param classes A list of component classes to match
+     * @return The stream of found entities.
+     */
+    @SuppressWarnings("unchecked")
+    public Optional<Entity> findAt(Cell cell, Class<?>... classes) {
+        return entities.findAt(cell, classes);
+    }
+
+    /**
      * Gets the region's entities table.
      * @return The table.
      */

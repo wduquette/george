@@ -1,9 +1,6 @@
 package com.wjduquette.george;
 
-import com.wjduquette.george.ecs.Entity;
-import com.wjduquette.george.ecs.Mobile;
-import com.wjduquette.george.ecs.Plan;
-import com.wjduquette.george.ecs.Sign;
+import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.widgets.UserInput;
 
@@ -50,7 +47,6 @@ public class Planner {
         // Planning System (for player characters)
 
         // FIRST, is there a route?
-        // TODO: Define predicate.
         var route = Region.findRoute(c -> isPassable(region, player, c),
             player.cell(), targetCell);
 
@@ -58,9 +54,16 @@ public class Planner {
             return;
         }
 
-        // NEXT, what's there?
+        // NEXT, what's there?  Could be a normal cell, a feature, or a mobile
         var plan = new Plan();
+        player.put(plan);
 
+        Optional<Entity> result;
+        // TODO: A series of rules, one of which can contribute to the plan
+
+//        if ((result = region.findAt(targetCell, Feature.class)).isPresent()) {
+//            Entity ent = result.get();
+//        }
         Optional<Entity> sign = region.query(Sign.class)
             .filter(e -> e.isAt(targetCell)).findFirst();
 
@@ -70,7 +73,9 @@ public class Planner {
             plan.add(new Step.MoveTo(targetCell));
         }
 
-        player.put(plan);
+        if (plan.isEmpty()) {
+            player.remove(plan);
+        }
     }
 
     // Adds the route to the end of the given plan as a series of MoveTo steps.
