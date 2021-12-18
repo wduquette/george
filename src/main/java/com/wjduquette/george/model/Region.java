@@ -6,7 +6,6 @@ import com.wjduquette.george.graphics.TerrainTileSet;
 import com.wjduquette.george.tmx.TiledMapReader;
 import com.wjduquette.george.tmx.TiledMapReader.Layer;
 import com.wjduquette.george.util.*;
-import javafx.scene.image.Image;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -192,7 +191,7 @@ public class Region {
 
             Entity feature = entities.make()
                 .feature(tile.type())
-                .tile(tile)
+                .sprite(tile)
                 .cell(r, c);
         }
     }
@@ -219,7 +218,7 @@ public class Region {
                         entities.make()
                             .feature(TerrainType.NONE)
                             .sign(obj.name)
-                            .tile(TileSets.FEATURES.getInfo("feature.sign"))
+                            .sprite(TileSets.FEATURES.getInfo("feature.sign"))
                             .cell(object2cell(obj));
                     }
                     default -> {

@@ -107,7 +107,7 @@ public class GameView extends StackPane {
         var iy = yTop + 40;
         var terrain = region.getTerrain(sign.cell());
         canvas.gc().drawImage(ImageUtils.embiggen(terrain.image(), 2), ix, iy);
-        canvas.gc().drawImage(ImageUtils.embiggen(sign.tile().image(), 2), ix, iy);
+        canvas.gc().drawImage(ImageUtils.embiggen(sign.sprite().image(), 2), ix, iy);
 
         // The "click to continue"
         canvas.gc().setFill(Color.WHITE);
@@ -153,17 +153,17 @@ public class GameView extends StackPane {
 
         // NEXT, render the features
         for (Entity feature : region.query(Feature.class).toList()) {
-            canvas.drawImage(feature.tile().image(), entity2xy(feature));
+            canvas.drawImage(feature.sprite().image(), entity2xy(feature));
         }
 
         // NEXT, render the mobiles on top
         for (Entity mobile : region.query(Mobile.class).toList()) {
-            canvas.drawImage(mobile.tile().image(), entity2xy(mobile));
+            canvas.drawImage(mobile.sprite().image(), entity2xy(mobile));
         }
 
         // NEXT, render other visual effects that have their own tiles.
-        for (Entity effect : region.query(VisualEffect.class, Tile.class).toList()) {
-            canvas.drawImage(effect.tile().image(), entity2xy(effect));
+        for (Entity effect : region.query(VisualEffect.class, Sprite.class).toList()) {
+            canvas.drawImage(effect.sprite().image(), entity2xy(effect));
         }
 
         // NEXT, render player status boxes
@@ -177,8 +177,8 @@ public class GameView extends StackPane {
         double border = oborder + iborder;
         double hName = 12;
         double gap = 5;
-        double boxHeight = player.tile().height() + 2 * border + hName;
-        double boxWidth = player.tile().width() + 2 * border;
+        double boxHeight = player.sprite().height() + 2 * border + hName;
+        double boxWidth = player.sprite().width() + 2 * border;
 
         double yTop = 10 + index * (boxHeight + gap);
         double xLeft = 10;
@@ -200,7 +200,7 @@ public class GameView extends StackPane {
             xLeft + border, yTop + border,
             boxWidth - 2 * border, boxHeight - 2 * border);
 
-        canvas.gc().drawImage(player.tile().image(),
+        canvas.gc().drawImage(player.sprite().image(),
             xLeft + border, yTop + border);
     }
 

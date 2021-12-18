@@ -162,42 +162,42 @@ public class Entity {
     }
 
     //-------------------------------------------------------------------------
-    // Tile Component Methods
+    // Sprite Component Methods
 
     /**
-     * Gets the entity's Tile, or null if none.
-     * @return The tile, or null.
+     * Gets the entity's Sprite, or null if none.
+     * @return The sprite, or null.
      */
-    public Tile tile() { return components.get(Tile.class); }
+    public Sprite sprite() { return components.get(Sprite.class); }
 
     /**
-     * Sets the entity's Tile given an image and its name
+     * Sets the entity's Sprite given an image and its name
      * @param img The image
-     * @param name The tile name
+     * @param name The sprite name
      * @return The entity
      */
-    public Entity tile(Image img, String name) {
-        put(new Tile(img, name));
+    public Entity sprite(Image img, String name) {
+        put(new Sprite(img, name));
         return this;
     }
 
     /**
-     * Sets the entity's Tile given a TileSet entry.
+     * Sets the entity's Sprite given a TileSet entry.
      * @param info The TileSet entry.
      * @return The entity
      */
-    public Entity tile(TileSet.TileInfo info) {
-        put(new Tile(info.image(), info.name()));
+    public Entity sprite(TileSet.TileInfo info) {
+        put(new Sprite(info.image(), info.name()));
         return this;
     }
 
     /**
-     * Sets the entity's Tile given a TerrainTile.
+     * Sets the entity's Sprite given a TerrainTile.
      * @param tile The TerrainTile entry.
      * @return The entity
      */
-    public Entity tile(TerrainTile tile) {
-        put(new Tile(tile.image(), tile.name()));
+    public Entity sprite(TerrainTile tile) {
+        put(new Sprite(tile.image(), tile.name()));
         return this;
     }
 
