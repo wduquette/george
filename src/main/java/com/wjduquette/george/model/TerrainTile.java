@@ -1,5 +1,6 @@
 package com.wjduquette.george.model;
 
+import com.wjduquette.george.graphics.ImageInfo;
 import javafx.scene.image.Image;
 
 /**
@@ -15,5 +16,5 @@ public record TerrainTile(
     TerrainType type,
     String description,
     Image image
-) {
+) implements ImageInfo {
 }
