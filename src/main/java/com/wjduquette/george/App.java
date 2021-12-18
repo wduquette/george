@@ -63,7 +63,7 @@ public class App extends Application {
             .tile(TileSets.MOBILES.get("mobile.george"));
 
         // Dump the entities table
-//        region.getEntities().dump();
+        region.getEntities().dump();
 
         viewer.addEventHandler(UserInputEvent.USER_INPUT, this::onUserInput);
         viewer.setRegion(region);

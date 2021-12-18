@@ -248,6 +248,24 @@ public class Entity {
         return this;
     }
 
+    /**
+     * Gets the entity's Exit data, or null if none.
+     * @return The component, or null.
+     */
+    public Exit exit() { return components.get(Exit.class); }
+
+    /**
+     * Sets an Exit's region and point
+     * @param region The region name
+     * @param point The name of the entry point in that region
+     * @return The entity
+     */
+    public Entity exit(String region, String point) {
+        put(new Exit(region, point));
+        return this;
+    }
+
+
     //-------------------------------------------------------------------------
     // Mobile Entity Methods
 

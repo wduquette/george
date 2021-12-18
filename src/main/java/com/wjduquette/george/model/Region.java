@@ -1,10 +1,7 @@
 package com.wjduquette.george.model;
 
 import com.wjduquette.george.TileSets;
-import com.wjduquette.george.ecs.Component;
-import com.wjduquette.george.ecs.Entity;
-import com.wjduquette.george.ecs.EntityTable;
-import com.wjduquette.george.ecs.Feature;
+import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.TerrainTileSet;
 import com.wjduquette.george.tmx.TiledMapReader;
 import com.wjduquette.george.tmx.TiledMapReader.Layer;
@@ -44,6 +41,7 @@ public class Region {
     private static final String FEATURES_LAYER = "Features";
 
     // Object type strings
+    private static final String EXIT_OBJECT = "Exit";
     private static final String POINT_OBJECT = "Point";
     private static final String SIGN_OBJECT = "Sign";
 
@@ -210,6 +208,9 @@ public class Region {
                 Cell cell = object2cell(obj);
 
                 switch (obj.type) {
+                    case EXIT_OBJECT -> entities.make()
+                        .put(makeExit(obj.name))
+                        .cell(object2cell(obj));
                     case POINT_OBJECT -> entities.make()
                         .point(obj.name)
                         .cell(object2cell(obj));
@@ -226,6 +227,20 @@ public class Region {
                     }
                 }
             }
+        }
+    }
+
+    // Converts a "{regionName}:{pointName}" string into an Exit.
+    private Exit makeExit(String regionPoint) {
+        String[] tokens = regionPoint.split(":");
+
+        if (tokens.length == 2) {
+            return new Exit(tokens[0], tokens[1]);
+        } else if (tokens.length == 1) {
+            return new Exit(null, regionPoint);
+        } else {
+            throw new IllegalArgumentException("Invalid Exit name: \"" +
+                regionPoint + "\"");
         }
     }
 
