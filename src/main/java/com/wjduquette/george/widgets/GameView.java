@@ -3,6 +3,7 @@ package com.wjduquette.george.widgets;
 import com.wjduquette.george.Sprites;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.ImageUtils;
+import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.*;
 import javafx.application.Platform;
 import javafx.geometry.*;
@@ -39,6 +40,12 @@ public class GameView extends StackPane {
     // The region currently being displayed
     private Region region = null;
 
+    // The sprite set to use for rendering.  (This is used for entities only;
+    // the base terrain is drawn using the tiles from the region's
+    // TerrainTileSet.)
+    private SpriteSet sprites = null;
+
+    // The currently rendered click targets
     private final List<ClickTarget> targets = new ArrayList<>();
 
     //-------------------------------------------------------------------------
@@ -80,6 +87,22 @@ public class GameView extends StackPane {
 
     //-------------------------------------------------------------------------
     // Public Methods
+
+    /**
+     * Gets the sprite set in use by the renderer.
+     * @return The set.
+     */
+    public SpriteSet getSprites() {
+        return sprites;
+    }
+
+    /**
+     * Sets the sprite set to use for rendering.
+     * @param set The set
+     */
+    public void setSprites(SpriteSet set) {
+        this.sprites = set;
+    }
 
     public void setRegion(Region map) {
         this.region = map;
@@ -234,7 +257,7 @@ public class GameView extends StackPane {
     }
 
     private Image img(Sprite sprite) {
-        return Sprites.ALL.get(sprite.name());
+        return sprites.get(sprite.name());
     }
 
     // Gets the pixel coordinates at which to draw the entity's tile.

@@ -78,6 +78,7 @@ public class App extends Application {
         // Dump the entities table
 //        region.getEntities().dump();
 
+        viewer.setSprites(Sprites.ALL);
         viewer.addEventHandler(UserInputEvent.USER_INPUT, this::onUserInput);
         viewer.setRegion(region);
 

@@ -187,7 +187,6 @@ public class Entity {
 
     /**
      * Sets the entity's Sprite given an image and its name
-     * @param img The image
      * @param name The sprite name
      * @return The entity
      */
