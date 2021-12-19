@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "daily/2021-12-18.md",
+            "file": "daily/2021-12-19.md",
             "mode": "source"
           }
         }
@@ -68,7 +68,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "daily/2021-12-18.md",
+                "file": "daily/2021-12-19.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -85,7 +85,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "daily/2021-12-18.md",
+                "file": "daily/2021-12-19.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -108,7 +108,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "daily/2021-12-18.md"
+                "file": "daily/2021-12-19.md"
               }
             }
           }
@@ -121,15 +121,15 @@
   },
   "active": "0d825b141e76b8b0",
   "lastOpenFiles": [
+    "daily/2021-12-19.md",
+    "To Do.md",
     "daily/2021-12-18.md",
     "Doors.md",
-    "To Do.md",
     "Tiled Map Editor.md",
     "Tiled JSON Schema 1.6.md",
     "Systems.md",
     "Animator System.md",
     "Executor System.md",
-    "Planner System.md",
-    "daily/2021-12-13.md"
+    "Planner System.md"
   ]
 }
