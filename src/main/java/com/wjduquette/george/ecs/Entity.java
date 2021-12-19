@@ -191,8 +191,8 @@ public class Entity {
      * @param name The sprite name
      * @return The entity
      */
-    public Entity sprite(Image img, String name) {
-        put(new Sprite(img, name));
+    public Entity sprite(String name) {
+        put(new Sprite(name));
         return this;
     }
 
@@ -202,7 +202,7 @@ public class Entity {
      * @return The entity
      */
     public Entity sprite(ImageInfo info) {
-        put(new Sprite(info.image(), info.name()));
+        put(new Sprite(info.name()));
         return this;
     }
 

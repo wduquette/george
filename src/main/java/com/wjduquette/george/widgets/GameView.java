@@ -1,10 +1,12 @@
 package com.wjduquette.george.widgets;
 
+import com.wjduquette.george.Sprites;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.model.*;
 import javafx.application.Platform;
 import javafx.geometry.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -107,7 +109,7 @@ public class GameView extends StackPane {
         var iy = yTop + 40;
         var terrain = region.getTerrain(sign.cell());
         canvas.gc().drawImage(ImageUtils.embiggen(terrain.image(), 2), ix, iy);
-        canvas.gc().drawImage(ImageUtils.embiggen(sign.sprite().image(), 2), ix, iy);
+        canvas.gc().drawImage(ImageUtils.embiggen(img(sign.sprite()), 2), ix, iy);
 
         // The "click to continue"
         canvas.gc().setFill(Color.WHITE);
@@ -153,17 +155,17 @@ public class GameView extends StackPane {
 
         // NEXT, render the features
         for (Entity feature : region.query(Feature.class).toList()) {
-            canvas.drawImage(feature.sprite().image(), entity2xy(feature));
+            canvas.drawImage(img(feature.sprite()), entity2xy(feature));
         }
 
         // NEXT, render the mobiles on top
         for (Entity mobile : region.query(Mobile.class).toList()) {
-            canvas.drawImage(mobile.sprite().image(), entity2xy(mobile));
+            canvas.drawImage(img(mobile.sprite()), entity2xy(mobile));
         }
 
         // NEXT, render other visual effects that have their own tiles.
         for (Entity effect : region.query(VisualEffect.class, Sprite.class).toList()) {
-            canvas.drawImage(effect.sprite().image(), entity2xy(effect));
+            canvas.drawImage(img(effect.sprite()), entity2xy(effect));
         }
 
         // NEXT, render player status boxes
@@ -177,8 +179,9 @@ public class GameView extends StackPane {
         double border = oborder + iborder;
         double hName = 12;
         double gap = 5;
-        double boxHeight = player.sprite().height() + 2 * border + hName;
-        double boxWidth = player.sprite().width() + 2 * border;
+        Image sprite = img(player.sprite());
+        double boxHeight = sprite.getHeight() + 2 * border + hName;
+        double boxWidth = sprite.getWidth() + 2 * border;
 
         double yTop = 10 + index * (boxHeight + gap);
         double xLeft = 10;
@@ -200,8 +203,7 @@ public class GameView extends StackPane {
             xLeft + border, yTop + border,
             boxWidth - 2 * border, boxHeight - 2 * border);
 
-        canvas.gc().drawImage(player.sprite().image(),
-            xLeft + border, yTop + border);
+        canvas.gc().drawImage(sprite, xLeft + border, yTop + border);
     }
 
 
@@ -229,6 +231,10 @@ public class GameView extends StackPane {
 
         rowMin = Math.max(0, rowOffset);
         colMin = Math.max(0, colOffset);
+    }
+
+    private Image img(Sprite sprite) {
+        return Sprites.ALL.get(sprite.name());
     }
 
     // Gets the pixel coordinates at which to draw the entity's tile.
