@@ -13,8 +13,14 @@ public sealed interface Interrupt {
 
     /**
      * Display a sign in a box over the map; wait for user input.
+     * @param signId The entity ID of the sign
      */
     public record DisplaySign(long signId) implements Interrupt {}
 
-
+    /**
+     * Move the party to the given point in the given region.
+     * @param region The region's name.
+     * @param point The point in the region.
+     */
+    public record GoToRegion(String region, String point) implements Interrupt {}
 }
