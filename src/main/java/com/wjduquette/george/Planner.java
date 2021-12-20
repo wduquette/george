@@ -21,7 +21,7 @@ public class Planner {
     //-------------------------------------------------------------------------
     // The System
 
-    public static Optional<Interrupt> doPlanning(UserInput input, Region region) {
+    public static void doPlanning(UserInput input, Region region) {
         Entity george = region.query(Player.class).findFirst().orElseThrow();
 
         switch (input) {
@@ -30,8 +30,6 @@ public class Planner {
             case UserInput.StatusBox status ->
                 System.out.println("Clicked on status box for " + status.playerId());
         }
-
-        return Optional.empty();
     }
 
     private static void doPlanMove(Region region, Entity player, Cell targetCell) {

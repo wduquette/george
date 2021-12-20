@@ -7,7 +7,6 @@ import com.wjduquette.george.ecs.VisualEffect;
 import com.wjduquette.george.model.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * This is the Executor system; it executes the plans made by the Planner.
@@ -16,61 +15,44 @@ public class Executor {
     private Executor() {} // Not instantiable
 
     // The result of executing a step.
-    private sealed interface Result {
-        // Go on to the next step of the plan
-        record DoNext() implements Result {}
-
-        // Go on to the next mover
-        record Pause() implements Result {}
-
-        // Clear this plan, and go on to the next mover
-        record Halt() implements Result {}
-
-        // Return this interrupt
-        record Inter(Interrupt interrupt) implements Result { }
+    private enum Result {
+        DO_NEXT,   // Go on to the next step of the plan
+        PAUSE,     // Go on to the next mover
+        HALT       // Clear this plan, and go on to the next mover
     }
 
     /**
      * Execute the movement system for the region.
      * @param region The region
      */
-    public static Optional<Interrupt> doMovement(Region region) {
+    public static void doMovement(Region region) {
         List<Entity> active = region.query(Plan.class)
             .toList();
 
         for (Entity mob : active) {
-            var interrupt = doMoveMob(region, mob);
-            if (interrupt.isPresent()) {
-                return interrupt;
-            }
+            doMoveMob(region, mob);
         }
-
-        return Optional.empty();
     }
 
-    private static Optional<Interrupt> doMoveMob(Region region, Entity mob) {
+    private static void doMoveMob(Region region, Entity mob) {
         while (!mob.plan().isEmpty()) {
             switch (doStep(region, mob)) {
-                case Result.DoNext $:
+                case DO_NEXT:
                     // Go on to the next step
                     break;
-                case Result.Pause $:
+                case PAUSE:
                     // This mover is waiting; go on to the next mover
-                    return Optional.empty();
-                case Result.Halt $:
+                    return;
+                case HALT:
                     // This mover can't complete its plan.  Throw it away and
                     // go on to the next mover
                     mob.plan().clear();
                     break;
-                case Result.Inter res:
-                    // This mover raised an interrupt
-                    return Optional.of(res.interrupt());
             }
         }
 
         // The Mob's plan is empty; remove the Plan component.
         mob.remove(Plan.class);
-        return Optional.empty();
     }
 
     /**
@@ -96,17 +78,17 @@ public class Executor {
                 if (route.size() == 1) {
                     if (isPassable(region, mob, route.get(0))) {
                         slideTo(region, mob, route.get(0));
-                        return new Result.Pause();
+                        return Result.PAUSE;
                     } else {
-                        return new Result.Halt();
+                        return Result.HALT;
                     }
                 } else if (route.size() > 1) {
                     // We aren't there yet.  Take the next step.
                     mob.plan().addFirst(goal);
                     slideTo(region, mob, route.get(0));
-                    return new Result.Pause();
+                    return Result.PAUSE;
                 } else {
-                    return new Result.Halt();
+                    return Result.HALT;
                 }
 
             case Step.Open goal:
@@ -123,14 +105,14 @@ public class Executor {
                             .put(door.feature())
                             .put(door.sprite());
                     }
-                    return new Result.DoNext();
+                    return Result.DO_NEXT;
                 } else if (route.size() > 1) {
                     // We aren't there yet.  Take the next step.
                     mob.plan().addFirst(goal);
                     slideTo(region, mob, route.get(0));
-                    return new Result.Pause();
+                    return Result.PAUSE;
                 } else {
-                    return new Result.Halt();
+                    return Result.HALT;
                 }
 
             case Step.Trigger goal:
@@ -140,14 +122,14 @@ public class Executor {
 
                 if (route.size() == 1) {
                     // We're adjacent
-                    return new Result.Inter(new Interrupt.DisplaySign(goal.id()));
+                    throw new InterruptException(new Interrupt.DisplaySign(goal.id()));
                 } else if (route.size() > 1) {
                     // We aren't there yet.  Take the next step.
                     mob.plan().addFirst(goal);
                     slideTo(region, mob, route.get(0));
-                    return new Result.Pause();
+                    return Result.PAUSE;
                 } else {
-                    return new Result.Halt();
+                    return Result.HALT;
                 }
             //
             // Primitive Operations: these are used to implement the planned
@@ -161,12 +143,12 @@ public class Executor {
             case Step.WaitUntilGone wait:
                 if (region.find(wait.id()).isPresent()) {
                     mob.plan().addFirst(wait); // Keep waiting
-                    return new Result.Pause();
+                    return Result.PAUSE;
                 }
                 break;
         }
 
-        return new Result.DoNext();
+        return Result.DO_NEXT;
     }
 
     //-------------------------------------------------------------------------
