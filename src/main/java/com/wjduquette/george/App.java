@@ -152,7 +152,7 @@ public class App extends Application {
     }
 
     private void gotoRegion(Interrupt.GoToRegion info) {
-        System.out.println("Go To region: " + info.region());
+        System.out.println("Go To region: " + info.exit());
     }
 
     //-------------------------------------------------------------------------

@@ -66,6 +66,8 @@ public class Planner {
             } else if (entity.door() != null && entity.door().isClosed()) {
                 plan.add(new Step.Open(entity.id()));
             }
+        } else if ((result = region.findAt(targetCell, Exit.class)).isPresent()) {
+            plan.add(new Step.Exit(result.get().id()));
         } else {
             plan.add(new Step.MoveTo(targetCell));
         }

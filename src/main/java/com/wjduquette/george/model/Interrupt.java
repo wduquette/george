@@ -1,5 +1,7 @@
 package com.wjduquette.george.model;
 
+import com.wjduquette.george.ecs.Exit;
+
 /**
  * An interrupt is something that interrupts the normal course of the game
  * loop.  If there is an interrupt on the interrupt stack, it is handled
@@ -19,8 +21,7 @@ public sealed interface Interrupt {
 
     /**
      * Move the party to the given point in the given region.
-     * @param region The region's name.
-     * @param point The point in the region.
+     * @param exit The exit to the new region.
      */
-    public record GoToRegion(String region, String point) implements Interrupt {}
+    public record GoToRegion(Exit exit) implements Interrupt {}
 }

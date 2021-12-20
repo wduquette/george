@@ -86,6 +86,24 @@ public class Executor {
                 }
             }
 
+            case Step.Exit goal: {
+                var feature = region.get(goal.id());
+                targetCell = feature.cell();
+                var result = proceed(region, mob, goal, targetCell);
+
+                if (result == Result.DO_NEXT) {
+                    if (isPassable(region, mob, targetCell)) {
+                        throw new InterruptException(
+                            new Interrupt.GoToRegion(feature.exit()));
+                    } else {
+                        System.out.println("Exit is blocked.");
+                        return Result.HALT;
+                    }
+                } else {
+                    return result;
+                }
+            }
+
             case Step.Open goal: {
                 targetCell = region.get(goal.id()).cell();
                 var result = proceed(region, mob, goal, targetCell);
