@@ -16,13 +16,19 @@ public class Executor {
     private Executor() {} // Not instantiable
 
     // The result of executing a step.
-    private enum Status {
-        DO_NEXT,   // Execute the next step in the plan.
-        PAUSE,     // The plan will continue later.
-        INTERRUPT, // Pause and execute interrupt
-        HALT       // The plan is no longer relevant; clear it.
+    private sealed interface Result {
+        // Go on to the next step of the plan
+        record DoNext() implements Result {}
+
+        // Go on to the next mover
+        record Pause() implements Result {}
+
+        // Clear this plan, and go on to the next mover
+        record Halt() implements Result {}
+
+        // Return this interrupt
+        record Inter(Interrupt interrupt) implements Result { }
     }
-    private record Result(Status status, Interrupt interrupt) {}
 
     /**
      * Execute the movement system for the region.
@@ -33,20 +39,37 @@ public class Executor {
             .toList();
 
         for (Entity mob : active) {
-            while (!mob.plan().isEmpty()) {
-                var result = doStep(region, mob);
-
-                switch (result.status()) {
-                    case DO_NEXT:
-                        break;
-                    case PAUSE: return Optional.empty();
-                    case INTERRUPT: return Optional.of(result.interrupt());
-                    case HALT: mob.plan().clear();
-                }
+            var interrupt = doMoveMob(region, mob);
+            if (interrupt.isPresent()) {
+                return interrupt;
             }
-            mob.remove(Plan.class);
         }
 
+        return Optional.empty();
+    }
+
+    private static Optional<Interrupt> doMoveMob(Region region, Entity mob) {
+        while (!mob.plan().isEmpty()) {
+            switch (doStep(region, mob)) {
+                case Result.DoNext $:
+                    // Go on to the next step
+                    break;
+                case Result.Pause $:
+                    // This mover is waiting; go on to the next mover
+                    return Optional.empty();
+                case Result.Halt $:
+                    // This mover can't complete its plan.  Throw it away and
+                    // go on to the next mover
+                    mob.plan().clear();
+                    break;
+                case Result.Inter res:
+                    // This mover raised an interrupt
+                    return Optional.of(res.interrupt());
+            }
+        }
+
+        // The Mob's plan is empty; remove the Plan component.
+        mob.remove(Plan.class);
         return Optional.empty();
     }
 
@@ -57,11 +80,11 @@ public class Executor {
      */
     public static Result doStep(Region region, Entity mob) {
         Step nextStep = mob.plan().pollFirst();
+        assert nextStep != null;
 
         Cell targetCell;
         List<Cell> route;
 
-        // TODO see if we can make this more concise.
         switch (nextStep) {
             //
             // Planned Steps
@@ -73,18 +96,19 @@ public class Executor {
                 if (route.size() == 1) {
                     if (isPassable(region, mob, route.get(0))) {
                         slideTo(region, mob, route.get(0));
-                        return new Result(Status.PAUSE, null);
+                        return new Result.Pause();
                     } else {
-                        return new Result(Status.HALT, null);
+                        return new Result.Halt();
                     }
                 } else if (route.size() > 1) {
                     // We aren't there yet.  Take the next step.
                     mob.plan().addFirst(goal);
                     slideTo(region, mob, route.get(0));
-                    return new Result(Status.PAUSE, null);
+                    return new Result.Pause();
                 } else {
-                    return new Result(Status.HALT, null);
+                    return new Result.Halt();
                 }
+
             case Step.Open goal:
                 targetCell = region.get(goal.id()).cell();
                 route = Region.findRoute(c -> isPassable(region, mob, c),
@@ -99,15 +123,16 @@ public class Executor {
                             .put(door.feature())
                             .put(door.sprite());
                     }
+                    return new Result.DoNext();
                 } else if (route.size() > 1) {
                     // We aren't there yet.  Take the next step.
                     mob.plan().addFirst(goal);
                     slideTo(region, mob, route.get(0));
-                    return new Result(Status.PAUSE, null);
+                    return new Result.Pause();
                 } else {
-                    return new Result(Status.HALT, null);
+                    return new Result.Halt();
                 }
-                break;
+
             case Step.Trigger goal:
                 targetCell = region.get(goal.id()).cell();
                 route = Region.findRoute(c -> isPassable(region, mob, c),
@@ -115,16 +140,15 @@ public class Executor {
 
                 if (route.size() == 1) {
                     // We're adjacent
-                    return new Result(Status.INTERRUPT, new Interrupt.DisplaySign(goal.id()));
+                    return new Result.Inter(new Interrupt.DisplaySign(goal.id()));
                 } else if (route.size() > 1) {
                     // We aren't there yet.  Take the next step.
                     mob.plan().addFirst(goal);
                     slideTo(region, mob, route.get(0));
-                    return new Result(Status.PAUSE, null);
+                    return new Result.Pause();
                 } else {
-                    return new Result(Status.HALT, null);
+                    return new Result.Halt();
                 }
-
             //
             // Primitive Operations: these are used to implement the planned
             // steps
@@ -137,14 +161,16 @@ public class Executor {
             case Step.WaitUntilGone wait:
                 if (region.find(wait.id()).isPresent()) {
                     mob.plan().addFirst(wait); // Keep waiting
-                    return new Result(Status.PAUSE, null);
+                    return new Result.Pause();
                 }
                 break;
         }
 
-        return new Result(Status.DO_NEXT, null);
+        return new Result.DoNext();
     }
 
+    //-------------------------------------------------------------------------
+    // Utilities for use by steps
 
     // Can this mobile enter the given cell given the player's capabilities
     // and the cell's content?
