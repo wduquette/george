@@ -5,7 +5,6 @@ import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.Player;
 import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.util.TypeMap;
-import javafx.scene.image.Image;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -233,6 +232,30 @@ public class Entity {
         return find(Feature.class)
             .map(Feature::terrainType)
             .orElse(TerrainType.NONE);
+    }
+
+    /**
+     * Gets the feature's Door component, or null if none.
+     * @return The door.
+     */
+    public Door door() { return components.get(Door.class); }
+
+    /**
+     * Sets the entity's door component to DoorState.OPEN.
+     * @return The entity.
+     */
+    public Entity openDoor() {
+        components.put(door().open());
+        return this;
+    }
+
+    /**
+     * Sets the entity's door component to DoorState.CLOSED.
+     * @return The entity.
+     */
+    public Entity closeDoor() {
+        components.put(door().close());
+        return this;
     }
 
     //-------------------------------------------------------------------------

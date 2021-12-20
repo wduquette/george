@@ -28,7 +28,13 @@ public enum TerrainType {
 	WATER(false, false, true),
 	
 	/** Pit: Blocks walking, but not vision or flight. */
-	PIT(false, false, true);
+	PIT(false, false, true),
+
+	/** A normal door is opaque, and blocks walking and flight */
+	DOOR(true, false, false),
+
+	/** A normal gate can be seen through, and blocks walking and flight */
+	GATE(false, false, false);
 	
 	// Attributes
 	
@@ -43,7 +49,7 @@ public enum TerrainType {
 	
 	// Constructor
 	
-	private TerrainType(boolean opaque, boolean walkable, boolean flyable) {
+	TerrainType(boolean opaque, boolean walkable, boolean flyable) {
 		this.opaque = opaque;
 		this.walkable = walkable;
 		this.flyable = flyable;

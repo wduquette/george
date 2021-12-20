@@ -1,6 +1,5 @@
 package com.wjduquette.george.widgets;
 
-import com.wjduquette.george.Sprites;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.graphics.SpriteSet;
