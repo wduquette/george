@@ -8,11 +8,11 @@ import com.wjduquette.george.graphics.SpriteSet;
 public class Sprites {
     private Sprites() {} // Not instantiable.
 
-    /** Standard tiles for terrain features */
-    public final static SpriteSet FEATURES =
-        new SpriteSet(App.class, "assets/sprites/Features.sprite");
+    public final static SpriteSet ALL;
 
-    /** Standard tiles for mobiles */
-    public final static SpriteSet MOBILES =
-        new SpriteSet(App.class, "assets/sprites/mobiles.sprite");
+    static {
+        ALL = new SpriteSet(App.class, "assets/sprites/mobiles.sprite");
+        SpriteSet set = new SpriteSet(App.class, "assets/sprites/Features.sprite");
+        ALL.add(set);
+    }
 }

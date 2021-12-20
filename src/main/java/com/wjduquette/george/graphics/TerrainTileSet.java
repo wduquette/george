@@ -199,6 +199,14 @@ public class TerrainTileSet {
         return tileList.size();
     }
 
+    public int width() {
+        return tileWidth;
+    }
+
+    public int height() {
+        return tileHeight;
+    }
+
     /**
      * Get a tile's data given its index.
      * @param index The index
@@ -233,5 +241,13 @@ public class TerrainTileSet {
      */
     public List<TerrainTile> getInfo() {
         return Collections.unmodifiableList(tileList);
+    }
+
+    /**
+     * Get a read-only map of the tile set's tile info.
+     * @return The map
+     */
+    public Map<String,TerrainTile> getInfoMap() {
+        return Collections.unmodifiableMap(tileMap);
     }
 }

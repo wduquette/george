@@ -47,6 +47,7 @@ public class Executor {
             Cell targetCell;
             List<Cell> route;
 
+            // TODO see if we can make this more concise.
             switch (nextStep) {
                 //
                 // Planned Steps
@@ -62,6 +63,30 @@ public class Executor {
                         } else {
                             System.out.println("Bonk!");
                         }
+                    } else if (route.size() > 1) {
+                        // We aren't there yet.  Take the next step.
+                        mob.plan().addFirst(goal);
+                        slideTo(region, mob, route.get(0));
+                        return Optional.empty();
+                    } else {
+                        // Nothing to do; we can't get there.
+                    }
+                    break;
+                case Step.Open goal:
+                    targetCell = region.get(goal.id()).cell();
+                    route = Region.findRoute(c -> isPassable(region, mob, c),
+                        mob.cell(), targetCell);
+
+                    if (route.size() == 1) {
+                        var that = region.get(goal.id());
+                        var door = that.door().open();
+
+                        if (that.door() != null) {
+                            that.put(door)
+                                .put(door.feature())
+                                .put(door.sprite());
+                        }
+                        return Optional.empty();
                     } else if (route.size() > 1) {
                         // We aren't there yet.  Take the next step.
                         mob.plan().addFirst(goal);

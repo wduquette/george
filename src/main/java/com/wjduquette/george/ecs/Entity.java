@@ -5,7 +5,6 @@ import com.wjduquette.george.model.Cell;
 import com.wjduquette.george.model.Player;
 import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.util.TypeMap;
-import javafx.scene.image.Image;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -187,12 +186,11 @@ public class Entity {
 
     /**
      * Sets the entity's Sprite given an image and its name
-     * @param img The image
      * @param name The sprite name
      * @return The entity
      */
-    public Entity sprite(Image img, String name) {
-        put(new Sprite(img, name));
+    public Entity sprite(String name) {
+        put(new Sprite(name));
         return this;
     }
 
@@ -202,7 +200,7 @@ public class Entity {
      * @return The entity
      */
     public Entity sprite(ImageInfo info) {
-        put(new Sprite(info.image(), info.name()));
+        put(new Sprite(info.name()));
         return this;
     }
 
@@ -234,6 +232,30 @@ public class Entity {
         return find(Feature.class)
             .map(Feature::terrainType)
             .orElse(TerrainType.NONE);
+    }
+
+    /**
+     * Gets the feature's Door component, or null if none.
+     * @return The door.
+     */
+    public Door door() { return components.get(Door.class); }
+
+    /**
+     * Sets the entity's door component to DoorState.OPEN.
+     * @return The entity.
+     */
+    public Entity openDoor() {
+        components.put(door().open());
+        return this;
+    }
+
+    /**
+     * Sets the entity's door component to DoorState.CLOSED.
+     * @return The entity.
+     */
+    public Entity closeDoor() {
+        components.put(door().close());
+        return this;
     }
 
     //-------------------------------------------------------------------------

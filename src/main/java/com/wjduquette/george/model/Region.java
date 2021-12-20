@@ -108,6 +108,9 @@ public class Region {
         }
     }
 
+    //-------------------------------------------------------------------------
+    // Data Loading
+
     private void loadData(Class<?> cls, String relPath)
         throws KeywordParser.KeywordException {
         // FIRST, prepare to accumulate data.
@@ -187,15 +190,29 @@ public class Region {
                 continue;
             }
 
+            // NEXT, create the feature with its type, sprite, and cell.
             TerrainTile tile = terrainTileSet.get(tileIndex);
 
             Entity feature = entities.make()
                 .feature(tile.type())
                 .sprite(tile)
                 .cell(r, c);
+
+            // NEXT, Handle special cases.
+            //
+            // I'm not entirely happy about this convention, but it works well
+            // enough for the majority of doors in a region.  We will also want
+            // to have "door" objects allowed in Tiled object groups.
+            var closed = prefix() + ".closed_door";
+            var open = prefix() + ".open_door";
+
+            if (tile.name().equals(closed)) {
+                feature.put(new Door(DoorState.CLOSED, tile.type(), closed, open));
+            } else if (tile.name().equals(open)) {
+                feature.put(new Door(DoorState.OPEN, tile.type(), closed, open));
+            }
         }
     }
-
 
     private void readObjects(TiledMapReader map) {
         for (Layer layer : map.layers()) {
@@ -218,7 +235,7 @@ public class Region {
                         entities.make()
                             .feature(TerrainType.NONE)
                             .sign(obj.name)
-                            .sprite(Sprites.FEATURES.getInfo("feature.sign"))
+                            .sprite(Sprites.ALL.getInfo("feature.sign"))
                             .cell(object2cell(obj));
                     }
                     default -> {
@@ -263,6 +280,11 @@ public class Region {
         return resource;
     }
 
+    /** This is the prefix to the region's tile names. */
+    public String prefix() {
+        return terrainTileSet.prefix();
+    }
+
     /**
      * Gets the height of the map in tiles.
      * @return the height.
@@ -304,6 +326,14 @@ public class Region {
      */
     public int getTileWidth() {
         return tileWidth;
+    }
+
+    /**
+     * Gets the region's terrain tile set.
+     * @return The tile set.
+     */
+    public TerrainTileSet getTerrainTileSet() {
+        return terrainTileSet;
     }
 
     public Entity get(long id) {
@@ -353,9 +383,7 @@ public class Region {
      * @return The terrain tile of null if the coordinates are out of bounds.
      */
     public TerrainTile getTerrain(int row, int col) {
-        int index = row * width + col;
-
-        if (index < 0 || index >= terrain.size()) {
+        if (row < 0 || row >= height || col < 0 || col >= width) {
             return null;
         } else {
             return terrain.get(row * width + col);

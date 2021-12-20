@@ -1,9 +1,6 @@
 package com.wjduquette.george;
 
-import com.wjduquette.george.model.Cell;
-import com.wjduquette.george.model.Interrupt;
-import com.wjduquette.george.model.Player;
-import com.wjduquette.george.model.Region;
+import com.wjduquette.george.model.*;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.util.Looper;
 import com.wjduquette.george.widgets.UserInput;
@@ -59,11 +56,10 @@ public class App extends Application {
         populateRegionFactories();
 
         // TEMP
-        var floobham = getRegion("floobham");
-        floobham.getEntities().dump();
-
+        region = getRegion("test");
 //        region = getRegion("overworld");
-        region = floobham;
+        region = getRegion("floobham");
+        region.getEntities().dump();
 
         Cell origin = region.query(Point.class)
             .filter(e -> e.point().name().equals("origin"))
@@ -76,11 +72,12 @@ public class App extends Application {
         region.getEntities().make().mobile("george")
             .put(george)
             .cell(origin)
-            .sprite(Sprites.MOBILES.getInfo("mobile.george"));
+            .sprite(Sprites.ALL.getInfo("mobile.george"));
 
         // Dump the entities table
 //        region.getEntities().dump();
 
+        viewer.setSprites(Sprites.ALL);
         viewer.addEventHandler(UserInputEvent.USER_INPUT, this::onUserInput);
         viewer.setRegion(region);
 
@@ -160,6 +157,10 @@ public class App extends Application {
     // Region Definitions
 
     private void populateRegionFactories() {
+        regionFactories.put("test",
+            () -> new Region(getClass(),
+                "assets/regions/test/test.region")
+        );
         regionFactories.put("overworld",
             () -> new Region(getClass(),
                 "assets/regions/overworld/overworld.region")
@@ -176,6 +177,7 @@ public class App extends Application {
         if (region == null) {
             region = regionFactories.get(name).get();
             regions.put(name, region);
+            Sprites.ALL.add(region.getTerrainTileSet());
         }
 
         return region;

@@ -1,8 +1,8 @@
-# Terrain Tile Set for floobham
+# Terrain Tile Set for test region
 
-%prefix floobham
+%prefix test
 %size 40 40
-%file floobham.png
+%file test.png
 %unused
 # Terrain Tiles
 %tile tile_floor       Tile_floor         floor
