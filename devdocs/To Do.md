@@ -9,9 +9,16 @@ My current To Do list.
 - [x] Create global image set solution
 	- [x] (?) Images loaded from any region or sprite set should be globally accessible by name. 
 	- [x] Sprites and terrain tiles should share an interface. 
-- [ ] Support moving to another region, e.g., Floobham
 - [ ] Implement [[Doors]].
+- [ ] Move devdocs to its own repo.
+- [ ] Support moving to another region, e.g., Floobham
 - [ ] Implement Floobham "mannikins"
+- [ ] Implement debugger
+	- [ ] Pops up on F1.
+	- [ ] Distinct window
+	- [ ] Entity tab with live list of entities
+	- [ ] Conditions tab with live list of condition variables, + control.
+	- [ ] Ability to jump to region
 - [ ] Implement Floobham NPCs
 - [ ] Implement movement limits (the player can only move so far)
 - [ ] Implement Mover list

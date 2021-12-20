@@ -18,7 +18,7 @@
 %tile plank2           Plank_floor        floor
 
 # Feature Tiles
-%tile closed_door      Closed_door        wall
+%tile closed_door      Closed_door        door
 %tile chest            Chest              fence
 %tile chest_open       Open_chest         fence
 %tile bed_head         Bed                fence

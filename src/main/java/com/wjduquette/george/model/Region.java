@@ -108,6 +108,9 @@ public class Region {
         }
     }
 
+    //-------------------------------------------------------------------------
+    // Data Loading
+
     private void loadData(Class<?> cls, String relPath)
         throws KeywordParser.KeywordException {
         // FIRST, prepare to accumulate data.
@@ -187,12 +190,27 @@ public class Region {
                 continue;
             }
 
+            // NEXT, create the feature with its type, sprite, and cell.
             TerrainTile tile = terrainTileSet.get(tileIndex);
 
             Entity feature = entities.make()
                 .feature(tile.type())
                 .sprite(tile)
                 .cell(r, c);
+
+            // NEXT, Handle special cases.
+            //
+            // I'm not entirely happy about this convention, but it works well
+            // enough for the majority of doors in a region.  We will also want
+            // to have "door" objects allowed in Tiled object groups.
+            var closed = prefix() + ".closed_door";
+            var open = prefix() + ".open_door";
+
+            if (tile.name().equals(closed)) {
+                feature.put(new Door(DoorState.CLOSED, closed, open));
+            } else if (tile.name().equals(open)) {
+                feature.put(new Door(DoorState.OPEN, closed, open));
+            }
         }
     }
 
@@ -260,6 +278,11 @@ public class Region {
      */
     public String resource() {
         return resource;
+    }
+
+    /** This is the prefix to the region's tile names. */
+    public String prefix() {
+        return terrainTileSet.prefix();
     }
 
     /**
