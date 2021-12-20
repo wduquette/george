@@ -25,12 +25,10 @@ public class Planner {
         Entity george = region.query(Player.class).findFirst().orElseThrow();
 
         switch (input) {
-            case UserInput.CellClick click -> {
+            case UserInput.CellClick click ->
                 doPlanMove(region, george, click.cell());
-            }
-            case UserInput.StatusBox status -> {
+            case UserInput.StatusBox status ->
                 System.out.println("Clicked on status box for " + status.playerId());
-            }
         }
 
         return Optional.empty();
@@ -47,8 +45,10 @@ public class Planner {
         // Planning System (for player characters)
 
         // FIRST, is there a route?
+        System.out.println("Looking for route");
         var route = Region.findRoute(c -> isPassable(region, player, c),
             player.cell(), targetCell);
+        System.out.println("Found route: " + route);
 
         if (route.isEmpty()) {
             return;
