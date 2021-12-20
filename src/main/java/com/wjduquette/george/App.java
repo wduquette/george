@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Stack;
 import java.util.function.Supplier;
 
@@ -153,6 +154,41 @@ public class App extends Application {
 
     private void gotoRegion(Interrupt.GoToRegion info) {
         System.out.println("Go To region: " + info.exit());
+        var regionName = info.exit().region();
+        var pointName = info.exit().point();
+
+        // FIRST, find the new region
+        if (!regionFactories.containsKey(regionName)) {
+            throw new IllegalArgumentException("Unknown region: " + regionName);
+        }
+        Region newRegion = getRegion(info.exit().region());
+
+        Optional<Entity> point = newRegion.query(Point.class)
+            .filter(e -> e.point().name().equals(pointName))
+            .findFirst();
+
+        if (!point.isPresent()) {
+            throw new IllegalArgumentException(
+                "No such point in " + regionName + ": " + pointName);
+        }
+
+        // NEXT, remove the party from the old region and clear all active
+        // plans
+        for (Entity player : region.query(Player.class).toList()) {
+            region.getEntities().remove(player.id());
+        }
+        region.query(Plan.class).forEach(e -> e.remove(Plan.class));
+
+
+        // NEXT, add the party to the new region
+        region = newRegion;
+
+        region.getEntities().make().mobile("george")
+            .put(new Player("George"))
+            .cell(point.get().cell())
+            .sprite(Sprites.ALL.getInfo("mobile.george"));
+
+        viewer.setRegion(region);
     }
 
     //-------------------------------------------------------------------------
