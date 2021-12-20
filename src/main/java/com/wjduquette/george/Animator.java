@@ -24,17 +24,14 @@ public class Animator {
      */
     public static void doAnimate(Region region) {
         // Update all effect animations
-        List<Entity> effects = region.query(VisualEffect.class).toList();
-
-        for (Entity effect : effects) {
+        for (Entity effect : region.query(VisualEffect.class).toList()) {
             doUpdate(region, effect);
         }
 
         // Set the each door's sprite based on its state.
-        List<Entity> doors = region.query(Door.class).toList();
-
-        for (Entity e : doors) {
-            e.sprite(e.door().isClosed() ? e.door().closedSprite() : e.door().openSprite());
+        // TODO: Might be just as easy to do this in the Executer.
+        for (Entity e : region.query(Door.class).toList()) {
+            e.put(e.door().sprite());
         }
     }
 

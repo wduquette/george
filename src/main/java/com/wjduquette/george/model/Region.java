@@ -207,9 +207,9 @@ public class Region {
             var open = prefix() + ".open_door";
 
             if (tile.name().equals(closed)) {
-                feature.put(new Door(DoorState.CLOSED, closed, open));
+                feature.put(new Door(DoorState.CLOSED, tile.type(), closed, open));
             } else if (tile.name().equals(open)) {
-                feature.put(new Door(DoorState.OPEN, closed, open));
+                feature.put(new Door(DoorState.OPEN, tile.type(), closed, open));
             }
         }
     }
