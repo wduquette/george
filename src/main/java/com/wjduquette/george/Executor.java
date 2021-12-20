@@ -15,6 +15,15 @@ import java.util.Optional;
 public class Executor {
     private Executor() {} // Not instantiable
 
+    // The result of executing a step.
+    private enum Status {
+        DO_NEXT,   // Execute the next step in the plan.
+        PAUSE,     // The plan will continue later.
+        INTERRUPT, // Pause and execute interrupt
+        HALT       // The plan is no longer relevant; clear it.
+    }
+    private record Result(Status status, Interrupt interrupt) {}
+
     /**
      * Execute the movement system for the region.
      * @param region The region
@@ -24,10 +33,18 @@ public class Executor {
             .toList();
 
         for (Entity mob : active) {
-            var interrupt = step(region, mob);
-            if (interrupt.isPresent()) {
-                return interrupt;
+            while (!mob.plan().isEmpty()) {
+                var result = doStep(region, mob);
+
+                switch (result.status()) {
+                    case DO_NEXT:
+                        break;
+                    case PAUSE: return Optional.empty();
+                    case INTERRUPT: return Optional.of(result.interrupt());
+                    case HALT: mob.plan().clear();
+                }
             }
+            mob.remove(Plan.class);
         }
 
         return Optional.empty();
@@ -38,102 +55,96 @@ public class Executor {
      * @param region The region
      * @param mob A mobile within that region
      */
-    public static Optional<Interrupt> step(Region region, Entity mob) {
-        // Execute steps until there are no more or a step decides to return.
-        while (!mob.plan().isEmpty()) {
-            Step nextStep = mob.plan().pollFirst();
-            assert nextStep != null;
+    public static Result doStep(Region region, Entity mob) {
+        Step nextStep = mob.plan().pollFirst();
 
-            Cell targetCell;
-            List<Cell> route;
+        Cell targetCell;
+        List<Cell> route;
 
-            // TODO see if we can make this more concise.
-            switch (nextStep) {
-                //
-                // Planned Steps
-                //
-                case Step.MoveTo goal:
-                    route = Region.findRoute(c -> isPassable(region, mob, c),
-                        mob.cell(), goal.cell());
+        // TODO see if we can make this more concise.
+        switch (nextStep) {
+            //
+            // Planned Steps
+            //
+            case Step.MoveTo goal:
+                route = Region.findRoute(c -> isPassable(region, mob, c),
+                    mob.cell(), goal.cell());
 
-                    if (route.size() == 1) {
-                        if (isPassable(region, mob, route.get(0))) {
-                            slideTo(region, mob, route.get(0));
-                            return Optional.empty();
-                        } else {
-                            System.out.println("Bonk!");
-                        }
-                    } else if (route.size() > 1) {
-                        // We aren't there yet.  Take the next step.
-                        mob.plan().addFirst(goal);
+                if (route.size() == 1) {
+                    if (isPassable(region, mob, route.get(0))) {
                         slideTo(region, mob, route.get(0));
-                        return Optional.empty();
+                        return new Result(Status.PAUSE, null);
                     } else {
-                        // Nothing to do; we can't get there.
+                        return new Result(Status.HALT, null);
                     }
-                    break;
-                case Step.Open goal:
-                    targetCell = region.get(goal.id()).cell();
-                    route = Region.findRoute(c -> isPassable(region, mob, c),
-                        mob.cell(), targetCell);
+                } else if (route.size() > 1) {
+                    // We aren't there yet.  Take the next step.
+                    mob.plan().addFirst(goal);
+                    slideTo(region, mob, route.get(0));
+                    return new Result(Status.PAUSE, null);
+                } else {
+                    return new Result(Status.HALT, null);
+                }
+            case Step.Open goal:
+                targetCell = region.get(goal.id()).cell();
+                route = Region.findRoute(c -> isPassable(region, mob, c),
+                    mob.cell(), targetCell);
 
-                    if (route.size() == 1) {
-                        var that = region.get(goal.id());
-                        var door = that.door().open();
+                if (route.size() == 1) {
+                    var that = region.get(goal.id());
+                    var door = that.door().open();
 
-                        if (that.door() != null) {
-                            that.put(door)
-                                .put(door.feature())
-                                .put(door.sprite());
-                        }
-                        return Optional.empty();
-                    } else if (route.size() > 1) {
-                        // We aren't there yet.  Take the next step.
-                        mob.plan().addFirst(goal);
-                        slideTo(region, mob, route.get(0));
-                        return Optional.empty();
-                    } else {
-                        // Nothing to do; we can't get there.
+                    if (that.door() != null) {
+                        that.put(door)
+                            .put(door.feature())
+                            .put(door.sprite());
                     }
-                    break;
-                case Step.Trigger goal:
-                    targetCell = region.get(goal.id()).cell();
-                    route = Region.findRoute(c -> isPassable(region, mob, c),
-                        mob.cell(), targetCell);
+                } else if (route.size() > 1) {
+                    // We aren't there yet.  Take the next step.
+                    mob.plan().addFirst(goal);
+                    slideTo(region, mob, route.get(0));
+                    return new Result(Status.PAUSE, null);
+                } else {
+                    return new Result(Status.HALT, null);
+                }
+                break;
+            case Step.Trigger goal:
+                targetCell = region.get(goal.id()).cell();
+                route = Region.findRoute(c -> isPassable(region, mob, c),
+                    mob.cell(), targetCell);
 
-                    if (route.size() == 1) {
-                        // We're adjacent
-                        return Optional.of(new Interrupt.DisplaySign(goal.id()));
-                    } else if (route.size() > 1) {
-                        // We aren't there yet.  Take the next step.
-                        mob.plan().addFirst(goal);
-                        slideTo(region, mob, route.get(0));
-                        return Optional.empty();
-                    } else {
-                        // Nothing to do; we can't get there.
-                    }
-                    break;
+                if (route.size() == 1) {
+                    // We're adjacent
+                    return new Result(Status.INTERRUPT, new Interrupt.DisplaySign(goal.id()));
+                } else if (route.size() > 1) {
+                    // We aren't there yet.  Take the next step.
+                    mob.plan().addFirst(goal);
+                    slideTo(region, mob, route.get(0));
+                    return new Result(Status.PAUSE, null);
+                } else {
+                    return new Result(Status.HALT, null);
+                }
 
-                //
-                // Primitive Operations: these are used to implement the planned
-                // steps
-                //
-                case Step.SetCell step:
-                    mob.cell(step.cell());  // Go there.
-                    System.out.println("At " + step.cell());
-                    break;
-                case Step.WaitUntilGone wait:
-                    if (region.find(wait.id()).isPresent()) {
-                        mob.plan().addFirst(wait); // Keep waiting
-                        return Optional.empty();
-                    }
-                    break;
-            }
+            //
+            // Primitive Operations: these are used to implement the planned
+            // steps
+            //
+            case Step.SetCell step:
+                mob.cell(step.cell());  // Go there.
+                System.out.println("At " + step.cell());
+                break;
+
+            case Step.WaitUntilGone wait:
+                if (region.find(wait.id()).isPresent()) {
+                    mob.plan().addFirst(wait); // Keep waiting
+                    return new Result(Status.PAUSE, null);
+                }
+                break;
         }
 
-        mob.remove(Plan.class);
-        return Optional.empty();
+        return new Result(Status.DO_NEXT, null);
     }
+
 
     // Can this mobile enter the given cell given the player's capabilities
     // and the cell's content?
