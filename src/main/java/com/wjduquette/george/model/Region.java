@@ -383,9 +383,7 @@ public class Region {
      * @return The terrain tile of null if the coordinates are out of bounds.
      */
     public TerrainTile getTerrain(int row, int col) {
-        int index = row * width + col;
-
-        if (index < 0 || index >= terrain.size()) {
+        if (row < 0 || row >= height || col < 0 || col >= width) {
             return null;
         } else {
             return terrain.get(row * width + col);

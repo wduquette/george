@@ -45,10 +45,8 @@ public class Planner {
         // Planning System (for player characters)
 
         // FIRST, is there a route?
-        System.out.println("Looking for route");
         var route = Region.findRoute(c -> isPassable(region, player, c),
             player.cell(), targetCell);
-        System.out.println("Found route: " + route);
 
         if (route.isEmpty()) {
             return;

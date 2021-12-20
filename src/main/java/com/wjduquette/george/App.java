@@ -56,11 +56,10 @@ public class App extends Application {
         populateRegionFactories();
 
         // TEMP
-        var floobham = getRegion("floobham");
-        floobham.getEntities().dump();
-
+        region = getRegion("test");
 //        region = getRegion("overworld");
-        region = floobham;
+        region = getRegion("floobham");
+        region.getEntities().dump();
 
         Cell origin = region.query(Point.class)
             .filter(e -> e.point().name().equals("origin"))
@@ -158,6 +157,10 @@ public class App extends Application {
     // Region Definitions
 
     private void populateRegionFactories() {
+        regionFactories.put("test",
+            () -> new Region(getClass(),
+                "assets/regions/test/test.region")
+        );
         regionFactories.put("overworld",
             () -> new Region(getClass(),
                 "assets/regions/overworld/overworld.region")
