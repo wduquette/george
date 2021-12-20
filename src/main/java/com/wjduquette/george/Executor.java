@@ -71,32 +71,26 @@ public class Executor {
             //
             // Planned Steps
             //
-            case Step.MoveTo goal:
-                route = Region.findRoute(c -> isPassable(region, mob, c),
-                    mob.cell(), goal.cell());
+            case Step.MoveTo goal: {
+                var result = proceed(region, mob, goal, goal.cell());
 
-                if (route.size() == 1) {
-                    if (isPassable(region, mob, route.get(0))) {
-                        slideTo(region, mob, route.get(0));
+                if (result == Result.DO_NEXT) {
+                    if (isPassable(region, mob, goal.cell())) {
+                        slideTo(region, mob, goal.cell());
                         return Result.PAUSE;
                     } else {
                         return Result.HALT;
                     }
-                } else if (route.size() > 1) {
-                    // We aren't there yet.  Take the next step.
-                    mob.plan().addFirst(goal);
-                    slideTo(region, mob, route.get(0));
-                    return Result.PAUSE;
                 } else {
-                    return Result.HALT;
+                    return result;
                 }
+            }
 
-            case Step.Open goal:
+            case Step.Open goal: {
                 targetCell = region.get(goal.id()).cell();
-                route = Region.findRoute(c -> isPassable(region, mob, c),
-                    mob.cell(), targetCell);
+                var result = proceed(region, mob, goal, targetCell);
 
-                if (route.size() == 1) {
+                if (result == Result.DO_NEXT) {
                     var that = region.get(goal.id());
                     var door = that.door().open();
 
@@ -105,32 +99,20 @@ public class Executor {
                             .put(door.feature())
                             .put(door.sprite());
                     }
-                    return Result.DO_NEXT;
-                } else if (route.size() > 1) {
-                    // We aren't there yet.  Take the next step.
-                    mob.plan().addFirst(goal);
-                    slideTo(region, mob, route.get(0));
-                    return Result.PAUSE;
-                } else {
-                    return Result.HALT;
                 }
+                return result;
+            }
 
-            case Step.Trigger goal:
+            case Step.Trigger goal: {
                 targetCell = region.get(goal.id()).cell();
-                route = Region.findRoute(c -> isPassable(region, mob, c),
-                    mob.cell(), targetCell);
-
-                if (route.size() == 1) {
-                    // We're adjacent
+                var result = proceed(region, mob, goal, targetCell);
+                if (result == Result.DO_NEXT) {
                     throw new InterruptException(new Interrupt.DisplaySign(goal.id()));
-                } else if (route.size() > 1) {
-                    // We aren't there yet.  Take the next step.
-                    mob.plan().addFirst(goal);
-                    slideTo(region, mob, route.get(0));
-                    return Result.PAUSE;
                 } else {
-                    return Result.HALT;
+                    return result;
                 }
+            }
+
             //
             // Primitive Operations: these are used to implement the planned
             // steps
@@ -149,6 +131,43 @@ public class Executor {
         }
 
         return Result.DO_NEXT;
+    }
+
+    /**
+     * Moves the mob towards its goal.
+     *
+     * <ul>
+     *     <li>If the mob is blocked from reaching its goal, returns HALT.</li>
+     *     <li>If the mob has reached its goal, i.e., it's adjacent to the
+     *     target cell, returns DO_NEXT.</li>
+     *     <li>If the mob hasn't yet reached its goal, and isn't blocked,
+     *     schedules the move to the next cell on the way and returns PAUSE.</li>
+     * </ul>
+     * @param region The region
+     * @param mob The mob
+     * @param goal The goal step
+     * @param target The target cell
+     * @return A result
+     */
+    private static Result proceed(
+        Region region,
+        Entity mob,
+        Step goal,
+        Cell target
+    ) {
+        var route = Region.findRoute(c -> isPassable(region, mob, c),
+            mob.cell(), target);
+
+        if (route.size() == 1) {
+            return Result.DO_NEXT;
+        } else if (route.size() > 1) {
+            // We aren't there yet.  Take the next step.
+            mob.plan().addFirst(goal);
+            slideTo(region, mob, route.get(0));
+            return Result.PAUSE;
+        } else {
+            return Result.HALT;
+        }
     }
 
     //-------------------------------------------------------------------------

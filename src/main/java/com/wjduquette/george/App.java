@@ -56,9 +56,9 @@ public class App extends Application {
         populateRegionFactories();
 
         // TEMP
-        region = getRegion("test");
-//        region = getRegion("overworld");
+//        region = getRegion("test");
         region = getRegion("floobham");
+//        region = getRegion("overworld");
         region.getEntities().dump();
 
         Cell origin = region.query(Point.class)
@@ -73,9 +73,6 @@ public class App extends Application {
             .put(george)
             .cell(origin)
             .sprite(Sprites.ALL.getInfo("mobile.george"));
-
-        // Dump the entities table
-//        region.getEntities().dump();
 
         viewer.setSprites(Sprites.ALL);
         viewer.addEventHandler(UserInputEvent.USER_INPUT, this::onUserInput);
@@ -150,10 +147,12 @@ public class App extends Application {
                 interrupts.add(new Interrupt.WaitForInput());
             }
 
-            case Interrupt.GoToRegion info -> {
-                System.out.println("Go To region!");
-            }
+            case Interrupt.GoToRegion info -> gotoRegion(info);
         }
+    }
+
+    private void gotoRegion(Interrupt.GoToRegion info) {
+        System.out.println("Go To region: " + info.region());
     }
 
     //-------------------------------------------------------------------------
