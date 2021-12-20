@@ -59,23 +59,24 @@ public class Planner {
         player.put(plan);
 
         Optional<Entity> result;
-        // TODO: A series of rules, one of which can contribute to the plan
 
-//        if ((result = region.findAt(targetCell, Feature.class)).isPresent()) {
-//            Entity ent = result.get();
-//        }
-        Optional<Entity> sign = region.query(Sign.class)
-            .filter(e -> e.isAt(targetCell)).findFirst();
+        // TODO: check for mobiles before features.
 
-        if (sign.isPresent()) {
-            plan.add(new Step.Trigger(sign.get().id()));
+        if ((result = region.findAt(targetCell, Feature.class)).isPresent()) {
+            Entity entity = result.get();
+
+            if (entity.sign() != null) {
+                plan.add(new Step.Trigger(entity.id()));
+            } else if (entity.door() != null && entity.door().isClosed()) {
+                plan.add(new Step.Open(entity.id()));
+            }
         } else {
             plan.add(new Step.MoveTo(targetCell));
         }
-
-        if (plan.isEmpty()) {
-            player.remove(plan);
-        }
+//
+//        if (plan.isEmpty()) {
+//            player.remove(plan);
+//        }
     }
 
     // Adds the route to the end of the given plan as a series of MoveTo steps.

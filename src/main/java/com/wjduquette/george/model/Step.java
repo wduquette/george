@@ -14,6 +14,14 @@ public sealed interface Step {
      */
     record MoveTo(Cell cell) implements Step {}
 
+
+    /**
+     * The mobile moves adjacent to the entity with the given ID and opens
+     * it.  The entity must be a door or chest.
+     * @param id The ID of the entity to open.
+     */
+    record Open(long id) implements Step {}
+
     /**
      * The mobile moves adjacent to the entity with the given ID and triggers
      * it, e.g., reads a sign. Triggering is the result of the basic

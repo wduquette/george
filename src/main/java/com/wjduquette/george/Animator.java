@@ -27,12 +27,6 @@ public class Animator {
         for (Entity effect : region.query(VisualEffect.class).toList()) {
             doUpdate(region, effect);
         }
-
-        // Set the each door's sprite based on its state.
-        // TODO: Might be just as easy to do this in the Executer.
-        for (Entity e : region.query(Door.class).toList()) {
-            e.put(e.door().sprite());
-        }
     }
 
     public static void doUpdate(Region region, Entity effect) {
