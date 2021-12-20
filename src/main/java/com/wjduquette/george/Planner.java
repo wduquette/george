@@ -63,18 +63,19 @@ public class Planner {
 
             if (entity.sign() != null) {
                 plan.add(new Step.Trigger(entity.id()));
+                return;
             } else if (entity.door() != null && entity.door().isClosed()) {
                 plan.add(new Step.Open(entity.id()));
+                return;
             }
-        } else if ((result = region.findAt(targetCell, Exit.class)).isPresent()) {
-            plan.add(new Step.Exit(result.get().id()));
-        } else {
-            plan.add(new Step.MoveTo(targetCell));
         }
-//
-//        if (plan.isEmpty()) {
-//            player.remove(plan);
-//        }
+
+        if ((result = region.findAt(targetCell, Exit.class)).isPresent()) {
+            plan.add(new Step.Exit(result.get().id()));
+            return;
+        }
+
+        plan.add(new Step.MoveTo(targetCell));
     }
 
     // Adds the route to the end of the given plan as a series of MoveTo steps.

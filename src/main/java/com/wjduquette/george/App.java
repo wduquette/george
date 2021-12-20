@@ -58,8 +58,8 @@ public class App extends Application {
 
         // TEMP
 //        region = getRegion("test");
-        region = getRegion("floobham");
-//        region = getRegion("overworld");
+//        region = getRegion("floobham");
+        region = getRegion("overworld");
         region.getEntities().dump();
 
         Cell origin = region.query(Point.class)
@@ -159,7 +159,8 @@ public class App extends Application {
 
         // FIRST, find the new region
         if (!regionFactories.containsKey(regionName)) {
-            throw new IllegalArgumentException("Unknown region: " + regionName);
+            System.out.println("Unknown region: " + regionName);
+            return;
         }
         Region newRegion = getRegion(info.exit().region());
 
@@ -168,8 +169,8 @@ public class App extends Application {
             .findFirst();
 
         if (!point.isPresent()) {
-            throw new IllegalArgumentException(
-                "No such point in " + regionName + ": " + pointName);
+            System.out.println("No such point in " + regionName + ": " + pointName);
+            return;
         }
 
         // NEXT, remove the party from the old region and clear all active
