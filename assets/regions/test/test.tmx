@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="40" tileheight="40" infinite="0" nextlayerid="7" nextobjectid="37">
+ <editorsettings>
+  <export target="test.json" format="json"/>
+ </editorsettings>
+ <tileset firstgid="1" source="test.tsx"/>
+ <objectgroup id="5" name="Objects">
+  <object id="36" name="origin" type="Point" x="40" y="320"/>
+ </objectgroup>
+ <layer id="1" name="Terrain" width="10" height="10">
+  <data encoding="csv">
+8,8,8,8,8,8,8,8,8,8,
+8,3,3,3,3,3,3,3,8,8,
+8,3,10,10,10,10,10,3,3,3,
+8,3,10,10,10,10,10,10,10,10,
+8,3,10,10,10,10,10,10,10,10,
+8,3,10,10,10,10,10,10,10,10,
+8,3,10,10,10,10,10,8,8,8,
+8,3,3,10,10,10,8,8,8,8,
+8,8,3,10,10,10,8,8,8,8,
+8,8,3,10,10,10,8,8,8,8
+</data>
+ </layer>
+ <layer id="2" name="Features" width="10" height="10">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>

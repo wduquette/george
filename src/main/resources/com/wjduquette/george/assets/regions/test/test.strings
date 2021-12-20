@@ -1,0 +1,423 @@
+# Strings for the Floobham region.
+
+#------------------------------------------------------------------------------
+# Signs
+#
+# Signs are plain text, centered for displayed.
+
+%string sign.shop
+Arnulf's Fine Goods
+
+If you can't find it here,
+we don't have it.
+%end
+
+%string sign.inn
+Floob Arms,
+
+Food, Drink, Lodging, and Quests.
+
+Fillip de Bucket, Proprietor
+%end
+
+%string sign.townhall
+Town Hall
+
+Magister Mayhem,
+presiding on behalf of
+Lord Floob the Gracious
+%end
+
+%string sign.church
+St. Dominic's Church
+
+Resurrections R Us
+%end
+
+
+#------------------------------------------------------------------------------
+# Items
+
+%string item.maguffin
+So this is the "Tasty Egg Maguffin".  Doesn't look too appetizing, really,
+but then, consider where it's been.
+%end
+
+#------------------------------------------------------------------------------
+# Mannikins
+
+
+# Framley
+
+%string framley.name
+Framley
+%end
+
+%string framley.description
+A bluff and hearty peasant.
+%end
+
+%string framley.greeting1
+Floobham's a good place to live, so long as you don't
+get on the bad side of Lord Floob.  Look what happened
+to Paradise Valley.
+%end
+
+%string framley.greeting2
+Have you been up to see Fr. Jerome?  He's a life saver!
+%end
+
+# Joe
+
+%string joe.name
+Joe
+%end
+
+%string joe.description
+He's lean but not mean.
+%end
+
+%string joe.greeting
+You gotta be able to shoot straight, and you gotta be
+able to think straight.  A good pair of boots doesn't
+hurt either.
+%end
+
+# Samwise
+
+%string samwise.name
+Samwise
+%end
+
+%string samwise.description
+This peasant's smock kind of fades into the grass.
+%end
+
+%string samwise.greeting
+You can't see me: I'm a ninja!
+%end
+
+# Generic Townsman
+#
+# TBD: Really, we'd like a number of random things here.
+
+%string townsman.name
+Townsman
+%end
+
+%string townsman.description
+A long-time resident of Floobham.
+%end
+
+%string townsman.greeting1
+Enjoy your stay in Floobham!  Don't forget to check 
+out the sewers. People come from miles around to see 
+our sewers.
+%end
+
+%string townsman.greeting2
+Rats, now...rats are tasty.  Especially the BIG ones.
+%end
+
+%string townsman.greeting3
+Look out for the icky white things in the sewer.  They aren't nice, like
+rats.  Well, how could they be?  They're icky!
+%end
+
+%string townsman.greeting4
+My sister was once bitten by a moose.  No, really!
+%end
+
+#------------------------------------------------------------------------------
+# Arnulf
+
+%string arnulf.shopname
+Arnulf's Fine Goods: Arnulf the Honest, Proprietor
+%end
+
+%string arnulf.name
+Arnulf
+%end
+
+%string arnulf.greeting
+We have many fine deals, and I will be more than happy to
+take advantage...ah, to help you on your quests.
+%end
+
+%string arnulf.description
+He looks a little odd for a shopkeeper: the hood, the torch, the
+lockpicks...
+%end
+
+%string arnulf.buy1
+I'll find a buyer for this, no problem.
+%end
+
+%string arnulf.buy2
+A little dusty, isn't it?  Couldn't you have cleaned it up for me?
+%end
+
+%string arnulf.buy3
+I'm glad you sold this to me; saves me having to steal it from you.
+%end
+
+%string arnulf.buy4
+Squirrel!
+%end
+
+%string arnulf.buy5
+Magister Mayhem's an okay kind of guy...but
+stay away from him before breakfast!
+%end
+
+%string arnulf.sell1
+All sales are final.
+%end
+
+%string arnulf.sell2
+Take good care of that, now, and it'll take care of you.
+%end
+
+%string arnulf.sell3
+My sister was once bitten by a moose.
+%end
+
+%string arnulf.sell4
+Why don't you sell that back to me, and then buy it again?
+%end
+
+%string arnulf.sell5
+Can I interest you in anything else?
+%end
+
+%string arnulf.sell6
+Have you been over to the Floob Arms?  Lots of interesting
+folks over there.
+%end
+
+#------------------------------------------------------------------------------
+# Cyneros
+
+%string cyneros.name
+Cyneros
+%end
+
+%string cyneros.description
+He looks like a dark wizard: the cowl, the face hidden in shadow, the 
+aura of death, the eldritch purple aura.  You know.
+%end
+
+%string cyneros.greeting
+The dark wizard gives you a dark look.  "Don't make me blast you,"
+he says.  That seems a wise idea, and you move on.
+%end
+
+%string cyneros.newt
+The dark wizard rolls his eyes wearily and waves a hand in your
+direction.
+%end
+
+
+#------------------------------------------------------------------------------
+# Fillip de Bucket
+
+%string fillip.name
+Fillip de Bucket
+%end
+
+%string fillip.description
+He's behind the bar, so he must be the innkeeper...but what's with the
+lab coat?
+%end
+
+%string fillip.greeting
+The innkeeper is polishing a glass.  "Howdy, stranger," he says.
+
+"Look, we both know how this works.  You talk to me
+so you can pretend to take a room for the night,
+and rest up and regain your health, and you talk to 
+those guys over there to hear rumors and get quests."
+
+He grunts.
+
+"I don't know why spending the night should restore
+all of your health; the beds here are good quality,
+but there's nothing magical about them.  Still, 
+there it is: narrative causality at work.  Who I
+am to fight it?"
+%end
+
+#------------------------------------------------------------------------------
+# Gottleib the Thief
+
+%string gottleib.name
+Gottleib the Thief
+%end
+
+%string gottleib.description
+This guy is clearly a thief.  Watch your gold pieces!
+%end
+
+%string gottleib.bug_valley
+There's a disreputable looking fellow sitting here swilling ale.  He looks
+up as you approach.  "Pathetic, ain't it," he says.  He sounds like he's
+been at it for hours.  "There's a lovely treasure in a valley just a little
+northeast of here, and I can't get at it nohow."  He knocks back more ale.
+
+"It's the bugs," he says.  "They make my skin crawl."  He shakes his head.
+"I've tried and tried, but I can't go in there."
+
+You ask him what kind of bugs.
+
+"Lady bugs, mostly," he says.  "Huge ones.  Harmless enough, if you leave
+them alone.  But touch one...." He shakes his head.  "Used to be a lot of 
+rich folks living there.  Must be something left.  Gold ain't edible, 
+after all."
+%end
+
+%string gottleib.drunk
+The thief is out cold, his face on the table in a pool of spilled beer.
+You decide not to tell him about your adventures with the bugs.
+%end
+
+#------------------------------------------------------------------------------
+# Hogworth
+
+%string hogworth.name
+Hogworth
+%end
+
+%string hogworth.description
+A sturdy townsman, he has a broad, open face.
+%end
+
+%string hogworth.unhappy_princess
+The peasant looks concerned.  You ask him what the trouble is.
+
+"Greetings, stranger," he says.  "I went over to the castle, you know?
+And the princess...well, I think something's bothering her.  She was
+standing in the entry court looking upset, and she told me to go away.
+She'd never talk to someone like me about it, of course, but I hate 
+to see her unhappy."  He looks at you shrewdly.  "You, though.... Both 
+Lord Floob and his daughter have a fondness for adventurers.  You might 
+ask her about it.  She'd maybe make it worth your while."
+%end
+
+%string hogworth.happy
+Hogworth sees you coming and has Fillip bring you a tankard of ale.
+
+"Thank you, stranger," he says.  "It's good to see the princess
+smile again."
+%end
+
+#------------------------------------------------------------------------------
+# Fr. Jerome
+
+%string jerome.name
+Fr. Jerome
+%end
+
+%string jerome.description
+Short, tonsured, in a habit.  He'll save your life if you let him.
+%end
+
+%string jerome.greeting
+Blessings upon you, um, noble adventurers!
+Welcome to St. Dominic's.  May you sally
+forth in faith! 
+%end
+
+
+
+#------------------------------------------------------------------------------
+# Magister Mayhem
+
+%string mayhem.name
+Magister Mayhem
+%end
+
+%string mayhem.description
+He's wearing wizard's attire, and he's seated at a desk.  He seems
+to be in charge.
+%end
+
+%string mayhem.maguffin1
+Magister Mayhem looks at you sourly.  "Another adventurer," he says.
+"Just what I needed.  Well, at least the Sewers have been restocked."
+
+He harrumphs a bit more, and then says, "OK, let's take it from the top.
+
+"The town of Floobham is in desperate straits.  I've not had breakfast,
+and everyone knows that I get nasty when I'm hungry.  So you just go
+down to the sewers, and see if you can find me a Tasty Egg Maguffin
+in one of the chests.  Bring it back to me, and I'll see what else I
+can think of."
+
+He doesn't look enthused at the prospect.  As you turn to go, he adds,
+"I'm sure a naive but promising young man like you will have no trouble 
+finding the entrance to the sewers.  You can, heh, keep anything else 
+you find down there."
+%end
+
+%string mayhem.maguffin2
+Magister Mayhem sniffs at you, and makes a face.
+
+"Not found it yet, huh?  Try harder.  You'll never get anywhere around
+here if you can't even cope with the Sewers.  And hurry up!  I'm hungry!"
+%end
+
+%string mayhem.maguffin3
+Magister Mayhem sits up, and a hungry look crosses his craggy, sour face.
+
+"Ah, my breakfast.  So you hayseeds are good for something after all."
+
+He takes the Tasty Egg Maguffin from you and takes a big bite.
+
+"Umm, good," he says, not very clearly.  "Look, come back later
+and I'll see what I can do for you."
+%end
+
+%string mayhem.nothing
+Magister Mayhem is still chewing his maguffin.  You think better
+of disturbing him.
+%end
+
+#-----------------------------------------------------------------------------
+# Sir Fred as NPC.
+
+%string sirfred.name
+Sir Fred
+%end
+
+%string sirfred.description
+You're not sure how, but even though the knight's visor is down you 
+can still tell that he's grumpy.
+%end
+
+%string sirfred.noquest
+You greet the knight standing at the bar. "Hail, fellow," he says.
+"I hight Sir Fred."  He seems to be in a bad mood, and you ask why.
+
+"An adventurer I would be," he says, "pursuing quests and rescuing fair
+damsels.  But these varlets will give no quest to a puissant knight such
+as I, without I first ally myself to a naive but promising
+young man of low birth and high destiny."  He snorts.  "And where is one 
+to find this fabulous creature in a wretched hive of vermin 
+and sculleries such as this?"
+
+You clear your throat, and suggest humbly that you are just such a youth,
+excepting possibly the bit about the high destiny.
+
+"You?" the knight scoffs.  "Could it be so?  Well, I must put you to the
+test.  If you can but persuade Magister Mayhem to grant you a quest, 
+I will join you right willingly."
+%end
+
+%string sirfred.gotquest
+"So, young one, have you yet gotten a quest of the good magister?"  He
+seems surprised when you assure him that you have.
+
+"Well," says he, "these are joyful tidings.  Let us be off!"
+%end
+
+
