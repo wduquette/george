@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="40" tileheight="40" infinite="0" nextlayerid="5" nextobjectid="34">
+ <editorsettings>
+  <export target="floobham.json" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" name="Floobham" tilewidth="40" tileheight="40" tilecount="32" columns="8">
   <image source="floobham.png" width="320" height="160"/>
  </tileset>
@@ -145,23 +148,39 @@
   </object>
   <object id="26" name="samwise" type="Mannikin" x="440" y="520">
    <properties>
-    <property name="sprite" value="PEASANT1"/>
+    <property name="sprite" value="mobile.peasant1"/>
    </properties>
   </object>
   <object id="27" name="joe" type="Mannikin" x="1440" y="560">
    <properties>
-    <property name="sprite" value="PEASANT4"/>
+    <property name="sprite" value="mobile.peasant4"/>
    </properties>
   </object>
   <object id="28" name="framley" type="Mannikin" x="1040" y="1240">
    <properties>
-    <property name="sprite" value="PEASANT3"/>
+    <property name="sprite" value="mobile.peasant3"/>
    </properties>
   </object>
-  <object id="29" name="townsman" type="Mannikin" x="1400" y="1400"/>
-  <object id="30" name="townsman" type="Mannikin" x="760" y="1320"/>
-  <object id="31" name="townsman" type="Mannikin" x="1440" y="880"/>
-  <object id="32" name="townsman" type="Mannikin" x="1120" y="560"/>
+  <object id="29" name="townsman" type="Mannikin" x="1400" y="1400">
+   <properties>
+    <property name="sprite" value="mobile.peasant5"/>
+   </properties>
+  </object>
+  <object id="30" name="townsman" type="Mannikin" x="760" y="1320">
+   <properties>
+    <property name="sprite" value="mobile.peasant4"/>
+   </properties>
+  </object>
+  <object id="31" name="townsman" type="Mannikin" x="1440" y="880">
+   <properties>
+    <property name="sprite" value="mobile.peasant3"/>
+   </properties>
+  </object>
+  <object id="32" name="townsman" type="Mannikin" x="1120" y="560">
+   <properties>
+    <property name="sprite" value="mobile.peasant2"/>
+   </properties>
+  </object>
   <object id="33" name="sirfred" type="NPC" x="320" y="1560"/>
  </objectgroup>
 </map>
