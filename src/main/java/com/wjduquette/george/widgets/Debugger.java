@@ -76,7 +76,7 @@ public class Debugger extends BorderPane {
 
         TableColumn<EntityProxy,String> textColumn = new TableColumn<>("Detail");
         textColumn.setCellValueFactory(new PropertyValueFactory<>("text"));
-        textColumn.setPrefWidth(600);
+        textColumn.setPrefWidth(2000);
         entitiesView.getColumns().addAll(idColumn, textColumn);
 
         entitiesTab.setContent(entitiesView);
@@ -125,7 +125,7 @@ public class Debugger extends BorderPane {
 
         EntityProxy(Entity entity) {
             this.id = String.format("%04d", entity.id());
-            this.text = entity.toString().replaceAll("\\s+", " ");
+            this.text = entity.componentString().replaceAll("\\s+", " ");
         }
 
         public String getId() { return id.toString(); }

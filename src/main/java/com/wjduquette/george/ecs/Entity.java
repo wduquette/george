@@ -2,7 +2,6 @@ package com.wjduquette.george.ecs;
 
 import com.wjduquette.george.graphics.ImageInfo;
 import com.wjduquette.george.model.Cell;
-import com.wjduquette.george.model.Player;
 import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.util.TypeMap;
 
@@ -351,13 +350,15 @@ public class Entity {
 
     @Override
     public String toString() {
+        return "(Entity " + componentString() + ")";
+    }
+
+    public String componentString() {
         StringBuilder buff = new StringBuilder();
-        buff.append("(entity ").append(id);
         for (Class<?> cls : components.keySet()) {
             buff.append("\n ")
                 .append(components.get(cls).toString());
         }
-        buff.append(")");
 
         return buff.toString();
     }

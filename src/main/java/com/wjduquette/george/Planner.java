@@ -29,6 +29,7 @@ public class Planner {
                 doPlanMove(region, george, click.cell());
             case UserInput.StatusBox status ->
                 System.out.println("Clicked on status box for " + status.playerId());
+            default -> {}
         }
     }
 
