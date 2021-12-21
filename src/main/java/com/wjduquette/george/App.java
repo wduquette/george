@@ -145,11 +145,20 @@ public class App extends Application {
      */
     public void doMagicMove(Cell cell) {
         // TODO: handler entire party, current movement capabilities.
+        // TODO: Consider doing magic moves through planner.
         if (region.isWalkable(cell)) {
             region.query(Player.class)
                 .findFirst()
                 .ifPresent(p -> p.cell(cell));
         }
+    }
+
+    /**
+     * Transfers the party to the region:point indicated by the given exit.
+     * @param exit The exit.
+     */
+    public void doMagicTransfer(Exit exit) {
+        gotoRegion(exit);
     }
 
     //-------------------------------------------------------------------------
@@ -208,21 +217,22 @@ public class App extends Application {
                 interrupts.add(new Interrupt.WaitForInput());
             }
 
-            case Interrupt.GoToRegion info -> gotoRegion(info);
+            case Interrupt.GoToRegion info -> gotoRegion(info.exit());
         }
     }
 
-    private void gotoRegion(Interrupt.GoToRegion info) {
-        System.out.println("Go To region: " + info.exit());
-        var regionName = info.exit().region();
-        var pointName = info.exit().point();
+    // Transfer the party to the region:name indicated by the exit.
+    private void gotoRegion(Exit exit) {
+        System.out.println("Go To region: " + exit);
+        var regionName = exit.region();
+        var pointName = exit.point();
 
         // FIRST, find the new region
         if (!regionFactories.containsKey(regionName)) {
             System.out.println("Unknown region: " + regionName);
             return;
         }
-        Region newRegion = getRegion(info.exit().region());
+        Region newRegion = getRegion(regionName);
 
         Optional<Entity> point = newRegion.query(Point.class)
             .filter(e -> e.point().name().equals(pointName))

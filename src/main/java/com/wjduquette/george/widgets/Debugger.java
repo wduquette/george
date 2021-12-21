@@ -2,6 +2,8 @@ package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.Entity;
+import com.wjduquette.george.ecs.Exit;
+import com.wjduquette.george.ecs.Point;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -12,6 +14,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Debugger extends StackPane {
     //-------------------------------------------------------------------------
     // Instance Variables
@@ -21,6 +26,7 @@ public class Debugger extends StackPane {
     private TableView<EntityProxy> entitiesView;
     private ObservableList<EntityProxy> entityList;
     private FilteredList<EntityProxy> filteredEntityList;
+    private MenuButton gotoMenu;
     private ContextMenu entityContextMenu;
 
     // The application
@@ -55,8 +61,10 @@ public class Debugger extends StackPane {
         stage.setTitle("George's Debugger");
         stage.setScene(scene);
         stage.setOnCloseRequest(evt -> onClose());
-//        stage.initOwner(viewer.getScene().getWindow());
     }
+
+    //-------------------------------------------------------------------------
+    // Navigation Tab
 
     private void makeEntitiesTab() {
         Tab entitiesTab = new Tab();
@@ -72,6 +80,11 @@ public class Debugger extends StackPane {
             filteredEntityList.setPredicate(ep -> doEntityFilter(ep, n)));
         toolbar.getItems().add(new Label("Filter"));
         toolbar.getItems().add(entityFilter);
+
+        gotoMenu = new MenuButton("Go To");
+        gotoMenu.getItems().add(label("dummy"));
+        gotoMenu.setOnShowing(evt -> populateGotoMenu());
+        toolbar.getItems().add(gotoMenu);
 
         Button refresh = new Button("Refresh");
         refresh.setOnAction(evt -> refresh());
@@ -117,6 +130,31 @@ public class Debugger extends StackPane {
         }
     }
 
+    private void populateGotoMenu() {
+        gotoMenu.getItems().clear();
+        Set<String> labels = new HashSet<>();
+
+        for (Entity e : app.getCurrentRegion().query(Point.class).toList()) {
+            var label = "here:" + e.point().name();
+
+            if (!labels.contains(label)) {
+                gotoMenu.getItems().add(
+                    menuItem(label, () -> app.doMagicMove(e.cell())));
+            }
+            labels.add(label);
+        }
+
+        for (Entity e : app.getCurrentRegion().query(Exit.class).toList()) {
+            var label = e.exit().region() + ":" + e.exit().point();
+            if (!labels.contains(label)) {
+                gotoMenu.getItems().add(
+                    menuItem(label, () -> app.doMagicTransfer(e.exit())));
+            }
+            labels.add(label);
+        }
+
+    }
+
     private void populateEntityContextMenu() {
         EntityProxy proxy = entitiesView.getSelectionModel().getSelectedItem();
 
@@ -140,7 +178,9 @@ public class Debugger extends StackPane {
     }
 
     private MenuItem label(String label) {
-        return menuItem(label, null);
+        MenuItem item = new MenuItem(label);
+        item.setMnemonicParsing(false);
+        return item;
     }
 
     private MenuItem menuItem(String label, Runnable action) {
