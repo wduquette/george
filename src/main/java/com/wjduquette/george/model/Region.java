@@ -450,4 +450,12 @@ public class Region {
     public String getString(String name) {
         return strings.get(name).orElseThrow();
     }
+
+    /**
+     * Get the entire strings table.
+     * @return The table.
+     */
+    public StringsTable strings() {
+        return strings;
+    }
 }

@@ -46,7 +46,6 @@ but then, consider where it's been.
 #------------------------------------------------------------------------------
 # Mannikins
 
-
 # Framley
 
 %string framley.name
@@ -58,13 +57,13 @@ A bluff and hearty peasant.
 %end
 
 %string framley.greeting1
-Floobham's a good place to live, so long as you don't
+"Floobham's a good place to live, so long as you don't
 get on the bad side of Lord Floob.  Look what happened
-to Paradise Valley.
+to Paradise Valley."
 %end
 
 %string framley.greeting2
-Have you been up to see Fr. Jerome?  He's a life saver!
+"Have you been up to see Fr. Jerome?  He's a life saver!"
 %end
 
 # Joe
@@ -78,9 +77,9 @@ He's lean but not mean.
 %end
 
 %string joe.greeting
-You gotta be able to shoot straight, and you gotta be
+"You gotta be able to shoot straight, and you gotta be
 able to think straight.  A good pair of boots doesn't
-hurt either.
+hurt either."
 %end
 
 # Samwise
@@ -94,7 +93,7 @@ This peasant's smock kind of fades into the grass.
 %end
 
 %string samwise.greeting
-You can't see me: I'm a ninja!
+"You can't see me: I'm a ninja!"
 %end
 
 # Generic Townsman
@@ -110,22 +109,22 @@ A long-time resident of Floobham.
 %end
 
 %string townsman.greeting1
-Enjoy your stay in Floobham!  Don't forget to check 
-out the sewers. Why, people come from miles around to see
-our sewers.
+"Enjoy your stay in Floobham!  Don't forget to check
+out the Sewers. Why, people come from miles around to see
+our Sewers."
 %end
 
 %string townsman.greeting2
-Rats, now...rats are tasty.  Especially the BIG ones.
+"Rats, now...rats are tasty.  Especially the BIG ones."
 %end
 
 %string townsman.greeting3
-Look out for the icky white things in the sewer.  They aren't nice, like
-rats.  Well, how could they be?  They're icky!
+"Look out for the icky white things in the sewer.  They aren't nice, like
+rats.  Well, how could they be?  They're icky!"
 %end
 
 %string townsman.greeting4
-My sister was once bitten by a moose.  No, really!
+"My sister was once bitten by a moose.  No, really!"
 %end
 
 #------------------------------------------------------------------------------

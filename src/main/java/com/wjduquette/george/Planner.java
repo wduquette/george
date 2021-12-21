@@ -65,6 +65,8 @@ public class Planner {
             if (entity.sign() != null) {
                 plan.add(new Step.Trigger(entity.id()));
                 return;
+            } else if (entity.mannikin() != null) {
+                plan.add(new Step.Trigger(entity.id()));
             } else if (entity.door() != null && entity.door().isClosed()) {
                 plan.add(new Step.Open(entity.id()));
                 return;

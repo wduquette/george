@@ -298,6 +298,12 @@ public class Entity {
     }
 
     /**
+     * Gets the entity's Mannikin component, or null if none.
+     * @return The component or null.
+     */
+    public Mannikin mannikin() { return components.get(Mannikin.class); }
+
+    /**
      * Gets the entity's Exit data, or null if none.
      * @return The component, or null.
      */
