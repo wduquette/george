@@ -11,4 +11,9 @@ package com.wjduquette.george.ecs;
  * @param point The name of the point in that region
  */
 public record Exit(String region, String point) implements Component {
+
+    @Override
+    public String toString() {
+        return "(Exit " + region + " " + point + ")";
+    }
 }

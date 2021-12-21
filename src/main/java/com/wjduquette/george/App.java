@@ -3,6 +3,7 @@ package com.wjduquette.george;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.util.Looper;
+import com.wjduquette.george.widgets.Debugger;
 import com.wjduquette.george.widgets.UserInput;
 import com.wjduquette.george.widgets.UserInputEvent;
 import com.wjduquette.george.widgets.GameView;
@@ -22,7 +23,8 @@ public class App extends Application {
     // Constants
 
     // How often the game loop executes
-    private final int LOOP_MSECS = 50;
+    private static final int LOOP_MSECS = 50;
+    private static final int DEBUGGER_REFRESH_TICKS = 10;
 
     //-------------------------------------------------------------------------
     // Instance Variables
@@ -48,6 +50,12 @@ public class App extends Application {
 
     // The Interrupt stack
     private final Stack<Interrupt> interrupts = new Stack<>();
+
+    // The debugger, or null if not shown.
+    private Debugger debugger = null;
+
+    // The game tick
+    private long gameTick = 0;
 
     //-------------------------------------------------------------------------
     // Main Program
@@ -84,6 +92,7 @@ public class App extends Application {
         stage.setTitle("George's Saga!");
         stage.setScene(scene);
         stage.show();
+        stage.setOnCloseRequest(evt -> System.exit(0));
 
         Platform.runLater(looper::run);
     }
@@ -97,9 +106,59 @@ public class App extends Application {
 
     // Handle cells clicks
     private void onUserInput(UserInputEvent event) {
-        // FIRST, save the target cell.  It will be assessed by the
-        // Planner on the next iteration of the GameLoop.
-        userInput = event.getInput();
+        if (event.getInput() instanceof UserInput.ShowDebugger) {
+            // Invoke the debugger
+            showDebugger();
+        } else {
+            // Save the input.  It will be assessed by the
+            // Planner on the next iteration of the GameLoop.
+            userInput = event.getInput();
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    // Debugger API
+
+    private void showDebugger() {
+        System.out.println("Show debugger");
+        if (debugger == null) {
+            debugger = new Debugger(this, viewer);
+            debugger.setOnClose(() -> {
+                debugger = null;
+                System.out.println("Close debugger");
+            });
+        }
+        debugger.show();
+    }
+
+    /**
+     * Gets the current region.  This if for the use of the Debugger.
+     * @return The region.
+     */
+    public Region getCurrentRegion() {
+        return region;
+    }
+
+    /**
+     * Moves the party to the given cell in the current region.
+     * @param cell The cell
+     */
+    public void doMagicMove(Cell cell) {
+        // TODO: handler entire party, current movement capabilities.
+        // TODO: Consider doing magic moves through planner.
+        if (region.isWalkable(cell)) {
+            region.query(Player.class)
+                .findFirst()
+                .ifPresent(p -> p.cell(cell));
+        }
+    }
+
+    /**
+     * Transfers the party to the region:point indicated by the given exit.
+     * @param exit The exit.
+     */
+    public void doMagicTransfer(Exit exit) {
+        gotoRegion(exit);
     }
 
     //-------------------------------------------------------------------------
@@ -107,30 +166,40 @@ public class App extends Application {
 
     private void gameLoop() {
         try {
-            // FIRST, handle any interrupts.
-            if (!interrupts.isEmpty()) {
-                handleInterrupts(userInput);
-                userInput = null;
-                return;
+            try {
+                // FIRST, handle any interrupts.
+                if (!interrupts.isEmpty()) {
+                    handleInterrupts(userInput);
+                    userInput = null;
+                    return;
+                }
+
+                // Do planning, based on current input. (Can throw interrupt.)
+                if (userInput != null) {
+                    Planner.doPlanning(userInput, region);
+                }
+
+                // Animate any visual effects
+                Animator.doAnimate(region);
+
+                // Execute any plans.  (Can throw interrupt.)
+                Executor.doMovement(region);
+            } catch (InterruptException ex) {
+                interrupts.add(ex.get());
             }
 
-            // Do planning, based on current input. (Can throw interrupt.)
-            if (userInput != null) {
-                Planner.doPlanning(userInput, region);
+            // FINALLY, repaint.
+            userInput = null;
+            viewer.repaint();
+
+            gameTick++;
+            if (gameTick % DEBUGGER_REFRESH_TICKS == 0 && debugger != null) {
+                debugger.refresh();
             }
-
-            // Animate any visual effects
-            Animator.doAnimate(region);
-
-            // Execute any plans.  (Can throw interrupt.)
-            Executor.doMovement(region);
-        } catch (InterruptException ex) {
-            interrupts.add(ex.get());
+        } catch (Exception ex) {
+            looper.stop();
+            throw ex;
         }
-
-        // FINALLY, repaint.
-        userInput = null;
-        viewer.repaint();
     }
 
     private void handleInterrupts(UserInput input) {
@@ -148,27 +217,28 @@ public class App extends Application {
                 interrupts.add(new Interrupt.WaitForInput());
             }
 
-            case Interrupt.GoToRegion info -> gotoRegion(info);
+            case Interrupt.GoToRegion info -> gotoRegion(info.exit());
         }
     }
 
-    private void gotoRegion(Interrupt.GoToRegion info) {
-        System.out.println("Go To region: " + info.exit());
-        var regionName = info.exit().region();
-        var pointName = info.exit().point();
+    // Transfer the party to the region:name indicated by the exit.
+    private void gotoRegion(Exit exit) {
+        System.out.println("Go To region: " + exit);
+        var regionName = exit.region();
+        var pointName = exit.point();
 
         // FIRST, find the new region
         if (!regionFactories.containsKey(regionName)) {
             System.out.println("Unknown region: " + regionName);
             return;
         }
-        Region newRegion = getRegion(info.exit().region());
+        Region newRegion = getRegion(regionName);
 
         Optional<Entity> point = newRegion.query(Point.class)
             .filter(e -> e.point().name().equals(pointName))
             .findFirst();
 
-        if (!point.isPresent()) {
+        if (point.isEmpty()) {
             System.out.println("No such point in " + regionName + ": " + pointName);
             return;
         }

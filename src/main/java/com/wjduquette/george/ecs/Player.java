@@ -1,4 +1,4 @@
-package com.wjduquette.george.model;
+package com.wjduquette.george.ecs;
 
 import com.wjduquette.george.ecs.Component;
 
@@ -8,4 +8,8 @@ import com.wjduquette.george.ecs.Component;
  * It will be used as a component in the entities table.
  */
 public record Player(String name) implements Component {
+    @Override
+    public String toString() {
+        return "(Player " + name + ")";
+    }
 }

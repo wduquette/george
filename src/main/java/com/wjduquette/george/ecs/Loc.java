@@ -31,4 +31,16 @@ public record Loc(Cell cell, double rowOffset, double colOffset)
     public Loc offset(double newRowOffset, double newColOffset) {
         return new Loc(cell, newRowOffset, newColOffset);
     }
+
+    @Override
+    public String toString() {
+        var start = "(Loc " + cell.row() + " " + cell.col();
+
+        String offset = "";
+        if (rowOffset != 0.0 || colOffset != 0.0) {
+            offset = String.format(" %.2f %.2f", rowOffset, colOffset);
+        }
+
+        return start + offset + ")";
+    }
 }
