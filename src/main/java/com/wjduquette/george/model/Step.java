@@ -30,6 +30,13 @@ public sealed interface Step {
      */
     record Trigger(long id) implements Step {}
 
+    /**
+     * The mobile moves to the cell containing the Exit, and is transferred
+     * to the relevant region.
+     * @param id The ID of the exit entity.
+     */
+    record Exit(long id) implements Step {}
+
     //
     // Primitive Operations: Scheduled by the Executor while executing
     // goals

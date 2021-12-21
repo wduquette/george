@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Stack;
 import java.util.function.Supplier;
 
@@ -56,9 +57,9 @@ public class App extends Application {
         populateRegionFactories();
 
         // TEMP
-        region = getRegion("test");
-//        region = getRegion("overworld");
-        region = getRegion("floobham");
+//        region = getRegion("test");
+//        region = getRegion("floobham");
+        region = getRegion("overworld");
         region.getEntities().dump();
 
         Cell origin = region.query(Point.class)
@@ -73,9 +74,6 @@ public class App extends Application {
             .put(george)
             .cell(origin)
             .sprite(Sprites.ALL.getInfo("mobile.george"));
-
-        // Dump the entities table
-//        region.getEntities().dump();
 
         viewer.setSprites(Sprites.ALL);
         viewer.addEventHandler(UserInputEvent.USER_INPUT, this::onUserInput);
@@ -108,31 +106,30 @@ public class App extends Application {
     //  The Game Loop
 
     private void gameLoop() {
-        // FIRST, handle any interrupts.
-        if (!interrupts.isEmpty()) {
-            handleInterrupts(userInput);
-            userInput = null;
-            return;
-        }
-
-        // Do planning, based on current input.
-        if (userInput != null) {
-            var interrupt = Planner.doPlanning(userInput, region);
-            userInput = null;
-
-            if (interrupt.isPresent()) {
-                interrupts.add(interrupt.get());
+        try {
+            // FIRST, handle any interrupts.
+            if (!interrupts.isEmpty()) {
+                handleInterrupts(userInput);
+                userInput = null;
                 return;
             }
+
+            // Do planning, based on current input. (Can throw interrupt.)
+            if (userInput != null) {
+                Planner.doPlanning(userInput, region);
+            }
+
+            // Animate any visual effects
+            Animator.doAnimate(region);
+
+            // Execute any plans.  (Can throw interrupt.)
+            Executor.doMovement(region);
+        } catch (InterruptException ex) {
+            interrupts.add(ex.get());
         }
 
-        // Animate any visual effects
-        Animator.doAnimate(region);
-
-        // Execute any plans
-        Executor.doMovement(region).ifPresent(interrupts::add);
-
         // FINALLY, repaint.
+        userInput = null;
         viewer.repaint();
     }
 
@@ -150,7 +147,49 @@ public class App extends Application {
                 // Wait for click.
                 interrupts.add(new Interrupt.WaitForInput());
             }
+
+            case Interrupt.GoToRegion info -> gotoRegion(info);
         }
+    }
+
+    private void gotoRegion(Interrupt.GoToRegion info) {
+        System.out.println("Go To region: " + info.exit());
+        var regionName = info.exit().region();
+        var pointName = info.exit().point();
+
+        // FIRST, find the new region
+        if (!regionFactories.containsKey(regionName)) {
+            System.out.println("Unknown region: " + regionName);
+            return;
+        }
+        Region newRegion = getRegion(info.exit().region());
+
+        Optional<Entity> point = newRegion.query(Point.class)
+            .filter(e -> e.point().name().equals(pointName))
+            .findFirst();
+
+        if (!point.isPresent()) {
+            System.out.println("No such point in " + regionName + ": " + pointName);
+            return;
+        }
+
+        // NEXT, remove the party from the old region and clear all active
+        // plans
+        for (Entity player : region.query(Player.class).toList()) {
+            region.getEntities().remove(player.id());
+        }
+        region.query(Plan.class).forEach(e -> e.remove(Plan.class));
+
+
+        // NEXT, add the party to the new region
+        region = newRegion;
+
+        region.getEntities().make().mobile("george")
+            .put(new Player("George"))
+            .cell(point.get().cell())
+            .sprite(Sprites.ALL.getInfo("mobile.george"));
+
+        viewer.setRegion(region);
     }
 
     //-------------------------------------------------------------------------

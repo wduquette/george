@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="40" tileheight="40" infinite="0" nextlayerid="4" nextobjectid="9">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="40" tileheight="40" infinite="0" nextlayerid="4" nextobjectid="10">
  <tileset firstgid="1" name="world map" tilewidth="40" tileheight="40" tilecount="32" columns="8">
   <image source="overworld.png" width="320" height="160"/>
  </tileset>
@@ -224,5 +224,6 @@
    </properties>
   </object>
   <object id="8" name="floob_entry:origin" type="Exit" x="1640" y="1160"/>
+  <object id="9" name="floobham" type="Point" x="1720" y="1400"/>
  </objectgroup>
 </map>

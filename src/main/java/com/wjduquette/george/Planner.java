@@ -21,7 +21,7 @@ public class Planner {
     //-------------------------------------------------------------------------
     // The System
 
-    public static Optional<Interrupt> doPlanning(UserInput input, Region region) {
+    public static void doPlanning(UserInput input, Region region) {
         Entity george = region.query(Player.class).findFirst().orElseThrow();
 
         switch (input) {
@@ -30,8 +30,6 @@ public class Planner {
             case UserInput.StatusBox status ->
                 System.out.println("Clicked on status box for " + status.playerId());
         }
-
-        return Optional.empty();
     }
 
     private static void doPlanMove(Region region, Entity player, Cell targetCell) {
@@ -65,16 +63,19 @@ public class Planner {
 
             if (entity.sign() != null) {
                 plan.add(new Step.Trigger(entity.id()));
+                return;
             } else if (entity.door() != null && entity.door().isClosed()) {
                 plan.add(new Step.Open(entity.id()));
+                return;
             }
-        } else {
-            plan.add(new Step.MoveTo(targetCell));
         }
-//
-//        if (plan.isEmpty()) {
-//            player.remove(plan);
-//        }
+
+        if ((result = region.findAt(targetCell, Exit.class)).isPresent()) {
+            plan.add(new Step.Exit(result.get().id()));
+            return;
+        }
+
+        plan.add(new Step.MoveTo(targetCell));
     }
 
     // Adds the route to the end of the given plan as a series of MoveTo steps.

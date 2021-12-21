@@ -124,6 +124,17 @@
                  "width":0,
                  "x":1640,
                  "y":1160
+                }, 
+                {
+                 "height":0,
+                 "id":9,
+                 "name":"floobham",
+                 "rotation":0,
+                 "type":"Point",
+                 "visible":true,
+                 "width":0,
+                 "x":1720,
+                 "y":1400
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -132,7 +143,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":9,
+ "nextobjectid":10,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",
