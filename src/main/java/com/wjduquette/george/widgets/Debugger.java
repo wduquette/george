@@ -2,6 +2,9 @@ package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.Entity;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -14,8 +17,12 @@ public class Debugger extends StackPane {
     // Instance Variables
 
     private TabPane tabPane;
+
     private Tab entitiesTab;
     private TableView<EntityProxy> entitiesView;
+    private ObservableList<EntityProxy> entityList;
+    private FilteredList<EntityProxy> filteredEntityList;
+    private TextField entityFilter;
 
     // The application
     private final App app;
@@ -59,13 +66,26 @@ public class Debugger extends StackPane {
 
         // Toolbar
         ToolBar toolbar = new ToolBar();
+
+        entityFilter = new TextField();
+        entityFilter.setPrefColumnCount(20);
+        entityFilter.textProperty().addListener((p, o, n) -> {
+            filteredEntityList.setPredicate(ep -> doEntityFilter(ep, n));
+        });
+        toolbar.getItems().add(new Label("Filter"));
+        toolbar.getItems().add(entityFilter);
+
         Button refresh = new Button("Refresh");
         refresh.setOnAction(evt -> refresh());
+
         toolbar.getItems().add(refresh);
 
         // EntitiesView
+        entityList = FXCollections.observableArrayList();
         entitiesView = new TableView<>();
         entitiesView.setStyle("-fx-font-family: Menlo;");
+        filteredEntityList = new FilteredList<>(entityList, ep -> doEntityFilter(ep, null));
+        entitiesView.setItems(filteredEntityList);
 
         TableColumn<EntityProxy,String> idColumn = new TableColumn<>("ID");
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -83,6 +103,15 @@ public class Debugger extends StackPane {
 
         entitiesTab.setContent(content);
     }
+
+    private boolean doEntityFilter(EntityProxy proxy, String filterString) {
+        if (filterString == null || filterString.isEmpty()) {
+            return true;
+        } else {
+            return proxy.getText().contains(filterString);
+        }
+    }
+
 
     //-------------------------------------------------------------------------
     // Event Handlers
@@ -112,9 +141,9 @@ public class Debugger extends StackPane {
         var region = app.getCurrentRegion();
         stage.setTitle("George's Debugger: " + region.prefix());
 
-        entitiesView.getItems().clear();
+        entityList.clear();
         for (long id : region.getEntities().ids()) {
-            entitiesView.getItems().add(new EntityProxy(region.get(id)));
+            entityList.add(new EntityProxy(region.get(id)));
         }
     }
 

@@ -141,34 +141,39 @@ public class App extends Application {
 
     private void gameLoop() {
         try {
-            // FIRST, handle any interrupts.
-            if (!interrupts.isEmpty()) {
-                handleInterrupts(userInput);
-                userInput = null;
-                return;
+            try {
+                // FIRST, handle any interrupts.
+                if (!interrupts.isEmpty()) {
+                    handleInterrupts(userInput);
+                    userInput = null;
+                    return;
+                }
+
+                // Do planning, based on current input. (Can throw interrupt.)
+                if (userInput != null) {
+                    Planner.doPlanning(userInput, region);
+                }
+
+                // Animate any visual effects
+                Animator.doAnimate(region);
+
+                // Execute any plans.  (Can throw interrupt.)
+                Executor.doMovement(region);
+            } catch (InterruptException ex) {
+                interrupts.add(ex.get());
             }
 
-            // Do planning, based on current input. (Can throw interrupt.)
-            if (userInput != null) {
-                Planner.doPlanning(userInput, region);
+            // FINALLY, repaint.
+            userInput = null;
+            viewer.repaint();
+
+            gameTick++;
+            if (gameTick % DEBUGGER_REFRESH_TICKS == 0 && debugger != null) {
+                debugger.refresh();
             }
-
-            // Animate any visual effects
-            Animator.doAnimate(region);
-
-            // Execute any plans.  (Can throw interrupt.)
-            Executor.doMovement(region);
-        } catch (InterruptException ex) {
-            interrupts.add(ex.get());
-        }
-
-        // FINALLY, repaint.
-        userInput = null;
-        viewer.repaint();
-
-        gameTick++;
-        if (gameTick % DEBUGGER_REFRESH_TICKS == 0 && debugger != null) {
-            debugger.refresh();
+        } catch (Exception ex) {
+            looper.stop();
+            throw ex;
         }
     }
 
