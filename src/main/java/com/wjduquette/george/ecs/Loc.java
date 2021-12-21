@@ -34,12 +34,13 @@ public record Loc(Cell cell, double rowOffset, double colOffset)
 
     @Override
     public String toString() {
-        var text = "(Loc " + cell.row() + " " + cell.col();
+        var start = "(Loc " + cell.row() + " " + cell.col();
 
+        String offset = "";
         if (rowOffset != 0.0 || colOffset != 0.0) {
-            text = text + " " + rowOffset + " " + colOffset;
+            offset = String.format(" %.2f %.2f", rowOffset, colOffset);
         }
 
-        return text + ")";
+        return start + offset + ")";
     }
 }

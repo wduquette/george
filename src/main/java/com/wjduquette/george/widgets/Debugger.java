@@ -6,12 +6,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
-public class Debugger extends BorderPane {
+public class Debugger extends StackPane {
     //-------------------------------------------------------------------------
     // Instance Variables
 
@@ -40,18 +38,10 @@ public class Debugger extends BorderPane {
 
         // FIRST, set up the GUI.
 
-        // Toolbar
-        ToolBar toolbar = new ToolBar();
-        Button refresh = new Button("Refresh");
-        refresh.setOnAction(evt -> refresh());
-        toolbar.getItems().add(refresh);
-
-        setTop(toolbar);
-
         // Tabs
         tabPane = new TabPane();
         makeEntitiesTab();
-        setCenter(tabPane);
+        getChildren().add(tabPane);
 
         // NEXT, pop up the window.
         Scene scene = new Scene(this, 800, 600);
@@ -59,7 +49,7 @@ public class Debugger extends BorderPane {
         stage.setTitle("George's Debugger");
         stage.setScene(scene);
         stage.setOnCloseRequest(evt -> onClose());
-        stage.initOwner(viewer.getScene().getWindow());
+//        stage.initOwner(viewer.getScene().getWindow());
     }
 
     private void makeEntitiesTab() {
@@ -67,6 +57,13 @@ public class Debugger extends BorderPane {
         entitiesTab.setText("Entities");
         tabPane.getTabs().add(entitiesTab);
 
+        // Toolbar
+        ToolBar toolbar = new ToolBar();
+        Button refresh = new Button("Refresh");
+        refresh.setOnAction(evt -> refresh());
+        toolbar.getItems().add(refresh);
+
+        // EntitiesView
         entitiesView = new TableView<>();
         entitiesView.setStyle("-fx-font-family: Menlo;");
 
@@ -79,7 +76,12 @@ public class Debugger extends BorderPane {
         textColumn.setPrefWidth(2000);
         entitiesView.getColumns().addAll(idColumn, textColumn);
 
-        entitiesTab.setContent(entitiesView);
+        // BorderPane
+        BorderPane content = new BorderPane();
+        content.setTop(toolbar);
+        content.setCenter(entitiesView);
+
+        entitiesTab.setContent(content);
     }
 
     //-------------------------------------------------------------------------

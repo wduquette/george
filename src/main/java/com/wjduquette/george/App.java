@@ -92,6 +92,7 @@ public class App extends Application {
         stage.setTitle("George's Saga!");
         stage.setScene(scene);
         stage.show();
+        stage.setOnCloseRequest(evt -> System.exit(0));
 
         Platform.runLater(looper::run);
     }
@@ -167,7 +168,7 @@ public class App extends Application {
 
         gameTick++;
         if (gameTick % DEBUGGER_REFRESH_TICKS == 0 && debugger != null) {
-//            debugger.refresh();
+            debugger.refresh();
         }
     }
 
