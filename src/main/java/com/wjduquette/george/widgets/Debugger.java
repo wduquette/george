@@ -18,8 +18,10 @@ public class Debugger extends StackPane {
 
     private final TabPane tabPane;
 
+    private TableView<EntityProxy> entitiesView;
     private ObservableList<EntityProxy> entityList;
     private FilteredList<EntityProxy> filteredEntityList;
+    private ContextMenu entityContextMenu;
 
     // The application
     private final App app;
@@ -78,7 +80,7 @@ public class Debugger extends StackPane {
 
         // EntitiesView
         entityList = FXCollections.observableArrayList();
-        TableView<EntityProxy> entitiesView = new TableView<>();
+        entitiesView = new TableView<>();
         entitiesView.setStyle("-fx-font-family: Menlo;");
         filteredEntityList = new FilteredList<>(entityList, ep -> doEntityFilter(ep, null));
         entitiesView.setItems(filteredEntityList);
@@ -92,6 +94,12 @@ public class Debugger extends StackPane {
         textColumn.setPrefWidth(2000);
         entitiesView.getColumns().add(idColumn);
         entitiesView.getColumns().add(textColumn);
+
+        // entityContextMenu
+        entityContextMenu = new ContextMenu();
+        entityContextMenu.getItems().add(label("Dummy"));
+        entityContextMenu.setOnShowing(evt -> populateEntityContextMenu());
+        entitiesView.setContextMenu(entityContextMenu);
 
         // BorderPane
         BorderPane content = new BorderPane();
@@ -109,6 +117,51 @@ public class Debugger extends StackPane {
         }
     }
 
+    private void populateEntityContextMenu() {
+        EntityProxy proxy = entitiesView.getSelectionModel().getSelectedItem();
+
+        entityContextMenu.getItems().clear();
+
+        if (proxy == null) {
+            entityContextMenu.getItems().addAll(
+                label("No selected entity")
+            );
+            return;
+        }
+
+        var entity = app.getCurrentRegion().get(Long.parseLong(proxy.id));
+
+        entityContextMenu.getItems().addAll(
+            label(proxy.getId()),
+            separator(),
+            menuItem("Go To Cell",
+                with(entity.cell(), () -> app.doMagicMove(entity.cell())))
+        );
+    }
+
+    private MenuItem label(String label) {
+        return menuItem(label, null);
+    }
+
+    private MenuItem menuItem(String label, Runnable action) {
+        MenuItem item = new MenuItem(label);
+        item.setMnemonicParsing(false);
+        item.setDisable(action == null);
+
+        if (action != null) {
+            item.setOnAction(evt -> action.run());
+        }
+
+        return item;
+    }
+
+    private MenuItem separator() {
+        return new SeparatorMenuItem();
+    }
+
+    private <T> T with(Object o, T value) {
+        return o != null ? value : null;
+    }
 
     //-------------------------------------------------------------------------
     // Event Handlers
@@ -138,9 +191,14 @@ public class Debugger extends StackPane {
         var region = app.getCurrentRegion();
         stage.setTitle("George's Debugger: " + region.prefix());
 
+        var proxy = entitiesView.getSelectionModel().getSelectedItem();
         entityList.clear();
         for (long id : region.getEntities().ids()) {
-            entityList.add(new EntityProxy(region.get(id)));
+            var newProxy = new EntityProxy(region.get(id));
+            entityList.add(newProxy);
+            if (proxy != null && proxy.id.equals(newProxy.id)) {
+                entitiesView.getSelectionModel().select(newProxy);
+            }
         }
     }
 

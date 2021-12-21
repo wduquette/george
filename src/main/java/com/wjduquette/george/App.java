@@ -116,6 +116,9 @@ public class App extends Application {
         }
     }
 
+    //-------------------------------------------------------------------------
+    // Debugger API
+
     private void showDebugger() {
         System.out.println("Show debugger");
         if (debugger == null) {
@@ -134,6 +137,19 @@ public class App extends Application {
      */
     public Region getCurrentRegion() {
         return region;
+    }
+
+    /**
+     * Moves the party to the given cell in the current region.
+     * @param cell The cell
+     */
+    public void doMagicMove(Cell cell) {
+        // TODO: handler entire party, current movement capabilities.
+        if (region.isWalkable(cell)) {
+            region.query(Player.class)
+                .findFirst()
+                .ifPresent(p -> p.cell(cell));
+        }
     }
 
     //-------------------------------------------------------------------------
