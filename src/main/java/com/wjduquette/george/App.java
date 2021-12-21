@@ -3,6 +3,7 @@ package com.wjduquette.george;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.util.Looper;
+import com.wjduquette.george.widgets.Debugger;
 import com.wjduquette.george.widgets.UserInput;
 import com.wjduquette.george.widgets.UserInputEvent;
 import com.wjduquette.george.widgets.GameView;
@@ -22,7 +23,8 @@ public class App extends Application {
     // Constants
 
     // How often the game loop executes
-    private final int LOOP_MSECS = 50;
+    private static final int LOOP_MSECS = 50;
+    private static final int DEBUGGER_REFRESH_TICKS = 10;
 
     //-------------------------------------------------------------------------
     // Instance Variables
@@ -48,6 +50,12 @@ public class App extends Application {
 
     // The Interrupt stack
     private final Stack<Interrupt> interrupts = new Stack<>();
+
+    // The debugger, or null if not shown.
+    private Debugger debugger = null;
+
+    // The game tick
+    private long gameTick = 0;
 
     //-------------------------------------------------------------------------
     // Main Program
@@ -97,9 +105,26 @@ public class App extends Application {
 
     // Handle cells clicks
     private void onUserInput(UserInputEvent event) {
-        // FIRST, save the target cell.  It will be assessed by the
-        // Planner on the next iteration of the GameLoop.
-        userInput = event.getInput();
+        if (event.getInput() instanceof UserInput.ShowDebugger) {
+            // Invoke the debugger
+            showDebugger();
+        } else {
+            // Save the input.  It will be assessed by the
+            // Planner on the next iteration of the GameLoop.
+            userInput = event.getInput();
+        }
+    }
+
+    private void showDebugger() {
+        System.out.println("Show debugger");
+        if (debugger == null) {
+            debugger = new Debugger(this, viewer);
+            debugger.setOnClose(() -> {
+                debugger = null;
+                System.out.println("Close debugger");
+            });
+        }
+        debugger.show();
     }
 
     //-------------------------------------------------------------------------
@@ -131,6 +156,11 @@ public class App extends Application {
         // FINALLY, repaint.
         userInput = null;
         viewer.repaint();
+
+        gameTick++;
+        if (gameTick % DEBUGGER_REFRESH_TICKS == 0 && debugger != null) {
+            debugger.refresh();
+        }
     }
 
     private void handleInterrupts(UserInput input) {
@@ -168,7 +198,7 @@ public class App extends Application {
             .filter(e -> e.point().name().equals(pointName))
             .findFirst();
 
-        if (!point.isPresent()) {
+        if (point.isEmpty()) {
             System.out.println("No such point in " + regionName + ": " + pointName);
             return;
         }

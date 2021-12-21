@@ -7,6 +7,8 @@ import com.wjduquette.george.model.*;
 import javafx.application.Platform;
 import javafx.geometry.*;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -54,17 +56,17 @@ public class GameView extends StackPane {
         // Configure the Canvas
         canvas = new CanvasPane();
         getChildren().add(canvas);
-        canvas.setOnResize(this::repaint);
-        canvas.setOnMouseClicked(this::onMouseClick);
-
         canvas.setBackground(new Background(
             new BackgroundFill(Color.BLACK, null, null)));
-
+        canvas.setOnResize(this::repaint);
+        canvas.setOnMouseClicked(this::onMouseClick);
+        canvas.setOnKeyPressed(this::onKeyPressed);
     }
 
     //-------------------------------------------------------------------------
     // Event Handling
 
+    // Convert mouse clicks into user input
     private void onMouseClick(MouseEvent evt) {
         Point2D mouse = canvas.ofMouse(evt);
 
@@ -81,6 +83,13 @@ public class GameView extends StackPane {
 
         if (region.contains(cell)) {
             UserInputEvent.generate(new UserInput.CellClick(cell), evt);
+        }
+    }
+
+    // Convert keypresses into user input
+    private void onKeyPressed(KeyEvent evt) {
+        if (evt.getCode() == KeyCode.F1) {
+            this.fireEvent(new UserInputEvent(new UserInput.ShowDebugger(), null));
         }
     }
 
