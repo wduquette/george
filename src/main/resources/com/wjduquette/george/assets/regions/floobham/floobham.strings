@@ -13,7 +13,7 @@ we don't have it.
 %end
 
 %string sign.inn
-Floob Arms,
+Floob Arms
 
 Food, Drink, Lodging, and Quests.
 
@@ -111,7 +111,7 @@ A long-time resident of Floobham.
 
 %string townsman.greeting1
 Enjoy your stay in Floobham!  Don't forget to check 
-out the sewers. People come from miles around to see 
+out the sewers. Why, people come from miles around to see
 our sewers.
 %end
 
