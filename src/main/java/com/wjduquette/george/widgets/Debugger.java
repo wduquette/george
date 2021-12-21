@@ -16,13 +16,10 @@ public class Debugger extends StackPane {
     //-------------------------------------------------------------------------
     // Instance Variables
 
-    private TabPane tabPane;
+    private final TabPane tabPane;
 
-    private Tab entitiesTab;
-    private TableView<EntityProxy> entitiesView;
     private ObservableList<EntityProxy> entityList;
     private FilteredList<EntityProxy> filteredEntityList;
-    private TextField entityFilter;
 
     // The application
     private final App app;
@@ -60,18 +57,17 @@ public class Debugger extends StackPane {
     }
 
     private void makeEntitiesTab() {
-        entitiesTab = new Tab();
+        Tab entitiesTab = new Tab();
         entitiesTab.setText("Entities");
         tabPane.getTabs().add(entitiesTab);
 
         // Toolbar
         ToolBar toolbar = new ToolBar();
 
-        entityFilter = new TextField();
+        TextField entityFilter = new TextField();
         entityFilter.setPrefColumnCount(20);
-        entityFilter.textProperty().addListener((p, o, n) -> {
-            filteredEntityList.setPredicate(ep -> doEntityFilter(ep, n));
-        });
+        entityFilter.textProperty().addListener((p, o, n) ->
+            filteredEntityList.setPredicate(ep -> doEntityFilter(ep, n)));
         toolbar.getItems().add(new Label("Filter"));
         toolbar.getItems().add(entityFilter);
 
@@ -82,7 +78,7 @@ public class Debugger extends StackPane {
 
         // EntitiesView
         entityList = FXCollections.observableArrayList();
-        entitiesView = new TableView<>();
+        TableView<EntityProxy> entitiesView = new TableView<>();
         entitiesView.setStyle("-fx-font-family: Menlo;");
         filteredEntityList = new FilteredList<>(entityList, ep -> doEntityFilter(ep, null));
         entitiesView.setItems(filteredEntityList);
@@ -94,7 +90,8 @@ public class Debugger extends StackPane {
         TableColumn<EntityProxy,String> textColumn = new TableColumn<>("Detail");
         textColumn.setCellValueFactory(new PropertyValueFactory<>("text"));
         textColumn.setPrefWidth(2000);
-        entitiesView.getColumns().addAll(idColumn, textColumn);
+        entitiesView.getColumns().add(idColumn);
+        entitiesView.getColumns().add(textColumn);
 
         // BorderPane
         BorderPane content = new BorderPane();
@@ -159,7 +156,7 @@ public class Debugger extends StackPane {
             this.text = entity.componentString().replaceAll("\\s+", " ");
         }
 
-        public String getId() { return id.toString(); }
+        public String getId() { return id; }
         public String getText() { return text; }
     }
 }
