@@ -127,6 +127,14 @@ public class App extends Application {
         debugger.show();
     }
 
+    /**
+     * Gets the current region.  This if for the use of the Debugger.
+     * @return The region.
+     */
+    public Region getCurrentRegion() {
+        return region;
+    }
+
     //-------------------------------------------------------------------------
     //  The Game Loop
 
@@ -159,7 +167,7 @@ public class App extends Application {
 
         gameTick++;
         if (gameTick % DEBUGGER_REFRESH_TICKS == 0 && debugger != null) {
-            debugger.refresh();
+//            debugger.refresh();
         }
     }
 

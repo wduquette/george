@@ -1,6 +1,8 @@
 package com.wjduquette.george.ecs;
 
 import com.wjduquette.george.model.Cell;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -43,6 +45,10 @@ public class EntityTable {
     public void clear() {
         entities.clear();
         entityCounter = 0;
+    }
+
+    public Set<Long> ids() {
+        return entities.keySet();
     }
 
     /**
