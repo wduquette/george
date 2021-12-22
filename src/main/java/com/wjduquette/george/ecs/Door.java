@@ -57,11 +57,24 @@ public record Door(
      * state.
      * @return The Feature
      */
+    public Terrain terrain() {
+        if (isClosed()) {
+            return new Terrain(closedTerrain);
+        } else {
+            return new Terrain(TerrainType.NONE);
+        }
+    }
+
+    /**
+     * Returns the expected value of the Door's feature component given its
+     * state.
+     * @return The Feature
+     */
     public Feature feature() {
         if (isClosed()) {
-            return new Feature(closedTerrain);
+            return new Feature("closed door");
         } else {
-            return new Feature(TerrainType.NONE);
+            return new Feature("open door");
         }
     }
 

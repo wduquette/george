@@ -280,22 +280,32 @@ public class Entity {
 
     /**
      * Sets a feature given a terrain type.
-     * @param type The type
+     * @param name The feature name
      * @return The entity
      */
-    public Entity feature(TerrainType type) {
-        put(new Feature(type));
+    public Entity feature(String name) {
+        put(new Feature(name));
         return this;
     }
 
     /**
-     * Gets the entity's terrain type, as read from its Feature component,
+     * Sets the entity's terrain type.
+     * @param type The type
+     * @return The entity
+     */
+    public Entity terrain(TerrainType type) {
+        put(new Terrain(type));
+        return this;
+    }
+
+    /**
+     * Gets the entity's terrain type, as read from its Terrain component,
      * or NONE if it has no terrain type.
      * @return The TerrainType.
      */
     public TerrainType terrainType() {
-        return find(Feature.class)
-            .map(Feature::terrainType)
+        return find(Terrain.class)
+            .map(Terrain::terrainType)
             .orElse(TerrainType.NONE);
     }
 
@@ -306,11 +316,23 @@ public class Entity {
     public Door door() { return components.get(Door.class); }
 
     /**
+     * Adds the door and updates the entity according to the door's state.
+     * @param door The door
+     * @return The entity
+     */
+    public Entity door(Door door) {
+        return put(door)
+            .put(door.feature())
+            .put(door.terrain())
+            .put(door.sprite());
+    }
+
+    /**
      * Sets the entity's door component to DoorState.OPEN.
      * @return The entity.
      */
     public Entity openDoor() {
-        components.put(door().open());
+        door(door().open());
         return this;
     }
 
@@ -319,7 +341,7 @@ public class Entity {
      * @return The entity.
      */
     public Entity closeDoor() {
-        components.put(door().close());
+        door(door().close());
         return this;
     }
 

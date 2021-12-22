@@ -195,7 +195,8 @@ public class Region {
             TerrainTile tile = terrainTileSet.get(tileIndex);
 
             Entity feature = entities.make()
-                .feature(tile.type())
+                .feature(tile.description())
+                .terrain(tile.type())
                 .sprite(tile)
                 .cell(r, c);
 
@@ -208,9 +209,11 @@ public class Region {
             var open = prefix() + ".open_door";
 
             if (tile.name().equals(closed)) {
-                feature.put(new Door(DoorState.CLOSED, tile.type(), closed, open));
+                var door = new Door(DoorState.CLOSED, tile.type(), closed, open);
+                feature.door(door);
             } else if (tile.name().equals(open)) {
-                feature.put(new Door(DoorState.OPEN, tile.type(), closed, open));
+                var door = new Door(DoorState.OPEN, tile.type(), closed, open);
+                feature.door(door);
             }
         }
     }
@@ -233,7 +236,8 @@ public class Region {
                     // An NPC who just stands and talks when you poke him.
                     case MANNIKIN_OBJECT -> entities.make()
                         .put(new Mannikin(obj.name))
-                        .feature(TerrainType.FENCE)
+                        .feature(obj.name)
+                        .terrain(TerrainType.FENCE)
                         .sprite(obj.getProperty("sprite"))
                         .cell(object2cell(obj));
 
@@ -246,7 +250,8 @@ public class Region {
                     case SIGN_OBJECT ->
                         // TODO: Allow tile to be set from properties.
                         entities.make()
-                            .feature(TerrainType.NONE)
+                            .feature("sign")
+                            .terrain(TerrainType.NONE)
                             .sign(obj.name)
                             .sprite(Sprites.ALL.getInfo("feature.sign"))
                             .cell(object2cell(obj));
@@ -479,10 +484,10 @@ public class Region {
             return "You see: " + mobile.get().mobile().name();
         }
 
-        var feature = findAt(cell, Feature.class, Sprite.class);
+        var feature = findAt(cell, Feature.class);
 
         if (feature.isPresent()) {
-            return "You see: " + feature.get().sprite().name();
+            return "You see: " + feature.get().feature().name();
         }
 
         var tile = getTerrain(cell);

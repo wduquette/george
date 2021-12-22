@@ -110,12 +110,10 @@ public class Executor {
 
                 if (result == Result.DO_NEXT) {
                     var that = region.get(goal.id());
-                    var door = that.door().open();
+                    var door = that.door();
 
-                    if (that.door() != null) {
-                        that.put(door)
-                            .put(door.feature())
-                            .put(door.sprite());
+                    if (door != null) {
+                        that.door(door.open());
                     }
                 }
                 return result;
