@@ -48,6 +48,7 @@ public class Planner {
             player.cell(), targetCell);
 
         if (route.isEmpty()) {
+            region.log("That's inaccessible.");
             return;
         }
 

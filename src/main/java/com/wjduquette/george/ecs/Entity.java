@@ -37,6 +37,38 @@ public class Entity {
         nextId = value;
     }
 
+    /**
+     * A comparator for entities, comparing by entity ID.
+     * @param a The first entity
+     * @param b The second entity
+     * @return -1, 0, or 1.
+     */
+    public static int oldestFirst(Entity a, Entity b) {
+        if (a.id() < b.id()) {
+            return -1;
+        } else if (a.id() > b.id()) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * A comparator for entities, comparing by entity ID.
+     * @param a The first entity
+     * @param b The second entity
+     * @return -1, 0, or 1.
+     */
+    public static int newestFirst(Entity a, Entity b) {
+        if (a.id() > b.id()) {
+            return -1;
+        } else if (a.id() < b.id()) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
     //-------------------------------------------------------------------------
     // Instance Variables
 
@@ -379,6 +411,17 @@ public class Entity {
      * @return The component, or null.
      */
     public Plan plan() { return components.get(Plan.class); }
+
+    //-------------------------------------------------------------------------
+    // Log Messages
+
+    /**
+     * Gets a log message's LogMessage component.
+     * @return The component
+     */
+    public LogMessage logMessage() {
+        return components.get(LogMessage.class);
+    }
 
     //-------------------------------------------------------------------------
     // Player Methods

@@ -6,7 +6,6 @@ import com.wjduquette.george.util.Looper;
 import com.wjduquette.george.widgets.Debugger;
 import com.wjduquette.george.widgets.UserInput;
 import com.wjduquette.george.widgets.UserInputEvent;
-import com.wjduquette.george.widgets.GameView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -180,7 +179,7 @@ public class App extends Application {
                 }
 
                 // Animate any visual effects
-                Animator.doAnimate(region);
+                Animator.doAnimate(gameTick, region);
 
                 // Execute any plans.  (Can throw interrupt.)
                 Executor.doMovement(region);

@@ -1,10 +1,13 @@
-package com.wjduquette.george.widgets;
+package com.wjduquette.george;
 
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.util.RandomPlus;
+import com.wjduquette.george.widgets.CanvasPane;
+import com.wjduquette.george.widgets.UserInput;
+import com.wjduquette.george.widgets.UserInputEvent;
 import javafx.application.Platform;
 import javafx.geometry.*;
 import javafx.scene.image.Image;
@@ -22,8 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameView extends StackPane {
-    public final static int HEIGHT_IN_TILES = 20;
-    public final static int WIDTH_IN_TILES = 25;
+    private static final double LOG_MIN_Y = 20;
+    private static final double LOG_X = 20;
+    private static final double LOG_HEIGHT = 30;
 
     //-------------------------------------------------------------------------
     // Instance Variables
@@ -127,7 +131,7 @@ public class GameView extends StackPane {
     /**
      * Describes a feature, based on what it is.  Supported features include
      * Signs and Mannikins.
-     * @param id
+     * @param id The feature entity's ID
      */
     public void describeFeature(long id) {
         repaint();
@@ -153,8 +157,6 @@ public class GameView extends StackPane {
 
             displayTextBlock(entity, buff.toString());
         }
-
-
     }
 
     public void displayTextBlock(Entity entity, String text) {
@@ -202,9 +204,11 @@ public class GameView extends StackPane {
         targets.clear();
         getChildren().setAll(canvas);
 
-        // TEMP
-        Entity player = region.query(Player.class).findFirst().get();
         // Don't recompute bounds if the player is executing a plan.
+        // TODO: Not sure if this is want I want.  At the very least, I need
+        // recompute if the player is outside the current bounds.
+        Entity player = region.query(Player.class).findFirst().orElseThrow();
+
         if (player.find(Plan.class).isEmpty()) {
             computeBounds(player.cell());
         }
@@ -232,8 +236,28 @@ public class GameView extends StackPane {
             canvas.drawImage(img(effect.sprite()), entity2xy(effect));
         }
 
+        // NEXT, render log messages
+        List<Entity> messages = region.query(LogMessage.class)
+            .sorted(Entity::newestFirst)
+            .toList();
+        for (int i = 0; i < messages.size(); i++) {
+            drawLogMessage(i, messages.get(i).logMessage().message());
+        }
+
         // NEXT, render player status boxes
         drawStatusBox(0, player);
+    }
+
+    private void drawLogMessage(int index, String message) {
+        double x = LOG_X;
+        double y = canvas.getHeight() - (index*LOG_HEIGHT + LOG_MIN_Y);
+
+        canvas.gc().setStroke(Color.BLACK);
+        canvas.gc().setLineWidth(1);
+        canvas.gc().setFill(Color.WHITE);
+        canvas.gc().setFont(Font.font("Helvetica", LOG_HEIGHT));
+        canvas.gc().strokeText(message, x, y);
+        canvas.gc().fillText(message, x, y);
     }
 
 

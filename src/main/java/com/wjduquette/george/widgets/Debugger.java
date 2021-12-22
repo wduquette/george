@@ -1,6 +1,7 @@
 package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.App;
+import com.wjduquette.george.GameView;
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.Exit;
 import com.wjduquette.george.ecs.Point;
