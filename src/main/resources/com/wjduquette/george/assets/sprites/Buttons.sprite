@@ -2,6 +2,7 @@
 %prefix button
 %size 40 40
 %file Buttons.png
+%sprite pointer
 %sprite backpack
 %sprite combat
 %sprite normal
