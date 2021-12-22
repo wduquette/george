@@ -364,7 +364,6 @@ public class Region {
      * @param classes A list of component classes to match
      * @return The stream of found entities.
      */
-    @SuppressWarnings("unchecked")
     public Stream<Entity> query(Class<?>... classes) {
         return entities.query(classes);
     }
@@ -374,7 +373,6 @@ public class Region {
      * @param classes A list of component classes to match
      * @return The stream of found entities.
      */
-    @SuppressWarnings("unchecked")
     public Optional<Entity> findAt(Cell cell, Class<?>... classes) {
         return entities.findAt(cell, classes);
     }
@@ -457,5 +455,37 @@ public class Region {
      */
     public StringsTable strings() {
         return strings;
+    }
+
+    /**
+     * Logs a single line of text to the user's screen.
+     * @param text The text.
+     */
+    public void log(String text) {
+        entities.make().put(new LogMessage(0, text));
+    }
+
+
+    /**
+     * Return a string that describes the content of the cell.
+     * @param cell The cell
+     * @return The string
+     */
+    public String describe(Cell cell) {
+        // TODO: Need descriptive text!
+        var mobile = findAt(cell, Mobile.class);
+
+        if (mobile.isPresent()) {
+            return "You see: " + mobile.get().mobile().name();
+        }
+
+        var feature = findAt(cell, Feature.class, Sprite.class);
+
+        if (feature.isPresent()) {
+            return "You see: " + feature.get().sprite().name();
+        }
+
+        var tile = getTerrain(cell);
+        return "You see: " + tile.description();
     }
 }

@@ -17,7 +17,6 @@ public class UserInputEvent extends Event {
     // Instance variables
 
     private final UserInput input;
-    private final MouseEvent mouseEvent;
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -26,12 +25,10 @@ public class UserInputEvent extends Event {
      * Creates a new event for the given input and underlying
      * mouse event.
      * @param input The input
-     * @param mouseEvent The event
      */
-    public UserInputEvent(UserInput input, MouseEvent mouseEvent) {
+    public UserInputEvent(UserInput input) {
         super(USER_INPUT);
         this.input = input;
-        this.mouseEvent = mouseEvent;
     }
 
     //-------------------------------------------------------------------------
@@ -43,23 +40,5 @@ public class UserInputEvent extends Event {
      */
     public UserInput getInput() {
         return input;
-    }
-
-    /**
-     * Get the underlying mouse event
-     * @return The event
-     */
-    public MouseEvent getMouseEvent() {
-        return mouseEvent;
-    }
-
-    /**
-     * Generate an event
-     * @param input The input
-     * @param evt The mouse event
-     */
-    public static void generate(UserInput input, MouseEvent evt) {
-        Node node = evt.getPickResult().getIntersectedNode();
-        node.fireEvent(new UserInputEvent(input, evt));
     }
 }

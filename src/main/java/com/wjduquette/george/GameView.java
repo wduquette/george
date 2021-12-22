@@ -1,10 +1,13 @@
-package com.wjduquette.george.widgets;
+package com.wjduquette.george;
 
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.util.RandomPlus;
+import com.wjduquette.george.widgets.CanvasPane;
+import com.wjduquette.george.widgets.UserInput;
+import com.wjduquette.george.widgets.UserInputEvent;
 import javafx.application.Platform;
 import javafx.geometry.*;
 import javafx.scene.image.Image;
@@ -18,12 +21,29 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class GameView extends StackPane {
-    public final static int HEIGHT_IN_TILES = 20;
-    public final static int WIDTH_IN_TILES = 25;
+    //-------------------------------------------------------------------------
+    // Statics
+
+    private enum Button {
+        MODE("button.normal"),
+        POINTER("button.pointer"),
+        MAGNIFIER("button.magnifier"),
+        SCROLL("button.scroll"),
+        MAP("button.map");
+
+        private String sprite;
+
+        Button(String sprite) {
+            this.sprite = sprite;
+        }
+
+        public String sprite() {
+            return sprite;
+        }
+    }
 
     //-------------------------------------------------------------------------
     // Instance Variables
@@ -50,7 +70,10 @@ public class GameView extends StackPane {
     // The currently rendered click targets
     private final List<ClickTarget> targets = new ArrayList<>();
 
+    // TODO: Should be defined on App as a global resource.
     private final RandomPlus random = new RandomPlus();
+
+    private final Set<Button> selected = new HashSet<>();
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -64,6 +87,9 @@ public class GameView extends StackPane {
         canvas.setOnResize(this::repaint);
         canvas.setOnMouseClicked(this::onMouseClick);
         canvas.setOnKeyPressed(this::onKeyPressed);
+
+        // Configure the buttons
+        selected.add(Button.POINTER);
     }
 
     //-------------------------------------------------------------------------
@@ -76,7 +102,7 @@ public class GameView extends StackPane {
         // FIRST, did they click a specific target?
         for (ClickTarget target : targets) {
             if (target.bounds().contains(mouse)) {
-                UserInputEvent.generate(target.input(), evt);
+                target.action.run();
                 return;
             }
         }
@@ -84,15 +110,22 @@ public class GameView extends StackPane {
         // NEXT, did they click a cell?
         Cell cell = xy2rc(mouse);
 
-        if (region.contains(cell)) {
-            UserInputEvent.generate(new UserInput.CellClick(cell), evt);
+        if (!region.contains(cell)) {
+            return;
+        }
+
+        if (selected.contains(Button.POINTER)) {
+            var input = new UserInput.CellClick(cell);
+            fireEvent(new UserInputEvent(input));
+        } else if (selected.contains(Button.MAGNIFIER)) {
+            region.log(region.describe(cell));
         }
     }
 
     // Convert keypresses into user input
     private void onKeyPressed(KeyEvent evt) {
         if (evt.getCode() == KeyCode.F1) {
-            this.fireEvent(new UserInputEvent(new UserInput.ShowDebugger(), null));
+            fireEvent(new UserInputEvent(new UserInput.ShowDebugger()));
         }
     }
 
@@ -127,7 +160,7 @@ public class GameView extends StackPane {
     /**
      * Describes a feature, based on what it is.  Supported features include
      * Signs and Mannikins.
-     * @param id
+     * @param id The feature entity's ID
      */
     public void describeFeature(long id) {
         repaint();
@@ -153,8 +186,6 @@ public class GameView extends StackPane {
 
             displayTextBlock(entity, buff.toString());
         }
-
-
     }
 
     public void displayTextBlock(Entity entity, String text) {
@@ -202,9 +233,11 @@ public class GameView extends StackPane {
         targets.clear();
         getChildren().setAll(canvas);
 
-        // TEMP
-        Entity player = region.query(Player.class).findFirst().get();
         // Don't recompute bounds if the player is executing a plan.
+        // TODO: Not sure if this is want I want.  At the very least, I need
+        // recompute if the player is outside the current bounds.
+        Entity player = region.query(Player.class).findFirst().orElseThrow();
+
         if (player.find(Plan.class).isEmpty()) {
             computeBounds(player.cell());
         }
@@ -232,10 +265,79 @@ public class GameView extends StackPane {
             canvas.drawImage(img(effect.sprite()), entity2xy(effect));
         }
 
-        // NEXT, render player status boxes
+        // NEXT, render the controls.
         drawStatusBox(0, player);
+        drawButtonBar();
+
+        // NEXT, render log messages
+        List<Entity> messages = region.query(LogMessage.class)
+            .sorted(Entity::newestFirst)
+            .toList();
+        for (int i = 0; i < messages.size(); i++) {
+            drawLogMessage(i, messages.get(i).logMessage().message());
+        }
     }
 
+    //-------------------------------------------------------------------------
+    // Button Bar Display
+
+    private static final double BAR_MARGIN = 10;
+
+    private void drawButtonBar() {
+        var w = canvas.getWidth();
+        var h = canvas.getHeight();
+        var bw = sprites.width();
+        var bh = sprites.height();
+        var border = 4;
+
+        var nbuttons = Button.values().length;
+        var barw = nbuttons*(bw + border) + border;
+        var barh = bh + 2*border;
+
+        var bary = h - (barh + BAR_MARGIN);
+        var barx = (w - barw)/2.0;
+
+        canvas.gc().setFill(Color.BLACK);
+        canvas.gc().fillRect(barx, bary, barw, barh);
+
+        for (Button btn : Button.values()) {
+            var i = btn.ordinal();
+            var bx = barx + border + i*(bw + border);
+            var by = bary + border;
+
+            var fill = selected.contains(btn) ? Color.LIGHTGRAY : Color.GRAY;
+
+            canvas.gc().setFill(fill);
+            canvas.gc().fillRect(bx, by, bw, bh);
+            canvas.gc().drawImage(sprites.get(btn.sprite()), bx, by);
+
+            var box = new BoundingBox(bx, by, bw, bh);
+            targets.add(new ClickTarget(box, () -> buttonClick(btn)));
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    // LogMessage Display
+
+    private static final double LOG_MIN_Y = 20;
+    private static final double LOG_X = 20;
+    private static final double LOG_HEIGHT = 25;
+
+
+    private void drawLogMessage(int index, String message) {
+        double x = LOG_X;
+        double y = canvas.getHeight() - (index*LOG_HEIGHT + LOG_MIN_Y);
+
+        canvas.gc().setStroke(Color.BLACK);
+        canvas.gc().setLineWidth(1);
+        canvas.gc().setFill(Color.WHITE);
+        canvas.gc().setFont(Font.font("Helvetica", LOG_HEIGHT));
+        canvas.gc().strokeText(message, x, y);
+        canvas.gc().fillText(message, x, y);
+    }
+
+    //-------------------------------------------------------------------------
+    // Status Box display
 
     private void drawStatusBox(int index, Entity player) {
         double oborder = 2;
@@ -252,7 +354,7 @@ public class GameView extends StackPane {
 
         var box = new BoundingBox(xLeft, yTop, boxWidth, boxHeight);
         var input = new UserInput.StatusBox(player.id());
-        targets.add(new ClickTarget(box, input));
+        targets.add(new ClickTarget(box, () -> fireInputEvent(input)));
 
         canvas.gc().setFill(Color.BLACK);
         canvas.gc().fillRect(xLeft, yTop, boxWidth, boxHeight);
@@ -270,6 +372,9 @@ public class GameView extends StackPane {
         canvas.gc().drawImage(sprite, xLeft + border, yTop + border);
     }
 
+
+    //-------------------------------------------------------------------------
+    // Utilities
 
     private void drawRoute(List<Cell> route) {
         canvas.gc().setStroke(Color.WHITE);
@@ -344,8 +449,29 @@ public class GameView extends StackPane {
     }
 
     //-------------------------------------------------------------------------
-    // ClickTarget: canned bounds on which the user can click.
+    // ClickTarget: canned bounds on which the user can click, plus actions.
 
     // If the user clicks in the bounds, the user input is sent.
-    private record ClickTarget(Bounds bounds, UserInput input) {}
+    private record ClickTarget(Bounds bounds, Runnable action) {}
+
+    private void fireInputEvent(UserInput input) {
+        fireEvent(new UserInputEvent(input));
+    }
+
+    private void buttonClick(Button btn) {
+        switch (btn) {
+            case POINTER:
+                selected.remove(Button.MAGNIFIER);
+                selected.add(Button.POINTER);
+                break;
+            case MAGNIFIER:
+                selected.remove(Button.POINTER);
+                selected.add(Button.MAGNIFIER);
+                break;
+            default:
+                region.log("TODO: " + btn);
+                break;
+        }
+    }
+
 }

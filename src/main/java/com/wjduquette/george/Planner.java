@@ -15,6 +15,9 @@ import java.util.Optional;
 public class Planner {
     private Planner() {} // Not instantiable
 
+    /** The maximum length for a planned route, in cells. */
+    public static final int MAX_ROUTE_LENGTH = 20;
+
     //-------------------------------------------------------------------------
     // Instance Variables
 
@@ -48,6 +51,10 @@ public class Planner {
             player.cell(), targetCell);
 
         if (route.isEmpty()) {
+            region.log("That's inaccessible.");
+            return;
+        } else if (route.size() > MAX_ROUTE_LENGTH) {
+            region.log("That's too far.");
             return;
         }
 

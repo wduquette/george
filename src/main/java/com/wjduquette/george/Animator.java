@@ -2,6 +2,7 @@ package com.wjduquette.george;
 
 import com.wjduquette.george.ecs.Door;
 import com.wjduquette.george.ecs.Entity;
+import com.wjduquette.george.ecs.LogMessage;
 import com.wjduquette.george.ecs.VisualEffect;
 import com.wjduquette.george.model.Animation;
 import com.wjduquette.george.model.Region;
@@ -17,16 +18,22 @@ import java.util.List;
  */
 public class Animator {
     private Animator() {} // Not instantiable.
+    public static int MAX_MESSAGES = 3;
+    public static long MESSAGE_DURATION = 40;
 
     /**
      * Animates visual effects for the region.
+     * @param gameTick The current game tick
      * @param region The region
      */
-    public static void doAnimate(Region region) {
+    public static void doAnimate(long gameTick, Region region) {
         // Update all effect animations
         for (Entity effect : region.query(VisualEffect.class).toList()) {
             doUpdate(region, effect);
         }
+
+        // Update all log messages.
+        doUpdateLogMessages(gameTick, region);
     }
 
     public static void doUpdate(Region region, Entity effect) {
@@ -42,6 +49,30 @@ public class Animator {
 
         if (animation.isComplete()) {
             region.getEntities().remove(effect.id());
+        }
+    }
+
+    private static void doUpdateLogMessages(long gameTick, Region region) {
+        // FIRST, get the current log messages, sorting them by ID; this
+        // puts them in order from oldest to newest.
+        List<Entity> messages = region.query(LogMessage.class)
+            .sorted(Entity::newestFirst).toList();
+
+        // NEXT, assign a last tick to messages that don't have one, and
+        // remove messages that are too old.
+        for (Entity e : messages) {
+            var msg = e.logMessage();
+
+            if (msg.lastTick() == 0) {
+                e.put(new LogMessage(gameTick + MESSAGE_DURATION, msg.message()));
+            } else if (msg.lastTick() <= gameTick) {
+                region.getEntities().remove(e.id());
+            }
+        }
+
+        // NEXT, get rid of excess messages.
+        for (int i = MAX_MESSAGES; i < messages.size(); i++) {
+            region.getEntities().remove(messages.get(i).id());
         }
     }
 }
