@@ -7,11 +7,13 @@ import com.wjduquette.george.ecs.Point;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.HashSet;
@@ -21,8 +23,11 @@ public class Debugger extends StackPane {
     //-------------------------------------------------------------------------
     // Instance Variables
 
+    private final SplitPane mainSplit;
     private final TabPane tabPane;
+    private final TextArea outputLog;
 
+    // Entity Pane
     private TableView<EntityProxy> entitiesView;
     private ObservableList<EntityProxy> entityList;
     private FilteredList<EntityProxy> filteredEntityList;
@@ -50,10 +55,23 @@ public class Debugger extends StackPane {
 
         // FIRST, set up the GUI.
 
-        // Tabs
+        // TabPane and Tabs
         tabPane = new TabPane();
         makeEntitiesTab();
-        getChildren().add(tabPane);
+
+        // Output Log
+        outputLog = new TextArea();
+        outputLog.setEditable(false);
+        outputLog.setFont(Font.font("Menlo", 14));
+
+        // main split
+        mainSplit = new SplitPane();
+        mainSplit.setOrientation(Orientation.VERTICAL);
+        mainSplit.getItems().add(tabPane);
+        mainSplit.getItems().add(outputLog);
+        mainSplit.setDividerPosition(0, 0.9);
+
+        getChildren().add(mainSplit);
 
         // NEXT, pop up the window.
         Scene scene = new Scene(this, 800, 600);
@@ -240,6 +258,16 @@ public class Debugger extends StackPane {
                 entitiesView.getSelectionModel().select(newProxy);
             }
         }
+    }
+
+    /**
+     * Add a log message to the text area text.
+     * @param text The message.
+     */
+    public void println(String text) {
+        var newText = outputLog.getText() + text + "\n";
+        outputLog.setText(newText);
+        outputLog.setScrollTop(Double.MAX_VALUE);
     }
 
     //-------------------------------------------------------------------------

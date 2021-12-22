@@ -52,7 +52,7 @@ public class App extends Application {
     private final Stack<Interrupt> interrupts = new Stack<>();
 
     // The debugger, or null if not shown.
-    private Debugger debugger = null;
+    private static Debugger debugger = null;
 
     // The game tick
     private long gameTick = 0;
@@ -290,5 +290,20 @@ public class App extends Application {
         }
 
         return region;
+    }
+
+    //-------------------------------------------------------------------------
+    // Global Utilities
+
+    /**
+     * Prints to the current destination.
+     * @param text The output text.
+     */
+    public static void println(String text) {
+        if (debugger != null) {
+            debugger.println(text);
+        }
+
+        System.out.println(text);
     }
 }

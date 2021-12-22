@@ -96,7 +96,7 @@ public class Executor {
                         throw new InterruptException(
                             new Interrupt.GoToRegion(feature.exit()));
                     } else {
-                        System.out.println("Exit is blocked.");
+                        App.println("Exit is blocked.");
                         return Result.HALT;
                     }
                 } else {
@@ -137,7 +137,7 @@ public class Executor {
             //
             case Step.SetCell step:
                 mob.cell(step.cell());  // Go there.
-                System.out.println("At " + step.cell());
+                App.println("At " + step.cell());
                 break;
 
             case Step.WaitUntilGone wait:
