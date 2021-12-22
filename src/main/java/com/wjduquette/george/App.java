@@ -243,22 +243,21 @@ public class App extends Application {
             return;
         }
 
-        // NEXT, remove the party from the old region and clear all active
-        // plans
-        for (Entity player : region.query(Player.class).toList()) {
-            region.getEntities().remove(player.id());
-        }
+        // NEXT, clear all active plans.
         region.query(Plan.class).forEach(e -> e.remove(Plan.class));
 
+        // NEXT, transfer the party and its belongings to the new region.
+        // TODO: Move inventories (if they are stored in the main entity table)
+        Entity player = region.query(Player.class).findFirst().orElseThrow();
 
-        // NEXT, add the party to the new region
+        region.getEntities().remove(player.id());
+        newRegion.getEntities().add(player);
+
+        // Position the player.
+        player.cell(point.get().cell());
+
+        // NEXT, Make the new region the current region.
         region = newRegion;
-
-        region.getEntities().make().mobile("george")
-            .put(new Player("George"))
-            .cell(point.get().cell())
-            .sprite(Sprites.ALL.getInfo("mobile.george"));
-
         viewer.setRegion(region);
     }
 

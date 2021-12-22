@@ -1,8 +1,6 @@
 package com.wjduquette.george.ecs;
 
 import com.wjduquette.george.model.Cell;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -57,6 +55,14 @@ public class EntityTable {
     }
 
     /**
+     * Adds the entity to the table
+     * @param entity The entity
+     */
+    public void add(Entity entity) {
+        entities.put(entity.id(), entity);
+    }
+
+    /**
      * Removes the entity with the given ID.
      * @param id The ID
      */
@@ -70,7 +76,7 @@ public class EntityTable {
      */
     public Entity make() {
         var entity = new Entity();
-        entities.put(entity.id(), entity);
+        add(entity);
         return entity;
     }
 
