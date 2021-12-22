@@ -15,6 +15,29 @@ import java.util.Set;
  */
 public class Entity {
     //-------------------------------------------------------------------------
+    // Static API
+
+    // The counter used to assign IDs
+    private static long nextId = 1;
+
+    /**
+     * Gets the "next ID".  This is for use when saving the game state.
+     * @return the "next ID".
+     */
+    public static long getNextId() {
+        return nextId;
+    }
+
+    /**
+     * Sets the "next ID".  This is for use when loading the game state from
+     * disk.
+     * @param value The ID for the next created entity
+     */
+    public static void setNextId(long value) {
+        nextId = value;
+    }
+
+    //-------------------------------------------------------------------------
     // Instance Variables
 
     // The Entity's ID
@@ -27,7 +50,18 @@ public class Entity {
     // Constructor
 
     /**
-     * Creates a new entity with no components.
+     * Creates an entity and assigns it the next entity ID.  This constructor
+     * is for use during normal execution.
+     */
+    public Entity() {
+        this(Entity.nextId++);
+    }
+
+    /**
+     * Creates a new entity with no components and the given ID.  This
+     * constructor is for use when loading entities from disk; the loader code
+     * should be sure to call {@code Entity.setNextId()} before creating
+     * entities normally.
      * @param id The entity's ID
      */
     public Entity(long id) {

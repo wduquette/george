@@ -23,9 +23,6 @@ public class EntityTable {
     //-------------------------------------------------------------------------
     // Instance Variables
 
-    // A counter used to generate entity IDs
-    private long entityCounter = 0;
-
     // The entities in the world
     private final Map<Long,Entity> entities = new HashMap<>();
 
@@ -44,7 +41,6 @@ public class EntityTable {
      */
     public void clear() {
         entities.clear();
-        entityCounter = 0;
     }
 
     public Set<Long> ids() {
@@ -69,11 +65,11 @@ public class EntityTable {
     }
 
     /**
-     * Makes a new entity in the world, assigning it the next ID.
+     * Adds and returns a new entity with a unique ID.
      * @return the entity
      */
     public Entity make() {
-        var entity = new Entity(++entityCounter);
+        var entity = new Entity();
         entities.put(entity.id(), entity);
         return entity;
     }
@@ -116,12 +112,8 @@ public class EntityTable {
      * Dump the current set of entities to System.out.
      */
     public void dump() {
-        for (long i = 0; i <= entityCounter; i++) {
-            Entity e = entities.get(i);
-
-            if (e != null) {
-                System.out.println(e);
-            }
+        for (Entity e : entities.values()) {
+            System.out.println(e);
         }
     }
 }
