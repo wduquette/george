@@ -464,4 +464,28 @@ public class Region {
     public void log(String text) {
         entities.make().put(new LogMessage(0, text));
     }
+
+
+    /**
+     * Return a string that describes the content of the cell.
+     * @param cell The cell
+     * @return The string
+     */
+    public String describe(Cell cell) {
+        // TODO: Need descriptive text!
+        var mobile = findAt(cell, Mobile.class);
+
+        if (mobile.isPresent()) {
+            return "You see: " + mobile.get().mobile().name();
+        }
+
+        var feature = findAt(cell, Feature.class, Sprite.class);
+
+        if (feature.isPresent()) {
+            return "You see: " + feature.get().sprite().name();
+        }
+
+        var tile = getTerrain(cell);
+        return "You see: " + tile.description();
+    }
 }

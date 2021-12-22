@@ -243,6 +243,22 @@ public class SpriteSet {
         return Collections.unmodifiableMap(spriteMap);
     }
 
+    /**
+     * Gets the tile width in pixels.
+     * @return The width
+     */
+    public int width() {
+        return width;
+    }
+
+    /**
+     * Gets the tile height in pixels
+     * @return the height.
+     */
+    public int height() {
+        return height;
+    }
+
     //-------------------------------------------------------------------------
     // TileInfo
 

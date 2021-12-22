@@ -77,7 +77,7 @@ public class App extends Application {
 
         Player george = new Player("George");
 
-        region.getEntities().make().mobile("george")
+        region.getEntities().make().mobile("George")
             .put(george)
             .cell(origin)
             .sprite(Sprites.ALL.getInfo("mobile.george"));

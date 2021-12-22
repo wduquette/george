@@ -12,7 +12,7 @@ public class Sprites {
 
     static {
         ALL = new SpriteSet(App.class, "assets/sprites/mobiles.sprite");
-        SpriteSet set = new SpriteSet(App.class, "assets/sprites/Features.sprite");
-        ALL.add(set);
+        ALL.add(new SpriteSet(App.class, "assets/sprites/Features.sprite"));
+        ALL.add(new SpriteSet(App.class, "assets/sprites/Buttons.sprite"));
     }
 }
