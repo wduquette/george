@@ -125,7 +125,7 @@ public class Executor {
                 targetCell = region.get(goal.id()).cell();
                 var result = proceed(region, mob, goal, targetCell);
                 if (result == Result.DO_NEXT) {
-                    throw new InterruptException(new Interrupt.DisplaySign(goal.id()));
+                    throw new InterruptException(new Interrupt.DescribeFeature(goal.id()));
                 } else {
                     return result;
                 }

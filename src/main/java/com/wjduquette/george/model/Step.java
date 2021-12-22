@@ -12,7 +12,9 @@ public sealed interface Step {
      * The mobile moves smoothly to the cell using its current capabilities.
      * @param cell The cell to which to move the mobile.
      */
-    record MoveTo(Cell cell) implements Step {}
+    record MoveTo(Cell cell) implements Step {
+        @Override public String toString() { return "(MoveTo " + cell + ")";}
+    }
 
 
     /**
@@ -20,7 +22,9 @@ public sealed interface Step {
      * it.  The entity must be a door or chest.
      * @param id The ID of the entity to open.
      */
-    record Open(long id) implements Step {}
+    record Open(long id) implements Step {
+        @Override public String toString() { return "(Open " + id + ")";}
+    }
 
     /**
      * The mobile moves adjacent to the entity with the given ID and triggers
@@ -28,14 +32,18 @@ public sealed interface Step {
      * "interact with" control.
      * @param id The ID of the entity to trigger.
      */
-    record Trigger(long id) implements Step {}
+    record Trigger(long id) implements Step {
+        @Override public String toString() { return "(Trigger " + id + ")";}
+    }
 
     /**
      * The mobile moves to the cell containing the Exit, and is transferred
      * to the relevant region.
      * @param id The ID of the exit entity.
      */
-    record Exit(long id) implements Step {}
+    record Exit(long id) implements Step {
+        @Override public String toString() { return "(Exit " + id + ")";}
+    }
 
     //
     // Primitive Operations: Scheduled by the Executor while executing
@@ -47,11 +55,15 @@ public sealed interface Step {
      * logical location.
      * @param cell The cell
      */
-    record SetCell(Cell cell) implements Step {}
+    record SetCell(Cell cell) implements Step {
+        @Override public String toString() { return "(SetCell " + cell + ")";}
+    }
 
     /**
      * Waits until the entity with the given ID no longer exists.
      * @param id An entity ID, e.g. of a VisualEffect entity
      */
-    record WaitUntilGone(long id) implements Step {}
+    record WaitUntilGone(long id) implements Step {
+        @Override public String toString() { return "(WaitUntilGone " + id + ")";}
+    }
 }

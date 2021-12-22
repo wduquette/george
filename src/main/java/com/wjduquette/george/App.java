@@ -210,8 +210,8 @@ public class App extends Application {
                 }
             }
 
-            case Interrupt.DisplaySign sign -> {
-                viewer.displaySign(sign.signId());
+            case Interrupt.DescribeFeature feature -> {
+                viewer.describeFeature(feature.id());
 
                 // Wait for click.
                 interrupts.add(new Interrupt.WaitForInput());

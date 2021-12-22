@@ -331,7 +331,7 @@
                         {
                          "name":"sprite",
                          "type":"string",
-                         "value":"PEASANT1"
+                         "value":"mobile.peasant1"
                         }],
                  "rotation":0,
                  "type":"Mannikin",
@@ -348,7 +348,7 @@
                         {
                          "name":"sprite",
                          "type":"string",
-                         "value":"PEASANT4"
+                         "value":"mobile.peasant4"
                         }],
                  "rotation":0,
                  "type":"Mannikin",
@@ -365,7 +365,7 @@
                         {
                          "name":"sprite",
                          "type":"string",
-                         "value":"PEASANT3"
+                         "value":"mobile.peasant3"
                         }],
                  "rotation":0,
                  "type":"Mannikin",
@@ -378,6 +378,12 @@
                  "height":0,
                  "id":29,
                  "name":"townsman",
+                 "properties":[
+                        {
+                         "name":"sprite",
+                         "type":"string",
+                         "value":"mobile.peasant5"
+                        }],
                  "rotation":0,
                  "type":"Mannikin",
                  "visible":true,
@@ -389,6 +395,12 @@
                  "height":0,
                  "id":30,
                  "name":"townsman",
+                 "properties":[
+                        {
+                         "name":"sprite",
+                         "type":"string",
+                         "value":"mobile.peasant4"
+                        }],
                  "rotation":0,
                  "type":"Mannikin",
                  "visible":true,
@@ -400,6 +412,12 @@
                  "height":0,
                  "id":31,
                  "name":"townsman",
+                 "properties":[
+                        {
+                         "name":"sprite",
+                         "type":"string",
+                         "value":"mobile.peasant3"
+                        }],
                  "rotation":0,
                  "type":"Mannikin",
                  "visible":true,
@@ -411,6 +429,12 @@
                  "height":0,
                  "id":32,
                  "name":"townsman",
+                 "properties":[
+                        {
+                         "name":"sprite",
+                         "type":"string",
+                         "value":"mobile.peasant2"
+                        }],
                  "rotation":0,
                  "type":"Mannikin",
                  "visible":true,

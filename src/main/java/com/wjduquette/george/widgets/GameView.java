@@ -4,6 +4,7 @@ import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.*;
+import com.wjduquette.george.util.RandomPlus;
 import javafx.application.Platform;
 import javafx.geometry.*;
 import javafx.scene.image.Image;
@@ -48,6 +49,8 @@ public class GameView extends StackPane {
 
     // The currently rendered click targets
     private final List<ClickTarget> targets = new ArrayList<>();
+
+    private final RandomPlus random = new RandomPlus();
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -121,11 +124,41 @@ public class GameView extends StackPane {
         });
     }
 
-    public void displaySign(long signId) {
+    /**
+     * Describes a feature, based on what it is.  Supported features include
+     * Signs and Mannikins.
+     * @param id
+     */
+    public void describeFeature(long id) {
         repaint();
-        var sign = region.get(signId);
-        var signName = sign.sign().name();
-        var text = region.getString(signName);
+        var entity = region.get(id);
+
+        if (entity.sign() != null) {
+            var signName = entity.sign().name();
+            var text = region.getString(signName);
+
+            displayTextBlock(entity, text);
+        } else if (entity.mannikin() != null) {
+            var name = entity.mannikin().name();
+            StringBuilder buff = new StringBuilder();
+            buff.append(region.getString(name + ".name")).append("\n\n");
+            buff.append(region.getString(name + ".description")).append("\n\n");
+
+            List<String> greetings = region.strings().keyList().stream()
+                .filter(key -> key.startsWith(name + ".greeting"))
+                .map(key -> region.strings().get(key).orElseThrow())
+                .toList();
+
+            buff.append(random.pickFrom(greetings));
+
+            displayTextBlock(entity, buff.toString());
+        }
+
+
+    }
+
+    public void displayTextBlock(Entity entity, String text) {
+        repaint();
         var xLeft = 50.0;
         var yTop = 50.0;
         var width = canvas.getWidth() - 100;
@@ -138,9 +171,9 @@ public class GameView extends StackPane {
         // The image
         var ix = xLeft + 20;
         var iy = yTop + 40;
-        var terrain = region.getTerrain(sign.cell());
+        var terrain = region.getTerrain(entity.cell());
         canvas.gc().drawImage(ImageUtils.embiggen(terrain.image(), 2), ix, iy);
-        canvas.gc().drawImage(ImageUtils.embiggen(img(sign.sprite()), 2), ix, iy);
+        canvas.gc().drawImage(ImageUtils.embiggen(img(entity.sprite()), 2), ix, iy);
 
         // The "click to continue"
         canvas.gc().setFill(Color.WHITE);

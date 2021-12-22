@@ -41,6 +41,7 @@ public class Region {
 
     // Object type strings
     private static final String EXIT_OBJECT = "Exit";
+    private static final String MANNIKIN_OBJECT = "Mannikin";
     private static final String POINT_OBJECT = "Point";
     private static final String SIGN_OBJECT = "Sign";
 
@@ -224,23 +225,33 @@ public class Region {
                 Cell cell = object2cell(obj);
 
                 switch (obj.type) {
+                    // An exit to another region
                     case EXIT_OBJECT -> entities.make()
                         .put(makeExit(obj.name))
                         .cell(object2cell(obj));
+
+                    // An NPC who just stands and talks when you poke him.
+                    case MANNIKIN_OBJECT -> entities.make()
+                        .put(new Mannikin(obj.name))
+                        .feature(TerrainType.FENCE)
+                        .sprite(obj.getProperty("sprite"))
+                        .cell(object2cell(obj));
+
+                    // A point to which the player can be warped
                     case POINT_OBJECT -> entities.make()
                         .point(obj.name)
                         .cell(object2cell(obj));
-                    case SIGN_OBJECT -> {
+
+                    // A sign you can read
+                    case SIGN_OBJECT ->
                         // TODO: Allow tile to be set from properties.
                         entities.make()
                             .feature(TerrainType.NONE)
                             .sign(obj.name)
                             .sprite(Sprites.ALL.getInfo("feature.sign"))
                             .cell(object2cell(obj));
-                    }
-                    default -> {
-                        // Nothing to do
-                    }
+
+                    default -> { }
                 }
             }
         }
@@ -438,5 +449,13 @@ public class Region {
      */
     public String getString(String name) {
         return strings.get(name).orElseThrow();
+    }
+
+    /**
+     * Get the entire strings table.
+     * @return The table.
+     */
+    public StringsTable strings() {
+        return strings;
     }
 }

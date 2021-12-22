@@ -86,6 +86,16 @@ public class TiledMapReader {
 		public List<Property> properties() {
 			return properties != null ? List.of(properties) : List.of();
 		}
+
+		public String getProperty(String name) {
+			for (Property p : properties) {
+				if (p.name.equals(name)) {
+					return p.value;
+				}
+			}
+
+			return "not.found";
+		}
 	}
 
 	/** A Custom Property */

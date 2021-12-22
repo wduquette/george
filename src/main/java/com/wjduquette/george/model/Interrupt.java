@@ -14,10 +14,10 @@ public sealed interface Interrupt {
     public record WaitForInput() implements Interrupt {}
 
     /**
-     * Display a sign in a box over the map; wait for user input.
-     * @param signId The entity ID of the sign
+     * Displays a description of a feature in a box over the map.
+     * @param id The feature's entity ID
      */
-    public record DisplaySign(long signId) implements Interrupt {}
+    public record DescribeFeature(long id) implements Interrupt {}
 
     /**
      * Move the party to the given point in the given region.
