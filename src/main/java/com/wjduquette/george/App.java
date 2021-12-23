@@ -68,6 +68,7 @@ public class App extends Application {
 //        region = getRegion("floobham");
         region = getRegion("overworld");
 
+        // TODO: add point-retrieval method
         Cell origin = region.query(Point.class)
             .filter(e -> e.point().name().equals("origin"))
             .map(Entity::cell)
@@ -75,8 +76,8 @@ public class App extends Application {
             .orElse(new Cell(10, 10));
 
         Entity george = region.getEntities().make()
-            .put(new Player("George")) // TODO
-            .mobile("george")
+            .put(new Player())
+            .mobile("george") // Key
             .label("George")
             .cell(origin)
             .sprite(Sprites.ALL.getInfo("mobile.george"));

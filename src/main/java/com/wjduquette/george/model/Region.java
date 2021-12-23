@@ -499,17 +499,16 @@ public class Region {
      * @return The string
      */
     public String describe(Cell cell) {
-        // TODO: Need descriptive text!
         var mobile = findAt(cell, Mobile.class);
 
         if (mobile.isPresent()) {
-            return "You see: " + mobile.get().mobile().name();
+            return "You see: " + mobile.get().label().text();
         }
 
         var feature = findAt(cell, Feature.class);
 
         if (feature.isPresent()) {
-            return "You see: " + feature.get().feature().name();
+            return "You see: " + feature.get().label().text();
         }
 
         var tile = getTerrain(cell);

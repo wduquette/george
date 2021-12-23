@@ -44,13 +44,7 @@ public class Entity {
      * @return -1, 0, or 1.
      */
     public static int oldestFirst(Entity a, Entity b) {
-        if (a.id() < b.id()) {
-            return -1;
-        } else if (a.id() > b.id()) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return Long.compare(a.id(), b.id());
     }
 
     /**
@@ -60,13 +54,7 @@ public class Entity {
      * @return -1, 0, or 1.
      */
     public static int newestFirst(Entity a, Entity b) {
-        if (a.id() > b.id()) {
-            return -1;
-        } else if (a.id() < b.id()) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return Long.compare(b.id(), a.id());
     }
 
     //-------------------------------------------------------------------------
@@ -246,7 +234,7 @@ public class Entity {
     /**
      * Sets the entity's label
      * @param text The label text
-     * @return
+     * @return The entity
      */
     public Entity label(String text) {
         put(new Label(text));
@@ -435,12 +423,12 @@ public class Entity {
     public Mobile mobile() { return components.get(Mobile.class); }
 
     /**
-     * Component constructor: sets the Mobile given its name.
-     * @param name The name
+     * Component constructor: sets the Mobile given its key.
+     * @param key The name
      * @return the entity
      */
-    public Entity mobile(String name) {
-        put(new Mobile(name));
+    public Entity mobile(String key) {
+        put(new Mobile(key));
         return this;
     }
 
