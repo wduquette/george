@@ -1,13 +1,10 @@
 package com.wjduquette.george.ecs;
 
-import com.wjduquette.george.model.TerrainType;
-
 /**
- * A component that marks the entity as a Feature entity.
- * @param name A name for display.
+ * A component that tags the entity as a Feature entity.
  */
-public record Feature(String name) implements Component {
+public record Feature() implements Component {
     @Override public String toString() {
-        return "(Feature " + name + ")";
+        return "(Feature)";
     }
 }

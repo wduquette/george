@@ -1,6 +1,5 @@
 package com.wjduquette.george.model;
 
-import com.wjduquette.george.Sprites;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.TerrainTileSet;
 import com.wjduquette.george.tmx.TiledMapReader;
@@ -124,17 +123,18 @@ public class Region {
         // NEXT, parse the data.
         var parser = new KeywordParser();
 
-        parser.defineKeyword("%prefix", (scanner, $) -> {
-            prefix = scanner.next();
-        });
+        parser.defineKeyword("%prefix", (scanner, $) -> prefix = scanner.next());
+
         parser.defineKeyword("%terrain", (scanner, $) -> {
             var filename = Resource.relativeTo(relPath, scanner.next());
             terrainTileSet = new TerrainTileSet(cls, filename);
         });
+
         parser.defineKeyword("%info", (scanner, $) -> {
             var filename = Resource.relativeTo(relPath, scanner.next());
             info = new KeyDataTable(cls, filename);
         });
+
         parser.defineKeyword("%tilemap", (scanner, $) -> {
             var filename = Resource.relativeTo(relPath, scanner.next());
             readTiledMap(cls, filename);
@@ -201,8 +201,8 @@ public class Region {
             TerrainTile tile = terrainTileSet.get(tileIndex);
 
             Entity feature = entities.make()
+                .tagAsFeature()
                 .label(tile.description())
-                .feature(tile.description())
                 .terrain(tile.type())
                 .sprite(tile)
                 .cell(r, c);
@@ -243,8 +243,8 @@ public class Region {
 
                     // An NPC who just stands and talks when you poke him.
                     case MANNIKIN_OBJECT -> entities.make()
+                        .tagAsFeature()
                         .put(new Mannikin(key))
-                        .feature(getInfo(key, "label"))
                         .label(getInfo(key, "label"))
                         .sprite(getInfo(key, "sprite"))
                         .terrain(TerrainType.FENCE)
@@ -258,7 +258,7 @@ public class Region {
                     // A sign you can read
                     case SIGN_OBJECT ->
                         entities.make()
-                            .feature("sign")
+                            .tagAsFeature()
                             .label("sign")
                             .sign(key)
                             .sprite(getInfo(key + ".sprite"))

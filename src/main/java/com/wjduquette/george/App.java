@@ -76,8 +76,8 @@ public class App extends Application {
             .orElse(new Cell(10, 10));
 
         Entity george = region.getEntities().make()
-            .put(new Player())
             .mobile("george") // Key
+            .tagAsPlayer()
             .label("George")
             .cell(origin)
             .sprite(Sprites.ALL.getInfo("mobile.george"));

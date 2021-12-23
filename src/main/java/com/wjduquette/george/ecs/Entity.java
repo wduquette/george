@@ -283,14 +283,10 @@ public class Entity {
     public Feature feature() { return components.get(Feature.class); }
 
     /**
-     * Sets a feature given a terrain type.
-     * @param name The feature name
+     * Tags the entity as a Feature entity.
      * @return The entity
      */
-    public Entity feature(String name) {
-        put(new Feature(name));
-        return this;
-    }
+    public Entity tagAsFeature() { return put(new Feature()); }
 
     /**
      * Sets the entity's terrain type.
@@ -326,9 +322,9 @@ public class Entity {
      */
     public Entity door(Door door) {
         return put(door)
-            .put(door.feature())
-            .put(door.terrain())
-            .put(door.sprite());
+            .put(door.label())
+            .put(door.sprite())
+            .put(door.terrain());
     }
 
     /**
@@ -437,6 +433,12 @@ public class Entity {
      * @return The component, or null.
      */
     public Plan plan() { return components.get(Plan.class); }
+
+    /**
+     * Tags the entity as a Player mobile
+     * @return The entity
+     */
+    public Entity tagAsPlayer() { return put(new Player()); }
 
     //-------------------------------------------------------------------------
     // Log Messages

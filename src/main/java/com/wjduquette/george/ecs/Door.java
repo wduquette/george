@@ -66,15 +66,15 @@ public record Door(
     }
 
     /**
-     * Returns the expected value of the Door's feature component given its
+     * Returns the expected value of the Door's label component given its
      * state.
-     * @return The Feature
+     * @return The Label
      */
-    public Feature feature() {
+    public Label label() {
         if (isClosed()) {
-            return new Feature("closed door");
+            return new Label("closed door");
         } else {
-            return new Feature("open door");
+            return new Label("open door");
         }
     }
 
