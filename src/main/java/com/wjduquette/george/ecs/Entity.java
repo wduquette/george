@@ -116,15 +116,6 @@ public class Entity {
         return components.keySet().containsAll(componentSet);
     }
 
-    /**
-     * Returns true if the entity has the given component.
-     * @param component The component class
-     * @return true or false
-     */
-    public boolean has(Class<? extends Component> component) {
-        return components.get(component) != null;
-    }
-
     //-------------------------------------------------------------------------
     // Generic Component Operations
 
