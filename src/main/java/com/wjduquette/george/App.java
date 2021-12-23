@@ -265,15 +265,15 @@ public class App extends Application {
 
     private void populateRegionFactories() {
         regionFactories.put("test",
-            () -> new Region(getClass(),
+            () -> new DataDrivenRegion(getClass(),
                 "assets/regions/test/test.region")
         );
         regionFactories.put("overworld",
-            () -> new Region(getClass(),
+            () -> new DataDrivenRegion(getClass(),
                 "assets/regions/overworld/overworld.region")
         );
         regionFactories.put("floobham",
-            () -> new Region(getClass(),
+            () -> new DataDrivenRegion(getClass(),
                 "assets/regions/floobham/floobham.region")
         );
     }
