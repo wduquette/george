@@ -67,7 +67,6 @@ public class App extends Application {
 //        region = getRegion("test");
 //        region = getRegion("floobham");
         region = getRegion("overworld");
-        region.getEntities().dump();
 
         Cell origin = region.query(Point.class)
             .filter(e -> e.point().name().equals("origin"))

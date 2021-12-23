@@ -1,11 +1,12 @@
-# Strings for the World region.
+# Overworld Game InfoStrings
+
+%prefix overworld
 
 #------------------------------------------------------------------------------
 # Signs
-#
-# Signs are plain text, centered for displayed.
 
-%string sign.map
+%string sign.map.sprite feature.sign
+%block sign.map.text
 The sign shows a detailed map of the world, with an
 arrow labeled "You are Here".  Unfortunately, you can't
 read the language the map legend is written in, so the
@@ -15,19 +16,22 @@ You might find it more useful to click the map icon down
 on the control bar.
 %end
 
-%string sign.floobham
+%string sign.floobham.sprite feature.sign
+%block sign.floobham.text
 Floobham Township
 
 Everything for the Adventurer!
 %end
 
-%string sign.floob_castle
+%string sign.floob_castle.sprite feature.sign
+%block sign.floob_castle.text
 Floob Castle
 
 Do Not Feed The Guards!
 %end
 
-%string sign.bugland
+%string sign.bugland.sprite feature.sign
+%block sign.bugland.text
 Tunnel to Paradise Valley
 
 Warning: Beware of Bugs

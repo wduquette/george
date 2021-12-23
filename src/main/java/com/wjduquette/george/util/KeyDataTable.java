@@ -148,6 +148,15 @@ public final class KeyDataTable {
         return Optional.ofNullable(table.get(key));
     }
 
+    /** Retrieves a string from the table given its key and suffix, e.g.,
+     * get("my.sword, "label") retrieves "my.sword.label"
+     * @param key The key
+     * @return The string
+     */
+    public Optional<String> get(String key, String suffix) {
+        return Optional.ofNullable(table.get(key + "." + suffix));
+    }
+
     /** @return a list of the keys. */
     public Set<String> keys() {
         return table.keySet();

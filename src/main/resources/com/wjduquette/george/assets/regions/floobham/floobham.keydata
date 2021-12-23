@@ -1,26 +1,29 @@
-# Strings for the Floobham region.
+# Floobham Game Info
+
+%prefix floobham
 
 #------------------------------------------------------------------------------
 # Signs
-#
-# Signs are plain text, centered for displayed.
 
-%string sign.shop
+%string sign.shop.sprite feature.sign
+%block sign.shop.text
 Arnulf's Fine Goods
 
 If you can't find it here,
 we don't have it.
 %end
 
-%string sign.inn
-Floob Arms,
+%string sign.inn.sprite feature.sign
+%block sign.inn.text
+Floob Arms
 
 Food, Drink, Lodging, and Quests.
 
 Fillip de Bucket, Proprietor
 %end
 
-%string sign.townhall
+%string sign.townhall.sprite feature.sign
+%block sign.townhall.text
 Town Hall
 
 Magister Mayhem,
@@ -28,7 +31,8 @@ presiding on behalf of
 Lord Floob the Gracious
 %end
 
-%string sign.church
+%string sign.church.sprite feature.sign
+%block sign.church.text
 St. Dominic's Church
 
 Resurrections R Us
@@ -38,7 +42,8 @@ Resurrections R Us
 #------------------------------------------------------------------------------
 # Items
 
-%string item.maguffin
+# Should define a sprite
+%block item.maguffin.text
 So this is the "Tasty Egg Maguffin".  Doesn't look too appetizing, really,
 but then, consider where it's been.
 %end
@@ -46,151 +51,130 @@ but then, consider where it's been.
 #------------------------------------------------------------------------------
 # Mannikins
 
-
 # Framley
 
-%string framley.name
-Framley
-%end
+%string framley.label Framley
+%string framley.sprite mobile.peasant3
+%string framley.description A bluff and hearty peasant.
 
-%string framley.description
-A bluff and hearty peasant.
-%end
-
-%string framley.greeting1
-Floobham's a good place to live, so long as you don't
+%block framley.greeting1
+"Floobham's a good place to live, so long as you don't
 get on the bad side of Lord Floob.  Look what happened
-to Paradise Valley.
+to Paradise Valley."
 %end
 
-%string framley.greeting2
-Have you been up to see Fr. Jerome?  He's a life saver!
+%block framley.greeting2
+"Have you been up to see Fr. Jerome?  He's a life saver!"
 %end
 
-# Joe
+# Joe Pro
 
-%string joe.name
-Joe
-%end
+%string joe.label Joe Pro
+%string joe.sprite mobile.peasant4
+%string joe.description He's lean but not mean.
 
-%string joe.description
-He's lean but not mean.
-%end
-
-%string joe.greeting
-You gotta be able to shoot straight, and you gotta be
+%block joe.greeting
+"You gotta be able to shoot straight, and you gotta be
 able to think straight.  A good pair of boots doesn't
-hurt either.
+hurt either."
 %end
 
 # Samwise
 
-%string samwise.name
-Samwise
-%end
+%string samwise.label Samwise
+%string samwise.sprite mobile.peasant1
+%string samwise.description This peasant's smock kind of fades into the grass.
 
-%string samwise.description
-This peasant's smock kind of fades into the grass.
-%end
-
-%string samwise.greeting
-You can't see me: I'm a ninja!
+%block samwise.greeting
+"You can't see me: I'm a ninja!"
 %end
 
 # Generic Townsman
 #
-# TBD: Really, we'd like a number of random things here.
+# TODO: Really, we'd like a number of random things here.
 
-%string townsman.name
-Townsman
+%string townsman.label Townsman
+%string townsman.sprite mobile.peasant4
+%string townsman.description A long-time resident of Floobham.
+
+%block townsman.greeting1
+"Enjoy your stay in Floobham!  Don't forget to check
+out the Sewers. Why, people come from miles around to see
+our Sewers."
 %end
 
-%string townsman.description
-A long-time resident of Floobham.
+%block townsman.greeting2
+"Rats, now...rats are tasty.  Especially the BIG ones."
 %end
 
-%string townsman.greeting1
-Enjoy your stay in Floobham!  Don't forget to check 
-out the sewers. People come from miles around to see 
-our sewers.
+%block townsman.greeting3
+"Look out for the icky white things in the sewer.  They aren't nice, like
+rats.  Well, how could they be?  They're icky!"
 %end
 
-%string townsman.greeting2
-Rats, now...rats are tasty.  Especially the BIG ones.
-%end
-
-%string townsman.greeting3
-Look out for the icky white things in the sewer.  They aren't nice, like
-rats.  Well, how could they be?  They're icky!
-%end
-
-%string townsman.greeting4
-My sister was once bitten by a moose.  No, really!
+%block townsman.greeting4
+"My sister was once bitten by a moose.  No, really!"
 %end
 
 #------------------------------------------------------------------------------
 # Arnulf
 
-%string arnulf.shopname
-Arnulf's Fine Goods: Arnulf the Honest, Proprietor
-%end
+%string arnulf.label Arnulf
+%string arnulf.sprite mobile.thief
+%string arnulf.shopname Arnulf's Fine Goods: Arnulf the Honest, Proprietor
 
-%string arnulf.name
-Arnulf
-%end
-
-%string arnulf.greeting
-We have many fine deals, and I will be more than happy to
-take advantage...ah, to help you on your quests.
-%end
-
-%string arnulf.description
+%block arnulf.description
 He looks a little odd for a shopkeeper: the hood, the torch, the
 lockpicks...
 %end
 
-%string arnulf.buy1
+%block arnulf.greeting
+We have many fine deals, and I will be more than happy to
+take advantage...ah, to help you on your quests.
+%end
+
+%block arnulf.buy1
 I'll find a buyer for this, no problem.
 %end
 
-%string arnulf.buy2
+%block arnulf.buy2
 A little dusty, isn't it?  Couldn't you have cleaned it up for me?
 %end
 
-%string arnulf.buy3
+%block arnulf.buy3
 I'm glad you sold this to me; saves me having to steal it from you.
 %end
 
-%string arnulf.buy4
+%block arnulf.buy4
 Squirrel!
 %end
 
-%string arnulf.buy5
+%block arnulf.buy5
 Magister Mayhem's an okay kind of guy...but
 stay away from him before breakfast!
 %end
 
-%string arnulf.sell1
+%block arnulf.sell1
 All sales are final.
 %end
 
-%string arnulf.sell2
+%block arnulf.sell2
 Take good care of that, now, and it'll take care of you.
 %end
 
-%string arnulf.sell3
+%block arnulf.sell3
 My sister was once bitten by a moose.
 %end
 
-%string arnulf.sell4
+%block arnulf.sell4
 Why don't you sell that back to me, and then buy it again?
 %end
 
-%string arnulf.sell5
+%block arnulf.sell5
 Can I interest you in anything else?
 %end
 
-%string arnulf.sell6
+%block arnulf.sell6
 Have you been over to the Floob Arms?  Lots of interesting
 folks over there.
 %end
@@ -198,21 +182,21 @@ folks over there.
 #------------------------------------------------------------------------------
 # Cyneros
 
-%string cyneros.name
-Cyneros
-%end
+%string cyneros.label Cyneros
+%string cyneros.sprite mobile.dark_wizard
 
-%string cyneros.description
+%block cyneros.description
 He looks like a dark wizard: the cowl, the face hidden in shadow, the 
 aura of death, the eldritch purple aura.  You know.
 %end
 
-%string cyneros.greeting
+%block cyneros.greeting
 The dark wizard gives you a dark look.  "Don't make me blast you,"
 he says.  That seems a wise idea, and you move on.
 %end
 
-%string cyneros.newt
+# When cyneros turns you into a newt.
+%block cyneros.newt
 The dark wizard rolls his eyes wearily and waves a hand in your
 direction.
 %end
@@ -221,16 +205,15 @@ direction.
 #------------------------------------------------------------------------------
 # Fillip de Bucket
 
-%string fillip.name
-Fillip de Bucket
-%end
+%string fillip.label Fillip de Bucket
+%string fillip.sprite mobile.fillmore
 
-%string fillip.description
+%block fillip.description
 He's behind the bar, so he must be the innkeeper...but what's with the
 lab coat?
 %end
 
-%string fillip.greeting
+%block fillip.greeting
 The innkeeper is polishing a glass.  "Howdy, stranger," he says.
 
 "Look, we both know how this works.  You talk to me
@@ -250,15 +233,11 @@ am to fight it?"
 #------------------------------------------------------------------------------
 # Gottleib the Thief
 
-%string gottleib.name
-Gottleib the Thief
-%end
+%string gottleib.label Gottleib the Thief
+%string gottleib.sprite mobile.thief
+%string gottleib.description This guy is clearly a thief.  Watch your gold pieces!
 
-%string gottleib.description
-This guy is clearly a thief.  Watch your gold pieces!
-%end
-
-%string gottleib.bug_valley
+%block gottleib.bug_valley
 There's a disreputable looking fellow sitting here swilling ale.  He looks
 up as you approach.  "Pathetic, ain't it," he says.  He sounds like he's
 been at it for hours.  "There's a lovely treasure in a valley just a little
@@ -275,7 +254,7 @@ rich folks living there.  Must be something left.  Gold ain't edible,
 after all."
 %end
 
-%string gottleib.drunk
+%block gottleib.drunk
 The thief is out cold, his face on the table in a pool of spilled beer.
 You decide not to tell him about your adventures with the bugs.
 %end
@@ -283,15 +262,11 @@ You decide not to tell him about your adventures with the bugs.
 #------------------------------------------------------------------------------
 # Hogworth
 
-%string hogworth.name
-Hogworth
-%end
+%string hogworth.label Hogworth
+%string hogworth.sprite mobile.peasant5
+%string hogworth.description A sturdy townsman, he has a broad, open face.
 
-%string hogworth.description
-A sturdy townsman, he has a broad, open face.
-%end
-
-%string hogworth.unhappy_princess
+%block hogworth.unhappy_princess
 The peasant looks concerned.  You ask him what the trouble is.
 
 "Greetings, stranger," he says.  "I went over to the castle, you know?
@@ -303,7 +278,7 @@ Lord Floob and his daughter have a fondness for adventurers.  You might
 ask her about it.  She'd maybe make it worth your while."
 %end
 
-%string hogworth.happy
+%block hogworth.happy
 Hogworth sees you coming and has Fillip bring you a tankard of ale.
 
 "Thank you, stranger," he says.  "It's good to see the princess
@@ -313,35 +288,31 @@ smile again."
 #------------------------------------------------------------------------------
 # Fr. Jerome
 
-%string jerome.name
-Fr. Jerome
-%end
+%string jerome.label Fr. Jerome
+%string jerome.sprite mobile.friar
 
-%string jerome.description
+%block jerome.description
 Short, tonsured, in a habit.  He'll save your life if you let him.
 %end
 
-%string jerome.greeting
+%block jerome.greeting
 Blessings upon you, um, noble adventurers!
 Welcome to St. Dominic's.  May you sally
 forth in faith! 
 %end
 
-
-
 #------------------------------------------------------------------------------
 # Magister Mayhem
 
-%string mayhem.name
-Magister Mayhem
-%end
+%string mayhem.label Magister Mayhem
+%string mayhem.sprite mobile.desk_wizard
 
-%string mayhem.description
+%block mayhem.description
 He's wearing wizard's attire, and he's seated at a desk.  He seems
 to be in charge.
 %end
 
-%string mayhem.maguffin1
+%block mayhem.maguffin1
 Magister Mayhem looks at you sourly.  "Another adventurer," he says.
 "Just what I needed.  Well, at least the Sewers have been restocked."
 
@@ -359,14 +330,14 @@ finding the entrance to the sewers.  You can, heh, keep anything else
 you find down there."
 %end
 
-%string mayhem.maguffin2
+%block mayhem.maguffin2
 Magister Mayhem sniffs at you, and makes a face.
 
 "Not found it yet, huh?  Try harder.  You'll never get anywhere around
 here if you can't even cope with the Sewers.  And hurry up!  I'm hungry!"
 %end
 
-%string mayhem.maguffin3
+%block mayhem.maguffin3
 Magister Mayhem sits up, and a hungry look crosses his craggy, sour face.
 
 "Ah, my breakfast.  So you hayseeds are good for something after all."
@@ -377,7 +348,7 @@ He takes the Tasty Egg Maguffin from you and takes a big bite.
 and I'll see what I can do for you."
 %end
 
-%string mayhem.nothing
+%block mayhem.nothing
 Magister Mayhem is still chewing his maguffin.  You think better
 of disturbing him.
 %end
@@ -385,16 +356,15 @@ of disturbing him.
 #-----------------------------------------------------------------------------
 # Sir Fred as NPC.
 
-%string sirfred.name
-Sir Fred
-%end
+%string sirfred.label Sir Fred
+%string sirfred.sprite mobile.knight
 
-%string sirfred.description
+%block sirfred.description
 You're not sure how, but even though the knight's visor is down you 
 can still tell that he's grumpy.
 %end
 
-%string sirfred.noquest
+%block sirfred.noquest
 You greet the knight standing at the bar. "Hail, fellow," he says.
 "I hight Sir Fred."  He seems to be in a bad mood, and you ask why.
 
@@ -413,11 +383,9 @@ test.  If you can but persuade Magister Mayhem to grant you a quest,
 I will join you right willingly."
 %end
 
-%string sirfred.gotquest
+%block sirfred.gotquest
 "So, young one, have you yet gotten a quest of the good magister?"  He
 seems surprised when you assure him that you have.
 
 "Well," says he, "these are joyful tidings.  Let us be off!"
 %end
-
-

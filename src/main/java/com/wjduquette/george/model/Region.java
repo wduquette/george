@@ -73,11 +73,14 @@ public class Region {
     // The resource string, for debugging.
     private String resource;
 
+    // The region's prefix, for keys.
+    private String prefix;
+
     // The terrain tile set.
     private TerrainTileSet terrainTileSet;
 
-    // The Strings table
-    private StringsTable strings;
+    // The game info table
+    private KeyDataTable info;
 
     // The tile size for this map.
     private int tileHeight = 0;
@@ -121,13 +124,16 @@ public class Region {
         // NEXT, parse the data.
         var parser = new KeywordParser();
 
+        parser.defineKeyword("%prefix", (scanner, $) -> {
+            prefix = scanner.next();
+        });
         parser.defineKeyword("%terrain", (scanner, $) -> {
             var filename = Resource.relativeTo(relPath, scanner.next());
             terrainTileSet = new TerrainTileSet(cls, filename);
         });
-        parser.defineKeyword("%strings", (scanner, $) -> {
+        parser.defineKeyword("%info", (scanner, $) -> {
             var filename = Resource.relativeTo(relPath, scanner.next());
-            strings = new StringsTable(cls, filename);
+            info = new KeyDataTable(cls, filename);
         });
         parser.defineKeyword("%tilemap", (scanner, $) -> {
             var filename = Resource.relativeTo(relPath, scanner.next());
@@ -225,7 +231,8 @@ public class Region {
             }
 
             for (TiledMapReader.MapObject obj : layer.objects()) {
-                Cell cell = object2cell(obj);
+                // For those objects whose name is an info key.
+                var key = prefix + "." + obj.name;
 
                 switch (obj.type) {
                     // An exit to another region
@@ -235,10 +242,10 @@ public class Region {
 
                     // An NPC who just stands and talks when you poke him.
                     case MANNIKIN_OBJECT -> entities.make()
-                        .put(new Mannikin(obj.name))
-                        .feature(obj.name)
+                        .put(new Mannikin(key))
+                        .feature(getInfo(key + ".label"))
+                        .sprite(getInfo(key + ".sprite"))
                         .terrain(TerrainType.FENCE)
-                        .sprite(obj.getProperty("sprite"))
                         .cell(object2cell(obj));
 
                     // A point to which the player can be warped
@@ -248,12 +255,10 @@ public class Region {
 
                     // A sign you can read
                     case SIGN_OBJECT ->
-                        // TODO: Allow tile to be set from properties.
                         entities.make()
                             .feature("sign")
-                            .terrain(TerrainType.NONE)
-                            .sign(obj.name)
-                            .sprite(Sprites.ALL.getInfo("feature.sign"))
+                            .sign(key)
+                            .sprite(getInfo(key + ".sprite"))
                             .cell(object2cell(obj));
 
                     default -> { }
@@ -446,20 +451,34 @@ public class Region {
     }
 
     /**
-     * Gets the string, which must exist.
-     * @param name The string's name in the table
-     * @return The string we found.
+     * Gets an info parameter, which must exist.
+     * @param key The parameter's key
+     * @return The value we found.
      */
-    public String getString(String name) {
-        return strings.get(name).orElseThrow();
+    public String getInfo(String key) {
+        return info.get(key).orElseThrow(() ->
+            new IllegalArgumentException("Unknown info key: " + key));
     }
 
     /**
-     * Get the entire strings table.
+     * Gets the info parameter for an object, which must exist, e.g.,
+     * the value "{key}.{suffix}"
+     * @param key The object's key
+     * @param suffix The value's suffix
+     * @return The value we found.
+     */
+    public String getInfo(String key, String suffix) {
+        return info.get(key, suffix).orElseThrow(() ->
+            new IllegalArgumentException(
+                "Unknown info key: " + key + "." + suffix));
+    }
+
+    /**
+     * Get the entire info table.
      * @return The table.
      */
-    public StringsTable strings() {
-        return strings;
+    public KeyDataTable info() {
+        return info;
     }
 
     /**
