@@ -1,16 +1,17 @@
 package com.wjduquette.george.ecs;
 
 /**
- * A Mannikin is a feature that you can talk to.  Its name is a prefix for
- * entries in the region's strings table:
+ * A Mannikin is a feature that you can talk to.  Its key is a prefix for
+ * entries in the region's info table:
  *
  * <ul>
- *     <li>{@code <name>.name}: The mannikin's display name.</li>
- *     <li>{@code <name>.description}: The mannikin's description.</li>
- *     <li>{@code <name>.greeting*}: Things the mannikin can say.</li>
+ *     <li>{@code <key>.label}: The mannikin's display name.</li>
+ *     <li>{@code <key>.sprite}: The name of the mannikin's sprite.</li>
+ *     <li>{@code <key>.description}: The mannikin's description.</li>
+ *     <li>{@code <key>.greeting*}: Things the mannikin can say.</li>
  * </ul>
- * @param name The mannikin's name
+ * @param key The mannikin's info key
  */
-public record Mannikin(String name) implements Component {
-    @Override public String toString() { return "(Mannikin " + name + ")"; }
+public record Mannikin(String key) implements Component {
+    @Override public String toString() { return "(Mannikin " + key + ")"; }
 }

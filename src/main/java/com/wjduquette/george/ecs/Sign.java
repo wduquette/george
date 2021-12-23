@@ -1,13 +1,17 @@
 package com.wjduquette.george.ecs;
 
 /**
- * A sign on the map.  A sign is also a Feature, and has a Loc and a Tile.
- * TODO: This should probably be a more general kind of object: something that
- * can be interacted with.
- * @param name The name of the sign's string in the strings table.
+ * A sign on the map.  A sign is Feature entity.
+ * Its key is a prefix for entries in the region's info table:
+ *
+ * <ul>
+ * <li>{@code <key>.text}: The sign's text.</li>
+ * <li>{@code <key>.sprite}: The name of the sign's sprite.</li>
+ * </ul>
+ * @param key The sign's info key
  */
-public record Sign(String name) implements Component {
+public record Sign(String key) implements Component {
     @Override public String toString() {
-        return "(Sign " + name + ")";
+        return "(Sign " + key + ")";
     }
 }

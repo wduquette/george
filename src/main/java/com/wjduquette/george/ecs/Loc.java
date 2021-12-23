@@ -5,7 +5,7 @@ import com.wjduquette.george.model.Cell;
 /**
  * A Loc is a location, combining the logical location (a Cell) with
  * offsets in row and column coordinates, which are used to animate the
- * entity's Tile.
+ * entity's sprite.
  * @param cell The cell
  * @param rowOffset The row offset, in fractional rows
  * @param colOffset The column offset, in fractional columns
