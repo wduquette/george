@@ -110,11 +110,7 @@ public class Executor {
 
                 if (result == Result.DO_NEXT) {
                     var that = region.get(goal.id());
-                    var door = that.door();
-
-                    if (door != null) {
-                        that.door(door.open());
-                    }
+                    that.openDoor();
                 }
                 return result;
             }
