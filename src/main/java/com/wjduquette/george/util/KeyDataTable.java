@@ -176,9 +176,20 @@ public final class KeyDataTable {
      * @param pattern The glob pattern
      * @return the list.
      */
-    public List<Map.Entry<String,String>> values(String pattern) {
+    public List<Map.Entry<String,String>> pairs(String pattern) {
         return table.entrySet().stream()
             .filter(e -> StringUtil.matches(pattern, e.getKey()))
+            .toList();
+    }
+
+    /** Return a list of the values whose keys match a glob pattern
+     * @param pattern The glob pattern
+     * @return the list.
+     */
+    public List<String> values(String pattern) {
+        return table.entrySet().stream()
+            .filter(e -> StringUtil.matches(pattern, e.getKey()))
+            .map(e -> e.getValue())
             .toList();
     }
 }
