@@ -74,10 +74,10 @@ public class App extends Application {
             .findFirst()
             .orElse(new Cell(10, 10));
 
-        Player george = new Player("George");
-
-        region.getEntities().make().mobile("George")
-            .put(george)
+        Entity george = region.getEntities().make()
+            .put(new Player("George")) // TODO
+            .mobile("george")
+            .label("George")
             .cell(origin)
             .sprite(Sprites.ALL.getInfo("mobile.george"));
 

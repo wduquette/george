@@ -244,6 +244,22 @@ public class Entity {
     // Sprite Component Methods
 
     /**
+     * Sets the entity's label
+     * @param text The label text
+     * @return
+     */
+    public Entity label(String text) {
+        put(new Label(text));
+        return this;
+    }
+
+    /**
+     * Gets the entity's label
+     * @return The label
+     */
+    public Label label() { return components.get(Label.class); }
+
+    /**
      * Gets the entity's Sprite, or null if none.
      * @return The sprite, or null.
      */

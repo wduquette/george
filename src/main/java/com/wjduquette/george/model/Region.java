@@ -201,6 +201,7 @@ public class Region {
             TerrainTile tile = terrainTileSet.get(tileIndex);
 
             Entity feature = entities.make()
+                .label(tile.description())
                 .feature(tile.description())
                 .terrain(tile.type())
                 .sprite(tile)
@@ -243,8 +244,9 @@ public class Region {
                     // An NPC who just stands and talks when you poke him.
                     case MANNIKIN_OBJECT -> entities.make()
                         .put(new Mannikin(key))
-                        .feature(getInfo(key + ".label"))
-                        .sprite(getInfo(key + ".sprite"))
+                        .feature(getInfo(key, "label"))
+                        .label(getInfo(key, "label"))
+                        .sprite(getInfo(key, "sprite"))
                         .terrain(TerrainType.FENCE)
                         .cell(object2cell(obj));
 
@@ -257,6 +259,7 @@ public class Region {
                     case SIGN_OBJECT ->
                         entities.make()
                             .feature("sign")
+                            .label("sign")
                             .sign(key)
                             .sprite(getInfo(key + ".sprite"))
                             .cell(object2cell(obj));
