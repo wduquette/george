@@ -167,22 +167,17 @@ public class GameView extends StackPane {
         var entity = region.get(id);
 
         if (entity.sign() != null) {
-            var signName = entity.sign().name();
-            var text = region.getInfo(signName, "text");
+            var key = entity.sign().key();
+            var text = region.getInfo(key, "text");
 
             displayTextBlock(entity, text);
         } else if (entity.mannikin() != null) {
-            var name = entity.mannikin().name();
+            var key = entity.mannikin().key();
             StringBuilder buff = new StringBuilder();
-            buff.append(region.getInfo(name, "label")).append("\n\n");
-            buff.append(region.getInfo(name, "description")).append("\n\n");
+            buff.append(region.getInfo(key, "label")).append("\n\n");
+            buff.append(region.getInfo(key, "description")).append("\n\n");
 
-            // TODO: Could use info().entries()
-            List<String> greetings = region.info().keys().stream()
-                .filter(key -> key.startsWith(name + ".greeting"))
-                .map(key -> region.info().get(key).orElseThrow())
-                .toList();
-
+            List<String> greetings = region.info().values(key + ".greeting*");
             buff.append(random.pickFrom(greetings));
 
             displayTextBlock(entity, buff.toString());
