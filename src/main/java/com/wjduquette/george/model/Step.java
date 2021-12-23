@@ -18,8 +18,7 @@ public sealed interface Step {
 
 
     /**
-     * The mobile moves adjacent to the entity with the given ID and opens
-     * it.  The entity must be a door or chest.
+     * The mobile opens the entity with the given ID.
      * @param id The ID of the entity to open.
      */
     record Open(long id) implements Step {
@@ -27,13 +26,21 @@ public sealed interface Step {
     }
 
     /**
-     * The mobile moves adjacent to the entity with the given ID and triggers
-     * it, e.g., reads a sign. Triggering is the result of the basic
-     * "interact with" control.
-     * @param id The ID of the entity to trigger.
+     * The mobile closes the entity with the given ID. The entity must be a
+     * door or chest.
+     * @param id The ID of the entity to open.
      */
-    record Trigger(long id) implements Step {
-        @Override public String toString() { return "(Trigger " + id + ")";}
+    record Close(long id) implements Step {
+        @Override public String toString() { return "(Close " + id + ")";}
+    }
+
+    /**
+     * The mobile interacts with the entity with the given ID, i.e., reads
+     * reads a sign.
+     * @param id The ID of the entity to interact with
+     */
+    record Interact(long id) implements Step {
+        @Override public String toString() { return "(Interact " + id + ")";}
     }
 
     /**

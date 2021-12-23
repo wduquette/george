@@ -209,7 +209,9 @@ public class App extends Application {
                 }
             }
 
-            case Interrupt.DescribeFeature feature -> {
+            case Interrupt.Interact feature -> {
+                // At present, the only kind of interaction we support is
+                // describing a feature.  So do that.
                 viewer.describeFeature(feature.id());
 
                 // Wait for click.

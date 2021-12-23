@@ -62,6 +62,24 @@ public abstract class Region {
         return AStar.findRoute(ASTAR_FRAME, assessor, start, end);
     }
 
+    /**
+     * Finds the distance from start to end given the AStar assessment function.
+     * The distance will be Integer.MAX_VALUE if there's no way to get there.
+     * @param assessor The assessment function
+     * @param start The starting cell
+     * @param end The ending cell
+     * @return The distance
+     */
+    public static int distance(
+        AStar.Assessor<Cell> assessor,
+        Cell start,
+        Cell end)
+    {
+        var route = AStar.findRoute(ASTAR_FRAME, assessor, start, end);
+
+        return !route.isEmpty() ? route.size() : Integer.MAX_VALUE;
+    }
+
     //-------------------------------------------------------------------------
     // Instance Variables
 

@@ -13,6 +13,7 @@ import javafx.geometry.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -115,8 +116,11 @@ public class GameView extends StackPane {
         }
 
         if (selected.contains(Button.POINTER)) {
-            var input = new UserInput.CellClick(cell);
-            fireEvent(new UserInputEvent(input));
+            if (evt.getButton().equals(MouseButton.PRIMARY)) {
+                fireInputEvent(new UserInput.MoveTo(cell));
+            } else if (evt.getButton().equals(MouseButton.SECONDARY)) {
+                fireInputEvent(new UserInput.InteractWith(cell));
+            }
         } else if (selected.contains(Button.MAGNIFIER)) {
             region.log(region.describe(cell));
         }

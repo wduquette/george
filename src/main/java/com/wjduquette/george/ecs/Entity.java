@@ -160,9 +160,6 @@ public class Entity {
      */
     public <T extends Component> T get(Class<T> cls) {
         T comp = components.get(cls);
-        if (comp == null) {
-            throw new IllegalArgumentException("Missing component: " + cls);
-        }
         return comp;
     }
 

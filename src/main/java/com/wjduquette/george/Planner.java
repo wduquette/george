@@ -4,7 +4,6 @@ import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.widgets.UserInput;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,6 +17,15 @@ public class Planner {
     /** The maximum length for a planned route, in cells. */
     public static final int MAX_ROUTE_LENGTH = 20;
 
+    /** Maximum distance for talking to NPCs. */
+    public static final int MAX_TALKING_RANGE = 2;
+
+    /**
+     * Maximum distance for physical interactions, e.g., opening a door,
+     * reading a sign.
+     */
+    public static final int MAX_PHYSICAL_RANGE = 1;
+
     //-------------------------------------------------------------------------
     // Instance Variables
 
@@ -28,14 +36,17 @@ public class Planner {
         Entity george = region.query(Player.class).findFirst().orElseThrow();
 
         switch (input) {
-            case UserInput.CellClick click ->
-                doPlanMove(region, george, click.cell());
-            case UserInput.StatusBox status ->
-                System.out.println("Clicked on status box for " + status.playerId());
+            case UserInput.MoveTo moveTo ->
+                doPlanMove(region, george, moveTo.cell());
+            case UserInput.InteractWith with ->
+                doPlanInteraction(region, george, with.cell());
+            case UserInput.StatusBox box ->
+                System.out.println("Clicked on status box for " + box.playerId());
             default -> {}
         }
     }
 
+    // Plan a player character's move to the cell.
     private static void doPlanMove(Region region, Entity player, Cell targetCell) {
         // Eventually: if the mover is a user-controlled character,
         // and the mover is currently moving, and the target cell is
@@ -43,8 +54,6 @@ public class Planner {
         if (player.plan() != null || targetCell == null) {
             return;
         }
-
-        // Planning System (for player characters)
 
         // FIRST, is there a route?
         var route = Region.findRoute(c -> isPassable(region, player, c),
@@ -64,34 +73,76 @@ public class Planner {
 
         Optional<Entity> result;
 
-        // TODO: check for mobiles before features.
-
-        if ((result = region.findAt(targetCell, Feature.class)).isPresent()) {
-            Entity entity = result.get();
-
-            if (entity.sign() != null) {
-                plan.add(new Step.Trigger(entity.id()));
-                return;
-            } else if (entity.mannikin() != null) {
-                plan.add(new Step.Trigger(entity.id()));
-            } else if (entity.door() != null && entity.door().isClosed()) {
-                plan.add(new Step.Open(entity.id()));
-                return;
-            }
-        }
-
+        // The player can walk up to and go through an exit.
         if ((result = region.findAt(targetCell, Exit.class)).isPresent()) {
             plan.add(new Step.Exit(result.get().id()));
             return;
         }
 
+        // The player can move to the cell
         plan.add(new Step.MoveTo(targetCell));
     }
 
-    // Adds the route to the end of the given plan as a series of MoveTo steps.
-    private static void addRoute(Plan plan, List<Cell> route) {
-        route.forEach(cell -> plan.add(new Step.MoveTo(cell)));
+    // Plan a player character's interaction with whatever is at the cell.
+    private static void doPlanInteraction(
+        Region region,
+        Entity player,
+        Cell targetCell)
+    {
+        // If the mover is already doing something, ignore.
+        if (player.plan() != null || targetCell == null) {
+            return;
+        }
+
+        App.println("doPlanInteraction: " + player + ", " + targetCell);
+
+        // FIRST, how far away is the target cell?
+        var distance = Region.distance(
+            c -> isPassable(region, player, c),
+            player.cell(), targetCell);
+
+        // NEXT, what's there?  Could be a normal cell, a feature, or a mobile
+        var plan = new Plan();
+        player.put(plan);
+
+        Optional<Entity> result;
+
+        if (region.findAt(targetCell, Mobile.class).isPresent()) {
+            // We don't currently have any interactions involving mobiles.
+            return;
+        }
+
+        if ((result = region.findAt(targetCell, Feature.class)).isPresent()) {
+            Entity entity = result.get();
+
+            if (entity.sign() != null) {
+                if (distance > MAX_PHYSICAL_RANGE) {
+                    region.log("That's too far.");
+                } else {
+                    plan.add(new Step.Interact(entity.id()));
+                }
+            } else if (entity.mannikin() != null) {
+                if (distance > MAX_TALKING_RANGE) {
+                    region.log("That's too far.");
+                } else {
+                    plan.add(new Step.Interact(entity.id()));
+                }
+            } else if (entity.door() != null && entity.door().isClosed()) {
+                if (distance > MAX_PHYSICAL_RANGE) {
+                    region.log("That's too far.");
+                } else {
+                    plan.add(new Step.Open(entity.id()));
+                }
+            } else if (entity.door() != null && entity.door().isOpen()) {
+                if (distance > MAX_PHYSICAL_RANGE) {
+                    region.log("That's too far.");
+                } else {
+                    plan.add(new Step.Close(entity.id()));
+                }
+            }
+        }
     }
+
 
     // From a planning perspective, can this mobile expect to be able to
     // enter the given cell given the player's current capabilities and the

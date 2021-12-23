@@ -105,24 +105,24 @@ public class Executor {
             }
 
             case Step.Open goal: {
-                targetCell = region.get(goal.id()).cell();
-                var result = proceed(region, mob, goal, targetCell);
+                var that = region.get(goal.id());
 
-                if (result == Result.DO_NEXT) {
-                    var that = region.get(goal.id());
-                    that.openDoor();
-                }
-                return result;
+                // TODO: handle chests as well
+                that.openDoor();
+                return Result.DO_NEXT;
             }
 
-            case Step.Trigger goal: {
-                targetCell = region.get(goal.id()).cell();
-                var result = proceed(region, mob, goal, targetCell);
-                if (result == Result.DO_NEXT) {
-                    throw new InterruptException(new Interrupt.DescribeFeature(goal.id()));
-                } else {
-                    return result;
-                }
+            case Step.Close goal: {
+                var that = region.get(goal.id());
+
+                // TODO: handle chests as well
+                that.closeDoor();
+                return Result.DO_NEXT;
+            }
+
+            case Step.Interact goal: {
+                // At present, this is the only kind of interaction.
+                throw new InterruptException(new Interrupt.Interact(goal.id()));
             }
 
             //

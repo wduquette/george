@@ -4,10 +4,17 @@ import com.wjduquette.george.model.Cell;
 
 public sealed interface UserInput {
     /**
-     * The user clicked on a map cell.
+     * The user wants to move to a specific map cell.  Usually a left click.
      * @param cell The cell
      */
-    public record CellClick(Cell cell) implements UserInput {}
+    public record MoveTo(Cell cell) implements UserInput {}
+
+    /**
+     * The user wants to interact with whatever is at the cell.
+     * Usually a right-click.
+     * @param cell The cell
+     */
+    public record InteractWith(Cell cell) implements UserInput {}
 
     /**
      * The user clicked on a player character's status box.
