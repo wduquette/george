@@ -185,6 +185,7 @@ public class Entity {
     public Door       door()       { return components.get(Door.class); }
     public Exit       exit()       { return components.get(Exit.class); }
     public Feature    feature()    { return components.get(Feature.class); }
+    public Item       item()       { return components.get(Item.class); }
     public Label      label()      { return components.get(Label.class); }
     public Loc        loc()        { return components.get(Loc.class); }
     public LogMessage logMessage() { return components.get(LogMessage.class); }
@@ -233,6 +234,7 @@ public class Entity {
     public Entity tagAsPlayer() { return put(new Player()); }
 
     public Entity exit(String region, String point) { return put(new Exit(region, point)); }
+    public Entity item(String key) { return put(new Item(key)); }
     public Entity label(String text) { return put(new Label(text)); }
     public Entity mobile(String key) { return put(new Mobile(key)); }
     public Entity point(String name) { return put(new Point(name)); }
@@ -240,7 +242,6 @@ public class Entity {
     public Entity sprite(String name) { return put(new Sprite(name)); }
     public Entity sprite(ImageInfo info) { return put(new Sprite(info.name())); }
     public Entity terrain(TerrainType type) { return put(new Terrain(type)); }
-
 
     /**
      * Sets the entity's cell location, clearing any visual offsets.
