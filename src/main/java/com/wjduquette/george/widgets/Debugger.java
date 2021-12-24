@@ -36,11 +36,6 @@ public class Debugger extends StackPane {
     private Label playerCellLabel;
     private ContextMenu entityContextMenu;
 
-    // Inventories Pane
-    private TableView<ItemProxy> itemView;
-    private ObservableList<ItemProxy> itemList;
-    private FilteredList<ItemProxy> filteredInventoryList;
-
     // The application
     private final App app;
 
@@ -65,7 +60,6 @@ public class Debugger extends StackPane {
         // TabPane and Tabs
         tabPane = new TabPane();
         makeEntitiesTab();
-        makeItemsTab();
 
         // Output Log
         outputLog = new TextArea();
@@ -132,18 +126,23 @@ public class Debugger extends StackPane {
         entitiesView.setItems(filteredEntityList);
 
         TableColumn<EntityProxy,String> idColumn = new TableColumn<>("ID");
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("idText"));
         idColumn.setPrefWidth(80);
 
-        TableColumn<EntityProxy,String> cellColumn = new TableColumn<>("Cell");
-        cellColumn.setCellValueFactory(new PropertyValueFactory<>("cell"));
-        cellColumn.setPrefWidth(80);
+        TableColumn<EntityProxy,String> labelColumn = new TableColumn<>("Label");
+        labelColumn.setCellValueFactory(new PropertyValueFactory<>("label"));
+        labelColumn.setPrefWidth(120);
+
+        TableColumn<EntityProxy,String> placeColumn = new TableColumn<>("Place");
+        placeColumn.setCellValueFactory(new PropertyValueFactory<>("place"));
+        placeColumn.setPrefWidth(120);
 
         TableColumn<EntityProxy,String> textColumn = new TableColumn<>("Detail");
         textColumn.setCellValueFactory(new PropertyValueFactory<>("text"));
         textColumn.setPrefWidth(2000);
         entitiesView.getColumns().add(idColumn);
-        entitiesView.getColumns().add(cellColumn);
+        entitiesView.getColumns().add(labelColumn);
+        entitiesView.getColumns().add(placeColumn);
         entitiesView.getColumns().add(textColumn);
 
         // entityContextMenu
@@ -205,76 +204,14 @@ public class Debugger extends StackPane {
             return;
         }
 
-        var entity = app.getCurrentRegion().get(Long.parseLong(proxy.id));
+        var entity = proxy.entity;
 
         entityContextMenu.getItems().addAll(
-            label(proxy.getId()),
+            label(proxy.getIdText()),
             separator(),
             menuItem("Go To Cell",
-                with(entity.cell(), () -> app.doMagicMove(entity.cell())))
+                with(entity.loc(), () -> app.doMagicMove(entity.cell())))
         );
-    }
-
-    //-------------------------------------------------------------------------
-    // Items Tab
-
-    private void makeItemsTab() {
-        Tab tab = new Tab();
-        tab.setText("Items");
-        tabPane.getTabs().add(tab);
-
-        // Toolbar
-        ToolBar toolbar = new ToolBar();
-
-        TextField filter = new TextField();
-        filter.setPrefColumnCount(20);
-        filter.textProperty().addListener((p, o, n) ->
-            filteredInventoryList.setPredicate(ep -> doInventoryFilter(ep, n)));
-        toolbar.getItems().add(new Label("Filter"));
-        toolbar.getItems().add(filter);
-
-        // Inventory View
-        itemList = FXCollections.observableArrayList();
-        itemView = new TableView<>();
-        itemView.setStyle("-fx-font-family: Menlo;");
-        filteredInventoryList = new FilteredList<>(itemList,
-            ip -> doInventoryFilter(ip, null));
-        itemView.setItems(filteredInventoryList);
-
-        TableColumn<ItemProxy,String> idColumn = new TableColumn<>("ID");
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        idColumn.setPrefWidth(80);
-
-        TableColumn<ItemProxy,String> keyColumn = new TableColumn<>("Key");
-        keyColumn.setCellValueFactory(new PropertyValueFactory<>("key"));
-        keyColumn.setPrefWidth(120);
-
-        TableColumn<ItemProxy,String> ownerColumn = new TableColumn<>("Owner");
-        ownerColumn.setCellValueFactory(new PropertyValueFactory<>("owner"));
-        ownerColumn.setPrefWidth(120);
-
-        TableColumn<ItemProxy,String> textColumn = new TableColumn<>("Detail");
-        textColumn.setCellValueFactory(new PropertyValueFactory<>("text"));
-        textColumn.setPrefWidth(2000);
-        itemView.getColumns().add(idColumn);
-        itemView.getColumns().add(keyColumn);
-        itemView.getColumns().add(ownerColumn);
-        itemView.getColumns().add(textColumn);
-
-        // BorderPane
-        BorderPane content = new BorderPane();
-        content.setTop(toolbar);
-        content.setCenter(itemView);
-
-        tab.setContent(content);
-    }
-
-    private boolean doInventoryFilter(ItemProxy proxy, String filterString) {
-        if (filterString == null || filterString.isEmpty()) {
-            return true;
-        } else {
-            return proxy.getText().contains(filterString);
-        }
     }
 
     //-------------------------------------------------------------------------
@@ -340,26 +277,15 @@ public class Debugger extends StackPane {
 
         // Populate the entities table
         var selectedEntity = entitiesView.getSelectionModel().getSelectedItem();
-        var selectedItem = itemView.getSelectionModel().getSelectedItem();
         entityList.clear();
-        itemList.clear();
 
         for (long id : region.getEntities().ids()) {
             var entity = region.get(id);
             var newProxy = new EntityProxy(entity);
             entityList.add(newProxy);
-            if (selectedEntity != null && selectedEntity.id.equals(newProxy.id)) {
+            if (selectedEntity != null &&
+                selectedEntity.entity.id() == newProxy.entity.id()) {
                 entitiesView.getSelectionModel().select(newProxy);
-            }
-
-            if (entity.item() != null) {
-                var ip = new ItemProxy(entity);
-                itemList.add(ip);
-                if (selectedItem != null &&
-                    selectedItem.item.id() == entity.id())
-                {
-                    itemView.getSelectionModel().select(ip);
-                }
             }
         }
     }
@@ -377,50 +303,42 @@ public class Debugger extends StackPane {
     //-------------------------------------------------------------------------
     // Helper Classes
 
-    public static class EntityProxy {
-        private final String id;
-        private final String text;
-        private final String cell;
+    public class EntityProxy {
+        private final Entity entity;
 
         EntityProxy(Entity entity) {
-            this.id = String.format("%04d", entity.id());
-            this.text = entity.componentString().replaceAll("\\s+", " ");
-            this.cell = entity.loc() != null
-                ? entity.loc().cell().displayString()
-                : "--,--";
+            this.entity = entity;
         }
 
-        public String getId() { return id; }
-        public String getText() { return text; }
-        public String getCell() { return cell; }
-    }
-
-    public class ItemProxy {
-        private final Entity item;
-
-        ItemProxy(Entity item) {
-            this.item = item;
+        public Long getId() {
+            return entity.id();
         }
 
-        public String getId() {
-            return String.format("%04d", item.id());
+        public String getIdText() {
+            return String.format("%04d", entity.id());
         }
 
-        public String getKey() {
-            return item.item().key();
-        }
-
-        public String getOwner() {
-            if (item.owner() != null) {
-                var id = item.owner().ownerId();
-                return id + " " + app.getCurrentRegion().get(id).label().text();
+        public String getLabel() {
+            if (entity.label() != null) {
+                return entity.label().text();
             } else {
-                return item.cell().displayString();
+                return "--";
+            }
+        }
+
+        public String getPlace() {
+            if (entity.owner() != null) {
+                var id = entity.owner().ownerId();
+                return id + " " + app.getCurrentRegion().get(id).label().text();
+            } else if (entity.loc() != null) {
+                return entity.cell().displayString();
+            } else {
+                return "--";
             }
         }
 
         public String getText() {
-            return item.componentString().replaceAll("\\s+", " ");
+            return entity.componentString().replaceAll("\\s+", " ");
         }
     }
 }
