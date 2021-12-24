@@ -25,6 +25,7 @@ public class FloobhamRegion extends DataDrivenRegion {
                 var chest = makeChest(key).cell(object2cell(obj));
                 var vial = app.items().make("vial.healing")
                     .owner(chest.id());
+                entities.add(chest);
                 entities.add(vial);
                 return true;
             }
@@ -32,6 +33,7 @@ public class FloobhamRegion extends DataDrivenRegion {
                 var chest = makeChest(key).cell(object2cell(obj));
                 var scroll = app.items().make("scroll.mapping")
                     .owner(chest.id());
+                entities.add(chest);
                 entities.add(scroll);
                 return true;
             }
