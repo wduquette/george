@@ -351,7 +351,7 @@ public abstract class Region {
     public Entity makeChest(String key) {
         var chest = new Chest(key, Opening.CLOSED,
             "feature.chest", "feature.open_chest");
-        return entities.make()
+        return new Entity()
             .tagAsFeature()
             .chest(chest)
             .terrain(TerrainType.FENCE);
@@ -367,9 +367,9 @@ public abstract class Region {
         String[] tokens = regionPoint.split(":");
 
         if (tokens.length == 2) {
-            return entities.make().exit(tokens[0], tokens[1]);
+            return new Entity().exit(tokens[0], tokens[1]);
         } else if (tokens.length == 1) {
-            return entities.make().exit(null, regionPoint);
+            return new Entity().exit(null, regionPoint);
         } else {
             throw new IllegalArgumentException("Invalid Exit name: \"" +
                 regionPoint + "\"");
@@ -383,7 +383,7 @@ public abstract class Region {
      * @return The entity
      */
     public Entity makeMannikin(String key) {
-        return entities.make()
+        return new Entity()
             .tagAsFeature()
             .mannikin(key)
             .label(getInfo(key, "label"))
@@ -397,7 +397,7 @@ public abstract class Region {
      * @return The entity
      */
     public Entity makePoint(String name) {
-        return entities.make().point(name);
+        return new Entity().point(name);
     }
 
     /**
@@ -407,7 +407,7 @@ public abstract class Region {
      * @return The entity
      */
     public Entity makeSign(String key) {
-        return entities.make()
+        return new Entity()
             .tagAsFeature()
             .sign(key)
             .label("sign")

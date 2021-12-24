@@ -186,13 +186,17 @@ public class DataDrivenRegion extends Region {
                 var key = prefix + "." + obj.name;
                 var cell = object2cell(obj);
 
-                switch (obj.type) {
+                var entity = switch (obj.type) {
                     case CHEST    -> makeChest(key).cell(cell);
                     case EXIT     -> makeExit(obj.name).cell(cell);
                     case MANNIKIN -> makeMannikin(key).cell(cell);
                     case POINT    -> makePoint(obj.name).cell(cell);
                     case SIGN     -> makeSign(key).cell(cell);
-                    default -> { }
+                    default -> null;
+                };
+
+                if (entity != null) {
+                    entities.add(entity);
                 }
             }
         }
