@@ -44,13 +44,7 @@ public class Entity {
      * @return -1, 0, or 1.
      */
     public static int oldestFirst(Entity a, Entity b) {
-        if (a.id() < b.id()) {
-            return -1;
-        } else if (a.id() > b.id()) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return Long.compare(a.id(), b.id());
     }
 
     /**
@@ -60,13 +54,7 @@ public class Entity {
      * @return -1, 0, or 1.
      */
     public static int newestFirst(Entity a, Entity b) {
-        if (a.id() > b.id()) {
-            return -1;
-        } else if (a.id() < b.id()) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return Long.compare(b.id(), a.id());
     }
 
     //-------------------------------------------------------------------------
@@ -101,7 +89,7 @@ public class Entity {
     }
 
     //-------------------------------------------------------------------------
-    // Getters/Setters
+    // General API
 
     /**
      * Gets the Entity's ID.
@@ -129,21 +117,8 @@ public class Entity {
     }
 
     /**
-     * Returns true if the entity has the given component.
-     * @param component The component class
-     * @return true or false
-     */
-    public boolean has(Class<? extends Component> component) {
-        return components.get(component) != null;
-    }
-
-    //-------------------------------------------------------------------------
-    // Generic Component Operations
-
-
-    /**
      * Puts a component into the entity, replacing any previous component
-     * of the same type.
+     * of the same class.
      * @param component The new component value
      * @param <T> The component type.
      * @return The entity itself, for fluency.
@@ -154,7 +129,7 @@ public class Entity {
     }
 
     /**
-     * Remove the component of the given class, if any.
+     * Removes the component of the given class, if any.
      * @param cls The class
      */
     public void remove(Class<? extends Component> cls) {
@@ -162,7 +137,7 @@ public class Entity {
     }
 
     /**
-     * Remove the component, if defined.
+     * Removes the component, if defined.
      * @param component The component
      * @throws IllegalArgumentException if this component doesn't belong to
      * the entity.
@@ -185,9 +160,6 @@ public class Entity {
      */
     public <T extends Component> T get(Class<T> cls) {
         T comp = components.get(cls);
-        if (comp == null) {
-            throw new IllegalArgumentException("Missing component: " + cls);
-        }
         return comp;
     }
 
@@ -202,231 +174,118 @@ public class Entity {
     }
 
     //-------------------------------------------------------------------------
-    // Location Component Methods
+    // Component Retrieval Methods
+    //
+    // There is one for each defined component class. Each returns the
+    // component, throwing an error if it doesn't exist.
+
+    public Door       door()       { return components.get(Door.class); }
+    public Exit       exit()       { return components.get(Exit.class); }
+    public Feature    feature()    { return components.get(Feature.class); }
+    public Item       item()       { return components.get(Item.class); }
+    public Label      label()      { return components.get(Label.class); }
+    public Loc        loc()        { return components.get(Loc.class); }
+    public LogMessage logMessage() { return components.get(LogMessage.class); }
+    public Mannikin   mannikin()   { return components.get(Mannikin.class); }
+    public Mobile     mobile()     { return components.get(Mobile.class); }
+    public Plan       plan()       { return components.get(Plan.class); }
+    public Player     player()     { return components.get(Player.class); }
+    public Point      point()      { return components.get(Point.class); }
+    public Sign       sign()       { return components.get(Sign.class); }
+    public Sprite     sprite()     { return components.get(Sprite.class); }
+    public Terrain    terrain()    { return components.get(Terrain.class); }
+
+    // Other simple queries
 
     /**
-     * Returns the entity's cell, or null if it doesn't have one.
-     * @return The cell
+     * Gets the entity's cell location (taken from its Loc component).
+     * @return The cell.
      */
-    public Loc loc() { return components.get(Loc.class); }
-
-    public Cell cell() {
-        return components.get(Loc.class).cell();
-    }
-
-    public Entity cell(Cell cell) {
-        put(Loc.of(cell));
-        return this;
-    }
-
-    /**
-     * Component constructor: sets the entity's cell given a row and column,
-     * clearing any visual offset.
-     * @param row The row index
-     * @param col The column index
-     * @return The entity
-     */
-    public Entity cell(int row, int col) {
-        put(Loc.of(new Cell(row, col)));
-        return this;
-    }
+    public Cell cell() { return components.get(Loc.class).cell(); }
 
     /**
      * Returns true if the entity is at the given cell, and false otherwise.
      * @param cell The cell
      * @return true or false
      */
-    public boolean isAt(Cell cell) {
-        return Objects.equals(cell(), cell);
-    }
-
-    //-------------------------------------------------------------------------
-    // Sprite Component Methods
+    public boolean isAt(Cell cell) { return Objects.equals(cell(), cell); }
 
     /**
-     * Gets the entity's Sprite, or null if none.
-     * @return The sprite, or null.
-     */
-    public Sprite sprite() { return components.get(Sprite.class); }
-
-    /**
-     * Sets the entity's Sprite given an image and its name
-     * @param name The sprite name
-     * @return The entity
-     */
-    public Entity sprite(String name) {
-        put(new Sprite(name));
-        return this;
-    }
-
-    /**
-     * Sets the entity's Sprite.
-     * @param info The image info
-     * @return The entity
-     */
-    public Entity sprite(ImageInfo info) {
-        put(new Sprite(info.name()));
-        return this;
-    }
-
-    //-------------------------------------------------------------------------
-    // Map Feature component
-
-    /**
-     * Gets the entity's terrain feature, or null if none.
-     * @return The feature, or null.
-     */
-    public Feature feature() { return components.get(Feature.class); }
-
-    /**
-     * Sets a feature given a terrain type.
-     * @param type The type
-     * @return The entity
-     */
-    public Entity feature(TerrainType type) {
-        put(new Feature(type));
-        return this;
-    }
-
-    /**
-     * Gets the entity's terrain type, as read from its Feature component,
+     * Gets the entity's terrain type, as read from its Terrain component,
      * or NONE if it has no terrain type.
      * @return The TerrainType.
      */
     public TerrainType terrainType() {
-        return find(Feature.class)
-            .map(Feature::terrainType)
+        return find(Terrain.class)
+            .map(Terrain::terrainType)
             .orElse(TerrainType.NONE);
     }
 
-    /**
-     * Gets the feature's Door component, or null if none.
-     * @return The door.
-     */
-    public Door door() { return components.get(Door.class); }
+    //-------------------------------------------------------------------------
+    // Component Setters
+    //
+    // tagAs* methods add the tag component.
+    // Others just add the component given the arguments.
+
+    public Entity tagAsFeature() { return put(new Feature()); }
+    public Entity tagAsPlayer() { return put(new Player()); }
+
+    public Entity exit(String region, String point) { return put(new Exit(region, point)); }
+    public Entity item(String key) { return put(new Item(key)); }
+    public Entity label(String text) { return put(new Label(text)); }
+    public Entity mobile(String key) { return put(new Mobile(key)); }
+    public Entity point(String name) { return put(new Point(name)); }
+    public Entity sign(String text) { put(new Sign(text)); return this; }
+    public Entity sprite(String name) { return put(new Sprite(name)); }
+    public Entity sprite(ImageInfo info) { return put(new Sprite(info.name())); }
+    public Entity terrain(TerrainType type) { return put(new Terrain(type)); }
 
     /**
-     * Sets the entity's door component to DoorState.OPEN.
+     * Sets the entity's cell location, clearing any visual offsets.
+     * @param cell The cell
+     * @return The entity
+     */
+    public Entity cell(Cell cell) { return put(Loc.of(cell)); }
+
+    /**
+     * Sets the entity's cell location given a row and column, clearing any
+     * visual offset.
+     * @param row The row index
+     * @param col The column index
+     * @return The entity
+     */
+    public Entity cell(int row, int col) { return put(Loc.of(new Cell(row, col))); }
+
+    /**
+     * Adds the door and updates the entity's label, sprite, and terrain
+     * according to the door's state.
+     * @param door The door
+     * @return The entity
+     */
+    public Entity door(Door door) {
+        return put(door)
+            .put(door.label())
+            .put(door.sprite())
+            .put(door.terrain());
+    }
+
+
+    //-------------------------------------------------------------------------
+    // Entity Operations
+
+    /**
+     * Sets the entity's door's state to DoorState.OPEN, updating relevant
+     * components
      * @return The entity.
      */
-    public Entity openDoor() {
-        components.put(door().open());
-        return this;
-    }
+    public Entity openDoor() { return door(door().open()); }
 
     /**
-     * Sets the entity's door component to DoorState.CLOSED.
+     * Sets the entity's door's state to DoorState.CLOSED, updating relevant
      * @return The entity.
      */
-    public Entity closeDoor() {
-        components.put(door().close());
-        return this;
-    }
+    public Entity closeDoor() { return door(door().close()); }
 
-    //-------------------------------------------------------------------------
-    // Points of Interest
-
-    /**
-     * Gets the entity's point of interest data, or null if none.
-     * @return The component, or null.
-     */
-    public Point point() { return components.get(Point.class); }
-
-    /**
-     * Sets the entity's Point by name.
-     * @param name The name
-     * @return The entity
-     */
-    public Entity point(String name) {
-        put(new Point(name));
-        return this;
-    }
-
-    //-------------------------------------------------------------------------
-    // Trigger Components
-
-    // TODO Should probably be a more general Trigger entity.
-
-    /**
-     * Gets the entity's Sign data, or null if none.
-     * @return The component, or null.
-     */
-    public Sign sign() { return components.get(Sign.class); }
-
-    /**
-     * Sets a Sign's text
-     * @param text The text
-     * @return The entity
-     */
-    public Entity sign(String text) {
-        put(new Sign(text));
-        return this;
-    }
-
-    /**
-     * Gets the entity's Mannikin component, or null if none.
-     * @return The component or null.
-     */
-    public Mannikin mannikin() { return components.get(Mannikin.class); }
-
-    /**
-     * Gets the entity's Exit data, or null if none.
-     * @return The component, or null.
-     */
-    public Exit exit() { return components.get(Exit.class); }
-
-    /**
-     * Sets an Exit's region and point
-     * @param region The region name
-     * @param point The name of the entry point in that region
-     * @return The entity
-     */
-    public Entity exit(String region, String point) {
-        put(new Exit(region, point));
-        return this;
-    }
-
-
-    //-------------------------------------------------------------------------
-    // Mobile Entity Methods
-
-    /**
-     * Gets the entity's mobile component, or null if none.
-     * @return The component, or null.
-     */
-    public Mobile mobile() { return components.get(Mobile.class); }
-
-    /**
-     * Component constructor: sets the Mobile given its name.
-     * @param name The name
-     * @return the entity
-     */
-    public Entity mobile(String name) {
-        put(new Mobile(name));
-        return this;
-    }
-
-    /**
-     * Gets the entity's plan component, or null if none.
-     * @return The component, or null.
-     */
-    public Plan plan() { return components.get(Plan.class); }
-
-    //-------------------------------------------------------------------------
-    // Log Messages
-
-    /**
-     * Gets a log message's LogMessage component.
-     * @return The component
-     */
-    public LogMessage logMessage() {
-        return components.get(LogMessage.class);
-    }
-
-    //-------------------------------------------------------------------------
-    // Player Methods
-
-    public Player player() { return components.get(Player.class); }
 
     //-------------------------------------------------------------------------
     // Object Methods

@@ -57,11 +57,24 @@ public record Door(
      * state.
      * @return The Feature
      */
-    public Feature feature() {
+    public Terrain terrain() {
         if (isClosed()) {
-            return new Feature(closedTerrain);
+            return new Terrain(closedTerrain);
         } else {
-            return new Feature(TerrainType.NONE);
+            return new Terrain(TerrainType.NONE);
+        }
+    }
+
+    /**
+     * Returns the expected value of the Door's label component given its
+     * state.
+     * @return The Label
+     */
+    public Label label() {
+        if (isClosed()) {
+            return new Label("closed door");
+        } else {
+            return new Label("open door");
         }
     }
 

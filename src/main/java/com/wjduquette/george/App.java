@@ -67,18 +67,18 @@ public class App extends Application {
 //        region = getRegion("test");
 //        region = getRegion("floobham");
         region = getRegion("overworld");
-        region.getEntities().dump();
 
+        // TODO: add point-retrieval method
         Cell origin = region.query(Point.class)
             .filter(e -> e.point().name().equals("origin"))
             .map(Entity::cell)
             .findFirst()
             .orElse(new Cell(10, 10));
 
-        Player george = new Player("George");
-
-        region.getEntities().make().mobile("George")
-            .put(george)
+        Entity george = region.getEntities().make()
+            .mobile("george") // Key
+            .tagAsPlayer()
+            .label("George")
             .cell(origin)
             .sprite(Sprites.ALL.getInfo("mobile.george"));
 
@@ -209,7 +209,9 @@ public class App extends Application {
                 }
             }
 
-            case Interrupt.DescribeFeature feature -> {
+            case Interrupt.Interact feature -> {
+                // At present, the only kind of interaction we support is
+                // describing a feature.  So do that.
                 viewer.describeFeature(feature.id());
 
                 // Wait for click.
@@ -265,15 +267,15 @@ public class App extends Application {
 
     private void populateRegionFactories() {
         regionFactories.put("test",
-            () -> new Region(getClass(),
+            () -> new DataDrivenRegion(getClass(),
                 "assets/regions/test/test.region")
         );
         regionFactories.put("overworld",
-            () -> new Region(getClass(),
+            () -> new DataDrivenRegion(getClass(),
                 "assets/regions/overworld/overworld.region")
         );
         regionFactories.put("floobham",
-            () -> new Region(getClass(),
+            () -> new DataDrivenRegion(getClass(),
                 "assets/regions/floobham/floobham.region")
         );
     }

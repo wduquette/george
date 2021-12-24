@@ -1,6 +1,7 @@
 # Overworld region definition file
 
 # The %tilemap must go last.
+%prefix overworld
 %terrain overworld.terrain
-%strings overworld.strings
+%info overworld.keydata
 %tilemap overworld.json

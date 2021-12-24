@@ -5,8 +5,8 @@ import com.wjduquette.george.model.Step;
 import java.util.ArrayDeque;
 
 /**
- * A Plan is a series of steps, usually created by the Planning system,
- * to be carried out over a series of loop iterations by the Movement system
+ * A Plan is a series of steps, usually created by the Planner system,
+ * to be carried out over a series of loop iterations by the Executor system
  * (which can add steps of its own). Plans usually belong to Mobiles, but
  * that's not required.  When a plan is completed, it, it is removed from
  * the entity.

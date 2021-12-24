@@ -1,0 +1,253 @@
+package com.wjduquette.george.model;
+
+import com.wjduquette.george.ecs.*;
+import com.wjduquette.george.graphics.TerrainTileSet;
+import com.wjduquette.george.tmx.TiledMapReader;
+import com.wjduquette.george.tmx.TiledMapReader.Layer;
+import com.wjduquette.george.util.*;
+
+/**
+ * Region is a class for loading and querying region definitions defined as
+ * resources.  A Region resource has several components:
+ *
+ * <ul>
+ *     <li>A TerrainTileSet.</li>
+ *     <li>A map file, defined as a JSON export from a Tiled .tmx map</li>
+ *     <li>A StringsTable.</li>
+ * </ul>
+ *
+ * These entities are called out in a text file, "{name}.region".
+ *
+ * <p><b>Things to be determined:</b></p>
+ *
+ * <ul>
+ *     <li>The relationship between RegionMap and the ECS structure.</li>
+ *     <li>How region-specific code is attached to the RegionMap, i.e., do
+ *         we subclass RegionMap, or do we define some other class for the
+ *         region that has a RegionMap object as a component?</li>
+ * </ul>
+ */
+public class DataDrivenRegion extends Region {
+    // The name of the Tiled tile layer containing the basic terrain.
+    private static final String TERRAIN_LAYER = "Terrain";
+
+    // The name of the Tiled tile layer containing additional static
+    // terrain features.
+    private static final String FEATURES_LAYER = "Features";
+
+    // Object type strings
+    private static final String CHEST_OBJECT = "Chest";
+    private static final String EXIT_OBJECT = "Exit";
+    private static final String MANNIKIN_OBJECT = "Mannikin";
+    private static final String POINT_OBJECT = "Point";
+    private static final String SIGN_OBJECT = "Sign";
+
+    //-------------------------------------------------------------------------
+    // Constructor
+
+    public DataDrivenRegion(Class<?> cls, String relPath) {
+        super();
+
+        try {
+            loadData(cls, relPath);
+        } catch (KeywordParser.KeywordException ex) {
+            throw new ResourceException(cls, relPath, ex.getMessage());
+        } catch (ResourceException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new ResourceException(cls, relPath, ex);
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    // Data Loading
+
+    // Loads the data from the region's .region file.  This is a separate
+    // method to make exception handling easier.
+    private void loadData(Class<?> cls, String relPath)
+        throws KeywordParser.KeywordException {
+        // FIRST, prepare to accumulate data.
+        this.resource = (relPath.startsWith("/"))
+            ? relPath : cls.getCanonicalName() + ":" + relPath;
+
+        // NEXT, parse the data.
+        var parser = new KeywordParser();
+
+        parser.defineKeyword("%prefix", (scanner, $) -> prefix = scanner.next());
+
+        parser.defineKeyword("%terrain", (scanner, $) -> {
+            var filename = Resource.relativeTo(relPath, scanner.next());
+            terrainTileSet = new TerrainTileSet(cls, filename);
+        });
+
+        parser.defineKeyword("%info", (scanner, $) -> {
+            var filename = Resource.relativeTo(relPath, scanner.next());
+            info = new KeyDataTable(cls, filename);
+        });
+
+        parser.defineKeyword("%tilemap", (scanner, $) -> {
+            var filename = Resource.relativeTo(relPath, scanner.next());
+            readTiledMap(cls, filename);
+        });
+
+        parser.parse(Resource.getLines(cls, relPath));
+    }
+
+    // Populates the entities table given the content of the reader.
+    private void readTiledMap(Class<?> cls, String filename) {
+        TiledMapReader map = TiledMapReader.read(cls, filename);
+
+        this.width = map.width;
+        this.height = map.height;
+        this.tileHeight = map.tileheight;
+        this.tileWidth = map.tilewidth;
+
+        readTerrainLayer(map);
+        readFeaturesLayer(map);
+        readObjects(map);
+    }
+
+    private void readTerrainLayer(TiledMapReader map) {
+        Layer terrainLayer = map.tileLayer(TERRAIN_LAYER).orElseThrow();
+
+        terrain.ensureCapacity(terrainLayer.data.length);
+
+        for (int i = 0; i < terrainLayer.data.length; i++) {
+            // FIRST, Tiled numbers tiles from 1 to N; we use 0 to N-1.
+            // TODO: Base this on the layer's firstgid.
+            int tileIndex = terrainLayer.data[i] - 1;
+
+            // Skip empty tiles.
+            if (tileIndex < 0) {
+                continue;
+            }
+
+            // Save the tile to the terrain list.
+            TerrainTile tile = terrainTileSet.get(tileIndex);
+            terrain.add(tile);
+        }
+    }
+
+    private void readFeaturesLayer(TiledMapReader map) {
+        Layer layer = map.tileLayer(FEATURES_LAYER).orElse(null);
+
+        if (layer == null) {
+            return;
+        }
+
+        for (int i = 0; i < layer.data.length; i++) {
+            // FIRST, get the row, column, and tile set index.
+            // Tiled numbers tiles from 1 to N; we use 0 to N-1.
+            int r = i / map.height;
+            int c = i % map.width;
+            int tileIndex = layer.data[i] - 1;
+
+            // Skip empty tiles.
+            if (tileIndex < 0) {
+                continue;
+            }
+
+            // NEXT, create the feature with its type, sprite, and cell.
+            TerrainTile tile = terrainTileSet.get(tileIndex);
+
+            Entity feature = entities.make()
+                .tagAsFeature()
+                .label(tile.description())
+                .terrain(tile.type())
+                .sprite(tile)
+                .cell(r, c);
+
+            // NEXT, Handle special cases.
+            //
+            // I'm not entirely happy about this convention, but it works well
+            // enough for the majority of doors in a region.  We will also want
+            // to have "door" objects allowed in Tiled object groups.
+            var closed = prefix() + ".closed_door";
+            var open = prefix() + ".open_door";
+
+            if (tile.name().equals(closed)) {
+                var door = new Door(DoorState.CLOSED, tile.type(), closed, open);
+                feature.door(door);
+            } else if (tile.name().equals(open)) {
+                var door = new Door(DoorState.OPEN, tile.type(), closed, open);
+                feature.door(door);
+            }
+        }
+    }
+
+    private void readObjects(TiledMapReader map) {
+        for (Layer layer : map.layers()) {
+            if (!layer.type.equals(TiledMapReader.OBJECT_GROUP)) {
+                continue;
+            }
+
+            for (TiledMapReader.MapObject obj : layer.objects()) {
+                // For those objects whose name is an info key.
+                var key = prefix + "." + obj.name;
+
+                switch (obj.type) {
+                    // A chest
+                    case CHEST_OBJECT -> entities.make()
+                        .cell(object2cell(obj))
+                        .tagAsFeature()
+                        .put(new Chest(key))
+                        .label("chest")          // Get from info, if present
+                        .sprite("feature.chest") // Get from info, if present
+                        .terrain(TerrainType.FENCE);
+
+                    // An exit to another region
+                    case EXIT_OBJECT -> entities.make()
+                        .put(makeExit(obj.name))
+                        .cell(object2cell(obj));
+
+                    // An NPC who just stands and talks when you poke him.
+                    case MANNIKIN_OBJECT -> entities.make()
+                        .tagAsFeature()
+                        .put(new Mannikin(key))
+                        .label(getInfo(key, "label"))
+                        .sprite(getInfo(key, "sprite"))
+                        .terrain(TerrainType.FENCE)
+                        .cell(object2cell(obj));
+
+                    // A point to which the player can be warped
+                    case POINT_OBJECT -> entities.make()
+                        .point(obj.name)
+                        .cell(object2cell(obj));
+
+                    // A sign you can read
+                    case SIGN_OBJECT ->
+                        entities.make()
+                            .tagAsFeature()
+                            .label("sign")
+                            .sign(key)
+                            .sprite(getInfo(key, "sprite"))
+                            .cell(object2cell(obj));
+
+                    default -> { }
+                }
+            }
+        }
+    }
+
+    // Converts a "{regionName}:{pointName}" string into an Exit.
+    private Exit makeExit(String regionPoint) {
+        String[] tokens = regionPoint.split(":");
+
+        if (tokens.length == 2) {
+            return new Exit(tokens[0], tokens[1]);
+        } else if (tokens.length == 1) {
+            return new Exit(null, regionPoint);
+        } else {
+            throw new IllegalArgumentException("Invalid Exit name: \"" +
+                regionPoint + "\"");
+        }
+    }
+
+    // Get the cell corresponding to the MapObject's x/y coordinate.
+    //
+    // For normal objects, we assume that the x,y coordinate is the
+    // pixel coordinate of the upper left corner of the cell.
+    private Cell object2cell(TiledMapReader.MapObject object) {
+        return new Cell(object.y / tileHeight, object.x / tileWidth);
+    }
+}

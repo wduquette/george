@@ -1,50 +1,35 @@
 package com.wjduquette.george.model;
 
-import com.wjduquette.george.Sprites;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.TerrainTileSet;
-import com.wjduquette.george.tmx.TiledMapReader;
-import com.wjduquette.george.tmx.TiledMapReader.Layer;
-import com.wjduquette.george.util.*;
+import com.wjduquette.george.util.AStar;
+import com.wjduquette.george.util.KeyDataTable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * Region is a class for loading and querying region definitions defined as
- * resources.  A Region resource has several components:
+ * A Region is an area in the game with its own terrain and entities, which
+ * the player can explore. A Region has several components:
  *
  * <ul>
+ *     <li>A "prefix", used in entity keys and sprite names.</li>
  *     <li>A TerrainTileSet.</li>
  *     <li>A map file, defined as a JSON export from a Tiled .tmx map</li>
- *     <li>A StringsTable.</li>
+ *     <li>A game info table.</li>
  * </ul>
  *
- * These entities are called out in a text file, "{name}.region".
- *
- * <p><b>Things to be determined:</b></p>
- *
- * <ul>
- *     <li>The relationship between RegionMap and the ECS structure.</li>
- *     <li>How region-specific code is attached to the RegionMap, i.e., do
- *         we subclass RegionMap, or do we define some other class for the
- *         region that has a RegionMap object as a component?</li>
- * </ul>
+ * <p>The {@link DataDrivenRegion} class loads a region from disk.  Other
+ * subclasses may provide a mixture of loading map data and other
+ * resources.</p>
  */
-public class Region {
-    // The name of the Tiled tile layer containing the basic terrain.
-    private static final String TERRAIN_LAYER = "Terrain";
+public abstract class Region {
+    //-------------------------------------------------------------------------
+    // Static Data
 
-    // The name of the Tiled tile layer containing additional static
-    // terrain features.
-    private static final String FEATURES_LAYER = "Features";
-
-    // Object type strings
-    private static final String EXIT_OBJECT = "Exit";
-    private static final String MANNIKIN_OBJECT = "Mannikin";
-    private static final String POINT_OBJECT = "Point";
-    private static final String SIGN_OBJECT = "Sign";
-
+    // The metric frame for the generic AStar algorithm
     private static final AStar.MetricFrame<Cell> ASTAR_FRAME =
         new AStar.MetricFrame<>() {
             @Override
@@ -61,224 +46,76 @@ public class Region {
     //-------------------------------------------------------------------------
     // Static Functions
 
-    public static List<Cell> findRoute(AStar.Assessor<Cell> assessor,
-        Cell start, Cell end)
+    /**
+     * Finds a route from start to end given the AStar assessment function.
+     * The route will be empty if no route could be found.
+     * @param assessor The assessment function
+     * @param start The starting cell
+     * @param end The ending cell
+     * @return The route
+     */
+    public static List<Cell> findRoute(
+        AStar.Assessor<Cell> assessor,
+        Cell start,
+        Cell end)
     {
         return AStar.findRoute(ASTAR_FRAME, assessor, start, end);
+    }
+
+    /**
+     * Finds the distance from start to end given the AStar assessment function.
+     * The distance will be Integer.MAX_VALUE if there's no way to get there.
+     * @param assessor The assessment function
+     * @param start The starting cell
+     * @param end The ending cell
+     * @return The distance
+     */
+    public static int distance(
+        AStar.Assessor<Cell> assessor,
+        Cell start,
+        Cell end)
+    {
+        var route = AStar.findRoute(ASTAR_FRAME, assessor, start, end);
+
+        return !route.isEmpty() ? route.size() : Integer.MAX_VALUE;
     }
 
     //-------------------------------------------------------------------------
     // Instance Variables
 
     // The resource string, for debugging.
-    private String resource;
+    protected String resource = null;
+
+    // The region's prefix, for keys.
+    protected String prefix;
 
     // The terrain tile set.
-    private TerrainTileSet terrainTileSet;
+    protected TerrainTileSet terrainTileSet;
 
-    // The Strings table
-    private StringsTable strings;
+    // The game info table
+    protected KeyDataTable info;
 
     // The tile size for this map.
-    private int tileHeight = 0;
-    private int tileWidth = 0;
+    protected int tileHeight = 0;
+    protected int tileWidth = 0;
 
     // The size of this map.
-    private int height = 0;
-    private int width = 0;
+    protected int height = 0;
+    protected int width = 0;
 
     // The Terrain List: The terrain tiles, in row major order, drawn
     // from the terrainTileSet to match the TiledMap's TERRAIN_LAYER.
-    private final ArrayList<TerrainTile> terrain = new ArrayList<>();
+    protected final ArrayList<TerrainTile> terrain = new ArrayList<>();
 
     // The Entities Table
-    private final EntityTable entities = new EntityTable();
+    protected final EntityTable entities = new EntityTable();
 
     //-------------------------------------------------------------------------
     // Constructor
 
-    public Region(Class<?> cls, String relPath) {
-        try {
-            loadData(cls, relPath);
-        } catch (KeywordParser.KeywordException ex) {
-            throw new ResourceException(cls, relPath, ex.getMessage());
-        } catch (ResourceException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new ResourceException(cls, relPath, ex);
-        }
+    public Region() {
+        // TODO: We'll add constructor arguments as needed.
     }
-
-    //-------------------------------------------------------------------------
-    // Data Loading
-
-    private void loadData(Class<?> cls, String relPath)
-        throws KeywordParser.KeywordException {
-        // FIRST, prepare to accumulate data.
-        this.resource = (relPath.startsWith("/"))
-            ? relPath : cls.getCanonicalName() + ":" + relPath;
-
-        // NEXT, parse the data.
-        var parser = new KeywordParser();
-
-        parser.defineKeyword("%terrain", (scanner, $) -> {
-            var filename = Resource.relativeTo(relPath, scanner.next());
-            terrainTileSet = new TerrainTileSet(cls, filename);
-        });
-        parser.defineKeyword("%strings", (scanner, $) -> {
-            var filename = Resource.relativeTo(relPath, scanner.next());
-            strings = new StringsTable(cls, filename);
-        });
-        parser.defineKeyword("%tilemap", (scanner, $) -> {
-            var filename = Resource.relativeTo(relPath, scanner.next());
-            readTiledMap(cls, filename);
-        });
-
-        parser.parse(Resource.getLines(cls, relPath));
-    }
-
-    // Populates the entities table given the content of the reader.
-    private void readTiledMap(Class<?> cls, String filename) {
-        TiledMapReader map = TiledMapReader.read(cls, filename);
-
-        this.width = map.width;
-        this.height = map.height;
-        this.tileHeight = map.tileheight;
-        this.tileWidth = map.tilewidth;
-
-        readTerrainLayer(map);
-        readFeaturesLayer(map);
-        readObjects(map);
-    }
-
-    private void readTerrainLayer(TiledMapReader map) {
-        Layer terrainLayer = map.tileLayer(TERRAIN_LAYER).orElseThrow();
-
-        terrain.ensureCapacity(terrainLayer.data.length);
-
-        for (int i = 0; i < terrainLayer.data.length; i++) {
-            // FIRST, Tiled numbers tiles from 1 to N; we use 0 to N-1.
-            // TODO: Base this on the layer's firstgid.
-            int tileIndex = terrainLayer.data[i] - 1;
-
-            // Skip empty tiles.
-            if (tileIndex < 0) {
-                continue;
-            }
-
-            // Save the tile to the terrain list.
-            TerrainTile tile = terrainTileSet.get(tileIndex);
-            terrain.add(tile);
-        }
-    }
-
-    private void readFeaturesLayer(TiledMapReader map) {
-        Layer layer = map.tileLayer(FEATURES_LAYER).orElse(null);
-
-        if (layer == null) {
-            return;
-        }
-
-        for (int i = 0; i < layer.data.length; i++) {
-            // FIRST, get the row, column, and tile set index.
-            // Tiled numbers tiles from 1 to N; we use 0 to N-1.
-            int r = i / map.height;
-            int c = i % map.width;
-            int tileIndex = layer.data[i] - 1;
-
-            // Skip empty tiles.
-            if (tileIndex < 0) {
-                continue;
-            }
-
-            // NEXT, create the feature with its type, sprite, and cell.
-            TerrainTile tile = terrainTileSet.get(tileIndex);
-
-            Entity feature = entities.make()
-                .feature(tile.type())
-                .sprite(tile)
-                .cell(r, c);
-
-            // NEXT, Handle special cases.
-            //
-            // I'm not entirely happy about this convention, but it works well
-            // enough for the majority of doors in a region.  We will also want
-            // to have "door" objects allowed in Tiled object groups.
-            var closed = prefix() + ".closed_door";
-            var open = prefix() + ".open_door";
-
-            if (tile.name().equals(closed)) {
-                feature.put(new Door(DoorState.CLOSED, tile.type(), closed, open));
-            } else if (tile.name().equals(open)) {
-                feature.put(new Door(DoorState.OPEN, tile.type(), closed, open));
-            }
-        }
-    }
-
-    private void readObjects(TiledMapReader map) {
-        for (Layer layer : map.layers()) {
-            if (!layer.type.equals(TiledMapReader.OBJECT_GROUP)) {
-                continue;
-            }
-
-            for (TiledMapReader.MapObject obj : layer.objects()) {
-                Cell cell = object2cell(obj);
-
-                switch (obj.type) {
-                    // An exit to another region
-                    case EXIT_OBJECT -> entities.make()
-                        .put(makeExit(obj.name))
-                        .cell(object2cell(obj));
-
-                    // An NPC who just stands and talks when you poke him.
-                    case MANNIKIN_OBJECT -> entities.make()
-                        .put(new Mannikin(obj.name))
-                        .feature(TerrainType.FENCE)
-                        .sprite(obj.getProperty("sprite"))
-                        .cell(object2cell(obj));
-
-                    // A point to which the player can be warped
-                    case POINT_OBJECT -> entities.make()
-                        .point(obj.name)
-                        .cell(object2cell(obj));
-
-                    // A sign you can read
-                    case SIGN_OBJECT ->
-                        // TODO: Allow tile to be set from properties.
-                        entities.make()
-                            .feature(TerrainType.NONE)
-                            .sign(obj.name)
-                            .sprite(Sprites.ALL.getInfo("feature.sign"))
-                            .cell(object2cell(obj));
-
-                    default -> { }
-                }
-            }
-        }
-    }
-
-    // Converts a "{regionName}:{pointName}" string into an Exit.
-    private Exit makeExit(String regionPoint) {
-        String[] tokens = regionPoint.split(":");
-
-        if (tokens.length == 2) {
-            return new Exit(tokens[0], tokens[1]);
-        } else if (tokens.length == 1) {
-            return new Exit(null, regionPoint);
-        } else {
-            throw new IllegalArgumentException("Invalid Exit name: \"" +
-                regionPoint + "\"");
-        }
-    }
-
-    // Get the cell corresponding to the MapObject's x/y coordinate.
-    //
-    // For normal objects, we assume that the x,y coordinate is the
-    // pixel coordinate of the upper left corner of the cell.
-    private Cell object2cell(TiledMapReader.MapObject object) {
-        return new Cell(object.y / tileHeight, object.x / tileWidth);
-    }
-
 
     //-------------------------------------------------------------------------
     // Public Methods
@@ -441,20 +278,34 @@ public class Region {
     }
 
     /**
-     * Gets the string, which must exist.
-     * @param name The string's name in the table
-     * @return The string we found.
+     * Gets an info parameter, which must exist.
+     * @param key The parameter's key
+     * @return The value we found.
      */
-    public String getString(String name) {
-        return strings.get(name).orElseThrow();
+    public String getInfo(String key) {
+        return info.get(key).orElseThrow(() ->
+            new IllegalArgumentException("Unknown info key: " + key));
     }
 
     /**
-     * Get the entire strings table.
+     * Gets the info parameter for an object, which must exist, e.g.,
+     * the value "{key}.{suffix}"
+     * @param key The object's key
+     * @param suffix The value's suffix
+     * @return The value we found.
+     */
+    public String getInfo(String key, String suffix) {
+        return info.get(key, suffix).orElseThrow(() ->
+            new IllegalArgumentException(
+                "Unknown info key: " + key + "." + suffix));
+    }
+
+    /**
+     * Get the entire info table.
      * @return The table.
      */
-    public StringsTable strings() {
-        return strings;
+    public KeyDataTable info() {
+        return info;
     }
 
     /**
@@ -472,20 +323,20 @@ public class Region {
      * @return The string
      */
     public String describe(Cell cell) {
-        // TODO: Need descriptive text!
         var mobile = findAt(cell, Mobile.class);
 
         if (mobile.isPresent()) {
-            return "You see: " + mobile.get().mobile().name();
+            return "You see: " + mobile.get().label().text();
         }
 
-        var feature = findAt(cell, Feature.class, Sprite.class);
+        var feature = findAt(cell, Feature.class);
 
         if (feature.isPresent()) {
-            return "You see: " + feature.get().sprite().name();
+            return "You see: " + feature.get().label().text();
         }
 
         var tile = getTerrain(cell);
         return "You see: " + tile.description();
     }
+
 }

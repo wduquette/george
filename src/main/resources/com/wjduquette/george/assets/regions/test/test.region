@@ -1,6 +1,7 @@
 # Test region definition file
 
 # The %tilemap must go last.
+%prefix test
 %terrain test.terrain
-%strings test.strings
+%info test.keydata
 %tilemap test.json

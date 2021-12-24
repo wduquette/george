@@ -9,15 +9,16 @@ import com.wjduquette.george.ecs.Exit;
  */
 public sealed interface Interrupt {
     /**
-     * Used to just wait for a click.
+     * Wait for a click before proceeding.
      */
     public record WaitForInput() implements Interrupt {}
 
     /**
-     * Displays a description of a feature in a box over the map.
+     * Interact with the given entity in a way appropriate for its kind.
+     * E.g., for signs, display the sign's text in a box.
      * @param id The feature's entity ID
      */
-    public record DescribeFeature(long id) implements Interrupt {}
+    public record Interact(long id) implements Interrupt {}
 
     /**
      * Move the party to the given point in the given region.

@@ -13,6 +13,7 @@ import javafx.geometry.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -115,8 +116,11 @@ public class GameView extends StackPane {
         }
 
         if (selected.contains(Button.POINTER)) {
-            var input = new UserInput.CellClick(cell);
-            fireEvent(new UserInputEvent(input));
+            if (evt.getButton().equals(MouseButton.PRIMARY)) {
+                fireInputEvent(new UserInput.MoveTo(cell));
+            } else if (evt.getButton().equals(MouseButton.SECONDARY)) {
+                fireInputEvent(new UserInput.InteractWith(cell));
+            }
         } else if (selected.contains(Button.MAGNIFIER)) {
             region.log(region.describe(cell));
         }
@@ -167,21 +171,17 @@ public class GameView extends StackPane {
         var entity = region.get(id);
 
         if (entity.sign() != null) {
-            var signName = entity.sign().name();
-            var text = region.getString(signName);
+            var key = entity.sign().key();
+            var text = region.getInfo(key, "text");
 
             displayTextBlock(entity, text);
         } else if (entity.mannikin() != null) {
-            var name = entity.mannikin().name();
+            var key = entity.mannikin().key();
             StringBuilder buff = new StringBuilder();
-            buff.append(region.getString(name + ".name")).append("\n\n");
-            buff.append(region.getString(name + ".description")).append("\n\n");
+            buff.append(region.getInfo(key, "label")).append("\n\n");
+            buff.append(region.getInfo(key, "description")).append("\n\n");
 
-            List<String> greetings = region.strings().keyList().stream()
-                .filter(key -> key.startsWith(name + ".greeting"))
-                .map(key -> region.strings().get(key).orElseThrow())
-                .toList();
-
+            List<String> greetings = region.info().values(key + ".greeting*");
             buff.append(random.pickFrom(greetings));
 
             displayTextBlock(entity, buff.toString());
