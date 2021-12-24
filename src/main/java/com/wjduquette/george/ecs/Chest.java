@@ -55,9 +55,9 @@ public record Chest(
      */
     public Label label() {
         if (isClosed()) {
-            return new Label("chest");
+            return new Label("Chest");
         } else {
-            return new Label("open chest");
+            return new Label("Open chest");
         }
     }
 
