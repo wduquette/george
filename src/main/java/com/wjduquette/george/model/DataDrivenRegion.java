@@ -36,6 +36,7 @@ public class DataDrivenRegion extends Region {
     private static final String FEATURES_LAYER = "Features";
 
     // Object type strings
+    private static final String CHEST_OBJECT = "Chest";
     private static final String EXIT_OBJECT = "Exit";
     private static final String MANNIKIN_OBJECT = "Mannikin";
     private static final String POINT_OBJECT = "Point";
@@ -185,6 +186,15 @@ public class DataDrivenRegion extends Region {
                 var key = prefix + "." + obj.name;
 
                 switch (obj.type) {
+                    // A chest
+                    case CHEST_OBJECT -> entities.make()
+                        .cell(object2cell(obj))
+                        .tagAsFeature()
+                        .put(new Chest(key))
+                        .label("chest")          // Get from info, if present
+                        .sprite("feature.chest") // Get from info, if present
+                        .terrain(TerrainType.FENCE);
+
                     // An exit to another region
                     case EXIT_OBJECT -> entities.make()
                         .put(makeExit(obj.name))
@@ -210,7 +220,7 @@ public class DataDrivenRegion extends Region {
                             .tagAsFeature()
                             .label("sign")
                             .sign(key)
-                            .sprite(getInfo(key + ".sprite"))
+                            .sprite(getInfo(key, "sprite"))
                             .cell(object2cell(obj));
 
                     default -> { }
