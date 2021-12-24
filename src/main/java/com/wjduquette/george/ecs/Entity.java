@@ -190,6 +190,7 @@ public class Entity {
     public LogMessage logMessage() { return components.get(LogMessage.class); }
     public Mannikin   mannikin()   { return components.get(Mannikin.class); }
     public Mobile     mobile()     { return components.get(Mobile.class); }
+    public Owner      owner()      { return components.get(Owner.class); }
     public Plan       plan()       { return components.get(Plan.class); }
     public Player     player()     { return components.get(Player.class); }
     public Point      point()      { return components.get(Point.class); }
@@ -237,6 +238,7 @@ public class Entity {
     public Entity label(String text) { return put(new Label(text)); }
     public Entity mannikin(String key) { return put(new Mannikin(key)); }
     public Entity mobile(String key) { return put(new Mobile(key)); }
+    public Entity owner(long ownerId) { return put(new Owner(ownerId)); }
     public Entity point(String name) { return put(new Point(name)); }
     public Entity sign(String text) { put(new Sign(text)); return this; }
     public Entity sprite(String name) { return put(new Sprite(name)); }
