@@ -1,8 +1,6 @@
 package com.wjduquette.george.regions;
 
 import com.wjduquette.george.App;
-import com.wjduquette.george.ecs.Chest;
-import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.model.DataDrivenRegion;
 import com.wjduquette.george.tmx.TiledMapReader;
 

@@ -226,8 +226,8 @@ public class DataDrivenRegion extends Region {
     /**
      * Gets the cell corresponding to the MapObject's x/y coordinate.
      *
-     * @param object
-     * @return
+     * @param object The map object
+     * @return The cell
      */
     protected Cell object2cell(TiledMapReader.MapObject object) {
         return new Cell(object.y / tileHeight, object.x / tileWidth);
