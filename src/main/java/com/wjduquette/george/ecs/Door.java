@@ -1,6 +1,6 @@
 package com.wjduquette.george.ecs;
 
-import com.wjduquette.george.model.DoorState;
+import com.wjduquette.george.model.Opening;
 import com.wjduquette.george.model.TerrainType;
 
 /**
@@ -15,7 +15,7 @@ import com.wjduquette.george.model.TerrainType;
  * @param openSprite The name of the sprite to display when open.
  */
 public record Door(
-    DoorState state,
+    Opening state,
     TerrainType closedTerrain,
     String closedSprite,
     String openSprite
@@ -25,7 +25,7 @@ public record Door(
      * @return The modified door.
      */
     public Door open() {
-        return new Door(DoorState.OPEN, closedTerrain, closedSprite, openSprite);
+        return new Door(Opening.OPEN, closedTerrain, closedSprite, openSprite);
     }
 
     /**
@@ -33,7 +33,7 @@ public record Door(
      * @return The modified door.
      */
     public Door close() {
-        return new Door(DoorState.CLOSED, closedTerrain, closedSprite, openSprite);
+        return new Door(Opening.CLOSED, closedTerrain, closedSprite, openSprite);
     }
 
     /**
@@ -41,7 +41,7 @@ public record Door(
      * @return true or false
      */
     public boolean isOpen() {
-        return state == DoorState.OPEN;
+        return state == Opening.OPEN;
     }
 
     /**
@@ -49,7 +49,7 @@ public record Door(
      * @return true or false
      */
     public boolean isClosed() {
-        return state == DoorState.CLOSED;
+        return state == Opening.CLOSED;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.wjduquette.george.model;
 
+import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.TerrainTileSet;
 import com.wjduquette.george.util.AStar;
@@ -83,6 +84,9 @@ public abstract class Region {
     //-------------------------------------------------------------------------
     // Instance Variables
 
+    // The application, for application resources.
+    protected App app;
+
     // The resource string, for debugging.
     protected String resource = null;
 
@@ -113,8 +117,8 @@ public abstract class Region {
     //-------------------------------------------------------------------------
     // Constructor
 
-    public Region() {
-        // TODO: We'll add constructor arguments as needed.
+    public Region(App app) {
+        this.app = app;
     }
 
     //-------------------------------------------------------------------------
@@ -339,4 +343,78 @@ public abstract class Region {
         return "You see: " + tile.description();
     }
 
+    //-------------------------------------------------------------------------
+    // Entity Factories
+
+    /**
+     * Makes a standard chest entity, given the key.  The entity has no
+     * Loc.
+     * @param key The key
+     * @return The entity
+     */
+    public Entity makeChest(String key) {
+        var chest = new Chest(key, Opening.CLOSED,
+            "feature.chest", "feature.open_chest");
+        return new Entity()
+            .tagAsFeature()
+            .chest(chest)
+            .terrain(TerrainType.FENCE);
+    }
+
+    /**
+     * Makes a standard Exit entity, converting a "{regionName}:{pointName}"
+     * string.  The entity has no Loc.
+     * @param regionPoint
+     * @return The entity
+     */
+    public Entity makeExit(String regionPoint) {
+        String[] tokens = regionPoint.split(":");
+
+        if (tokens.length == 2) {
+            return new Entity().exit(tokens[0], tokens[1]);
+        } else if (tokens.length == 1) {
+            return new Entity().exit(null, regionPoint);
+        } else {
+            throw new IllegalArgumentException("Invalid Exit name: \"" +
+                regionPoint + "\"");
+        }
+    }
+
+    /**
+     * Makes a standard Mannikin entity, getting its details from the
+     * info table. The entity has no Loc.
+     * @param key The mannikin's info key
+     * @return The entity
+     */
+    public Entity makeMannikin(String key) {
+        return new Entity()
+            .tagAsFeature()
+            .mannikin(key)
+            .label(getInfo(key, "label"))
+            .sprite(getInfo(key, "sprite"))
+            .terrain(TerrainType.FENCE);
+    }
+
+    /**
+     * Makes a standard Point entity. The entity has no Loc.
+     * @param name The Point's name.
+     * @return The entity
+     */
+    public Entity makePoint(String name) {
+        return new Entity().point(name);
+    }
+
+    /**
+     * Makes a standard Sign entity, getting its details from the
+     * info table. The entity has no Loc.
+     * @param key The sign's info key
+     * @return The entity
+     */
+    public Entity makeSign(String key) {
+        return new Entity()
+            .tagAsFeature()
+            .sign(key)
+            .label("sign")
+            .sprite(getInfo(key, "sprite"));
+    }
 }

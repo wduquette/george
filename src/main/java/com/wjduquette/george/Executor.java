@@ -1,9 +1,6 @@
 package com.wjduquette.george;
 
-import com.wjduquette.george.ecs.Entity;
-import com.wjduquette.george.ecs.Mobile;
-import com.wjduquette.george.ecs.Plan;
-import com.wjduquette.george.ecs.VisualEffect;
+import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.model.*;
 
 import java.util.List;
@@ -96,7 +93,7 @@ public class Executor {
                         throw new InterruptException(
                             new Interrupt.GoToRegion(feature.exit()));
                     } else {
-                        App.println("Exit is blocked.");
+                        region.log("The way is blocked.");
                         return Result.HALT;
                     }
                 } else {
@@ -104,19 +101,36 @@ public class Executor {
                 }
             }
 
-            case Step.Open goal: {
-                var that = region.get(goal.id());
+            case Step.OpenChest chest: {
+                region.get(chest.id()).openChest();
+                var contents = region.query(Item.class, Owner.class)
+                    .filter(e -> e.owner().ownerId() == chest.id())
+                    .toList();
 
-                // TODO: handle chests as well
-                that.openDoor();
+                if (contents.isEmpty()) {
+                    region.log("The chest is empty.");
+                } else {
+                    // Give the contents to the owner
+                    for (var e : contents) {
+                        e.owner(mob.id());
+                        region.log("You got: " + e.label().text());
+                    }
+                }
                 return Result.DO_NEXT;
             }
 
-            case Step.Close goal: {
-                var that = region.get(goal.id());
+            case Step.CloseChest chest: {
+                region.get(chest.id()).closeChest();
+                return Result.DO_NEXT;
+            }
 
-                // TODO: handle chests as well
-                that.closeDoor();
+            case Step.OpenDoor door: {
+                region.get(door.id()).openDoor();
+                return Result.DO_NEXT;
+            }
+
+            case Step.CloseDoor door: {
+                region.get(door.id()).closeDoor();
                 return Result.DO_NEXT;
             }
 

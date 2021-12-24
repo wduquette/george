@@ -1,0 +1,11 @@
+# Items Definitions
+
+# scroll.mapping
+%string scroll.mapping.type scroll_of_mapping
+%string scroll.mapping.label Scroll of Magic Mapping
+%string scroll.mapping.sprite item.map_scroll
+
+# vial.healing
+%string vial.healing.type vial_of_healing
+%string vial.healing.label Vial of Healing
+%string vial.healing.sprite item.red_vial

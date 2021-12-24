@@ -1,6 +1,5 @@
 package com.wjduquette.george;
 
-import com.wjduquette.george.ecs.Door;
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.LogMessage;
 import com.wjduquette.george.ecs.VisualEffect;
