@@ -1,5 +1,6 @@
 package com.wjduquette.george.model;
 
+import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.TerrainTileSet;
 import com.wjduquette.george.util.AStar;
@@ -83,6 +84,9 @@ public abstract class Region {
     //-------------------------------------------------------------------------
     // Instance Variables
 
+    // The application, for application resources.
+    protected App app;
+
     // The resource string, for debugging.
     protected String resource = null;
 
@@ -113,8 +117,8 @@ public abstract class Region {
     //-------------------------------------------------------------------------
     // Constructor
 
-    public Region() {
-        // TODO: We'll add constructor arguments as needed.
+    public Region(App app) {
+        this.app = app;
     }
 
     //-------------------------------------------------------------------------

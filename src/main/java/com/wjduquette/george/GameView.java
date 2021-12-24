@@ -35,7 +35,7 @@ public class GameView extends StackPane {
         SCROLL("button.scroll"),
         MAP("button.map");
 
-        private String sprite;
+        private final String sprite;
 
         Button(String sprite) {
             this.sprite = sprite;
@@ -460,18 +460,15 @@ public class GameView extends StackPane {
 
     private void buttonClick(Button btn) {
         switch (btn) {
-            case POINTER:
+            case POINTER -> {
                 selected.remove(Button.MAGNIFIER);
                 selected.add(Button.POINTER);
-                break;
-            case MAGNIFIER:
+            }
+            case MAGNIFIER -> {
                 selected.remove(Button.POINTER);
                 selected.add(Button.MAGNIFIER);
-                break;
-            default:
-                region.log("TODO: " + btn);
-                break;
+            }
+            default -> region.log("TODO: " + btn);
         }
     }
-
 }

@@ -2,6 +2,7 @@ package com.wjduquette.george.ecs;
 
 import com.wjduquette.george.graphics.ImageInfo;
 import com.wjduquette.george.model.Cell;
+import com.wjduquette.george.model.Items;
 import com.wjduquette.george.model.TerrainType;
 import com.wjduquette.george.util.TypeMap;
 
@@ -234,7 +235,7 @@ public class Entity {
     public Entity tagAsPlayer() { return put(new Player()); }
 
     public Entity exit(String region, String point) { return put(new Exit(region, point)); }
-    public Entity item(String key) { return put(new Item(key)); }
+    public Entity item(String key, Items.Type type) { return put(new Item(key, type)); }
     public Entity label(String text) { return put(new Label(text)); }
     public Entity mannikin(String key) { return put(new Mannikin(key)); }
     public Entity mobile(String key) { return put(new Mobile(key)); }

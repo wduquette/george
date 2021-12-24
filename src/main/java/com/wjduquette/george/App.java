@@ -2,6 +2,7 @@ package com.wjduquette.george;
 
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.ecs.*;
+import com.wjduquette.george.regions.FloobhamRegion;
 import com.wjduquette.george.util.Looper;
 import com.wjduquette.george.widgets.Debugger;
 import com.wjduquette.george.widgets.UserInput;
@@ -38,6 +39,9 @@ public class App extends Application {
     private final Map<String, Supplier<Region>> regionFactories =
         new HashMap<>();
 
+    // The items lookup table
+    private Items items;
+
     // A lookup table for regions by name
     private final Map<String,Region> regions = new HashMap<>();
 
@@ -61,7 +65,9 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
+        // Set up global resources
         populateRegionFactories();
+        items = new Items(getClass(), "assets/items.keydata");
 
         // TEMP
 //        region = getRegion("test");
@@ -267,15 +273,15 @@ public class App extends Application {
 
     private void populateRegionFactories() {
         regionFactories.put("test",
-            () -> new DataDrivenRegion(getClass(),
+            () -> new DataDrivenRegion(this, getClass(),
                 "assets/regions/test/test.region")
         );
         regionFactories.put("overworld",
-            () -> new DataDrivenRegion(getClass(),
+            () -> new DataDrivenRegion(this, getClass(),
                 "assets/regions/overworld/overworld.region")
         );
         regionFactories.put("floobham",
-            () -> new DataDrivenRegion(getClass(),
+            () -> new FloobhamRegion(this, getClass(),
                 "assets/regions/floobham/floobham.region")
         );
     }
@@ -290,6 +296,17 @@ public class App extends Application {
         }
 
         return region;
+    }
+
+    //-------------------------------------------------------------------------
+    // Items
+
+    /**
+     * Gets the items table.
+     * @return The table
+     */
+    public Items items() {
+        return items;
     }
 
     //-------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 package com.wjduquette.george.model;
 
+import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.TerrainTileSet;
 import com.wjduquette.george.tmx.TiledMapReader;
@@ -36,17 +37,17 @@ public class DataDrivenRegion extends Region {
     private static final String FEATURES_LAYER = "Features";
 
     // Object type strings
-    private static final String CHEST = "Chest";
-    private static final String EXIT = "Exit";
-    private static final String MANNIKIN = "Mannikin";
-    private static final String POINT = "Point";
-    private static final String SIGN = "Sign";
+    public static final String CHEST = "Chest";
+    public static final String EXIT = "Exit";
+    public static final String MANNIKIN = "Mannikin";
+    public static final String POINT = "Point";
+    public static final String SIGN = "Sign";
 
     //-------------------------------------------------------------------------
     // Constructor
 
-    public DataDrivenRegion(Class<?> cls, String relPath) {
-        super();
+    public DataDrivenRegion(App app, Class<?> cls, String relPath) {
+        super(app);
 
         try {
             loadData(cls, relPath);
@@ -187,21 +188,21 @@ public class DataDrivenRegion extends Region {
                 var cell = object2cell(obj);
 
                 // FIRST, see if a subclass wants to handle it.
-                var entity = handleObject(key, obj);
-
-                // NEXT, if not handle it in the standard way.
-                if (entity == null) {
-                    entity = switch (obj.type) {
-                        case CHEST    -> makeChest(key).cell(cell);
-                        case EXIT     -> makeExit(obj.name).cell(cell);
-                        case MANNIKIN -> makeMannikin(key).cell(cell);
-                        case POINT    -> makePoint(obj.name).cell(cell);
-                        case SIGN     -> makeSign(key).cell(cell);
-                        default -> null;
-                    };
+                if (handleObject(key, obj)) {
+                    continue;
                 }
 
-                // NEXT, if we used the object, save it.
+                // NEXT, if not handle it in the standard way.
+                var entity = switch (obj.type) {
+                    case CHEST    -> makeChest(key).cell(cell);
+                    case EXIT     -> makeExit(obj.name).cell(cell);
+                    case MANNIKIN -> makeMannikin(key).cell(cell);
+                    case POINT    -> makePoint(obj.name).cell(cell);
+                    case SIGN     -> makeSign(key).cell(cell);
+                    default -> null;
+                };
+
+                // NEXT, save the entity, if any
                 if (entity != null) {
                     entities.add(entity);
                 }
@@ -214,11 +215,11 @@ public class DataDrivenRegion extends Region {
      * @param key The info key
      * @param obj The map object
      */
-    protected Entity handleObject(
+    protected boolean handleObject(
         String key,
         TiledMapReader.MapObject obj)
     {
-        return null;
+        return false;
     }
 
 
