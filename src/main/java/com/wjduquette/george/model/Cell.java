@@ -77,6 +77,14 @@ public record Cell(int row, int col) {
         return neighbors;
     }
 
+    /**
+     * Gets a simple "row,col" string for the cell.
+     * @return The string
+     */
+    public String displayString() {
+        return row + "," + col;
+    }
+
     //-------------------------------------------------------------------------
     // Object Methods
 

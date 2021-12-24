@@ -129,10 +129,15 @@ public class Debugger extends StackPane {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         idColumn.setPrefWidth(80);
 
+        TableColumn<EntityProxy,String> cellColumn = new TableColumn<>("Cell");
+        cellColumn.setCellValueFactory(new PropertyValueFactory<>("cell"));
+        cellColumn.setPrefWidth(80);
+
         TableColumn<EntityProxy,String> textColumn = new TableColumn<>("Detail");
         textColumn.setCellValueFactory(new PropertyValueFactory<>("text"));
         textColumn.setPrefWidth(2000);
         entitiesView.getColumns().add(idColumn);
+        entitiesView.getColumns().add(cellColumn);
         entitiesView.getColumns().add(textColumn);
 
         // entityContextMenu
@@ -260,8 +265,7 @@ public class Debugger extends StackPane {
 
         // Display George's location
         var player = region.query(Player.class).findFirst().orElseThrow();
-        playerCellLabel.setText(
-            "@(" + player.cell().row() + "," + player.cell().col() + ")");
+        playerCellLabel.setText(player.cell().displayString());
 
         // Populate the entities table
         var proxy = entitiesView.getSelectionModel().getSelectedItem();
@@ -291,13 +295,18 @@ public class Debugger extends StackPane {
     public static class EntityProxy {
         private final String id;
         private final String text;
+        private final String cell;
 
         EntityProxy(Entity entity) {
             this.id = String.format("%04d", entity.id());
             this.text = entity.componentString().replaceAll("\\s+", " ");
+            this.cell = entity.cell() != null
+                ? entity.cell().displayString()
+                : "--,--";
         }
 
         public String getId() { return id; }
         public String getText() { return text; }
+        public String getCell() { return cell; }
     }
 }
