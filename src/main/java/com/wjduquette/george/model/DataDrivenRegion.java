@@ -36,11 +36,11 @@ public class DataDrivenRegion extends Region {
     private static final String FEATURES_LAYER = "Features";
 
     // Object type strings
-    private static final String CHEST_OBJECT = "Chest";
-    private static final String EXIT_OBJECT = "Exit";
-    private static final String MANNIKIN_OBJECT = "Mannikin";
-    private static final String POINT_OBJECT = "Point";
-    private static final String SIGN_OBJECT = "Sign";
+    private static final String CHEST = "Chest";
+    private static final String EXIT = "Exit";
+    private static final String MANNIKIN = "Mannikin";
+    private static final String POINT = "Point";
+    private static final String SIGN = "Sign";
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -166,10 +166,10 @@ public class DataDrivenRegion extends Region {
             var open = prefix() + ".open_door";
 
             if (tile.name().equals(closed)) {
-                var door = new Door(DoorState.CLOSED, tile.type(), closed, open);
+                var door = new Door(Opening.CLOSED, tile.type(), closed, open);
                 feature.door(door);
             } else if (tile.name().equals(open)) {
-                var door = new Door(DoorState.OPEN, tile.type(), closed, open);
+                var door = new Door(Opening.OPEN, tile.type(), closed, open);
                 feature.door(door);
             }
         }
@@ -184,64 +184,20 @@ public class DataDrivenRegion extends Region {
             for (TiledMapReader.MapObject obj : layer.objects()) {
                 // For those objects whose name is an info key.
                 var key = prefix + "." + obj.name;
+                var cell = object2cell(obj);
 
                 switch (obj.type) {
-                    // A chest
-                    case CHEST_OBJECT -> entities.make()
-                        .cell(object2cell(obj))
-                        .tagAsFeature()
-                        .put(new Chest(key))
-                        .label("chest")          // Get from info, if present
-                        .sprite("feature.chest") // Get from info, if present
-                        .terrain(TerrainType.FENCE);
-
-                    // An exit to another region
-                    case EXIT_OBJECT -> entities.make()
-                        .put(makeExit(obj.name))
-                        .cell(object2cell(obj));
-
-                    // An NPC who just stands and talks when you poke him.
-                    case MANNIKIN_OBJECT -> entities.make()
-                        .tagAsFeature()
-                        .put(new Mannikin(key))
-                        .label(getInfo(key, "label"))
-                        .sprite(getInfo(key, "sprite"))
-                        .terrain(TerrainType.FENCE)
-                        .cell(object2cell(obj));
-
-                    // A point to which the player can be warped
-                    case POINT_OBJECT -> entities.make()
-                        .point(obj.name)
-                        .cell(object2cell(obj));
-
-                    // A sign you can read
-                    case SIGN_OBJECT ->
-                        entities.make()
-                            .tagAsFeature()
-                            .label("sign")
-                            .sign(key)
-                            .sprite(getInfo(key, "sprite"))
-                            .cell(object2cell(obj));
-
+                    case CHEST    -> makeChest(key).cell(cell);
+                    case EXIT     -> makeExit(obj.name).cell(cell);
+                    case MANNIKIN -> makeMannikin(key).cell(cell);
+                    case POINT    -> makePoint(obj.name).cell(cell);
+                    case SIGN     -> makeSign(key).cell(cell);
                     default -> { }
                 }
             }
         }
     }
 
-    // Converts a "{regionName}:{pointName}" string into an Exit.
-    private Exit makeExit(String regionPoint) {
-        String[] tokens = regionPoint.split(":");
-
-        if (tokens.length == 2) {
-            return new Exit(tokens[0], tokens[1]);
-        } else if (tokens.length == 1) {
-            return new Exit(null, regionPoint);
-        } else {
-            throw new IllegalArgumentException("Invalid Exit name: \"" +
-                regionPoint + "\"");
-        }
-    }
 
     // Get the cell corresponding to the MapObject's x/y coordinate.
     //

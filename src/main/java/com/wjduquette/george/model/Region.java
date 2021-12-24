@@ -339,4 +339,78 @@ public abstract class Region {
         return "You see: " + tile.description();
     }
 
+    //-------------------------------------------------------------------------
+    // Entity Factories
+
+    /**
+     * Makes a standard chest entity, given the key.  The entity has no
+     * Loc.
+     * @param key The key
+     * @return The entity
+     */
+    public Entity makeChest(String key) {
+        var chest = new Chest(key, Opening.CLOSED,
+            "feature.chest", "feature.open_chest");
+        return entities.make()
+            .tagAsFeature()
+            .chest(chest)
+            .terrain(TerrainType.FENCE);
+    }
+
+    /**
+     * Makes a standard Exit entity, converting a "{regionName}:{pointName}"
+     * string.  The entity has no Loc.
+     * @param regionPoint
+     * @return The entity
+     */
+    public Entity makeExit(String regionPoint) {
+        String[] tokens = regionPoint.split(":");
+
+        if (tokens.length == 2) {
+            return entities.make().exit(tokens[0], tokens[1]);
+        } else if (tokens.length == 1) {
+            return entities.make().exit(null, regionPoint);
+        } else {
+            throw new IllegalArgumentException("Invalid Exit name: \"" +
+                regionPoint + "\"");
+        }
+    }
+
+    /**
+     * Makes a standard Mannikin entity, getting its details from the
+     * info table. The entity has no Loc.
+     * @param key The mannikin's info key
+     * @return The entity
+     */
+    public Entity makeMannikin(String key) {
+        return entities.make()
+            .tagAsFeature()
+            .mannikin(key)
+            .label(getInfo(key, "label"))
+            .sprite(getInfo(key, "sprite"))
+            .terrain(TerrainType.FENCE);
+    }
+
+    /**
+     * Makes a standard Point entity. The entity has no Loc.
+     * @param name The Point's name.
+     * @return The entity
+     */
+    public Entity makePoint(String name) {
+        return entities.make().point(name);
+    }
+
+    /**
+     * Makes a standard Sign entity, getting its details from the
+     * info table. The entity has no Loc.
+     * @param key The sign's info key
+     * @return The entity
+     */
+    public Entity makeSign(String key) {
+        return entities.make()
+            .tagAsFeature()
+            .sign(key)
+            .label("sign")
+            .sprite(getInfo(key, "sprite"));
+    }
 }

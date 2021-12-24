@@ -179,6 +179,8 @@ public class Entity {
     // There is one for each defined component class. Each returns the
     // component, throwing an error if it doesn't exist.
 
+
+    public Chest      chest()      { return components.get(Chest.class); }
     public Door       door()       { return components.get(Door.class); }
     public Exit       exit()       { return components.get(Exit.class); }
     public Feature    feature()    { return components.get(Feature.class); }
@@ -233,6 +235,7 @@ public class Entity {
     public Entity exit(String region, String point) { return put(new Exit(region, point)); }
     public Entity item(String key) { return put(new Item(key)); }
     public Entity label(String text) { return put(new Label(text)); }
+    public Entity mannikin(String key) { return put(new Mannikin(key)); }
     public Entity mobile(String key) { return put(new Mobile(key)); }
     public Entity point(String name) { return put(new Point(name)); }
     public Entity sign(String text) { put(new Sign(text)); return this; }
@@ -257,6 +260,18 @@ public class Entity {
     public Entity cell(int row, int col) { return put(Loc.of(new Cell(row, col))); }
 
     /**
+     * Adds the chest, and updates the entity's label and sprite according to
+     * the chest's state.
+     * @param chest The chest component
+     * @return The entity
+     */
+    public Entity chest(Chest chest) {
+        return put(chest)
+            .put(chest.label())
+            .put(chest.sprite());
+    }
+
+    /**
      * Adds the door and updates the entity's label, sprite, and terrain
      * according to the door's state.
      * @param door The door
@@ -272,6 +287,19 @@ public class Entity {
 
     //-------------------------------------------------------------------------
     // Entity Operations
+
+    /**
+     * Sets the entity's chest's state to DoorState.OPEN, updating relevant
+     * components.
+     * @return The entity.
+     */
+    public Entity openChest() { return chest(chest().open()); }
+
+    /**
+     * Sets the entity's chest's state to DoorState.CLOSED, updating relevant
+     * @return The entity.
+     */
+    public Entity closeChest() { return chest(chest().close()); }
 
     /**
      * Sets the entity's door's state to DoorState.OPEN, updating relevant
