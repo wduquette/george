@@ -186,15 +186,22 @@ public class DataDrivenRegion extends Region {
                 var key = prefix + "." + obj.name;
                 var cell = object2cell(obj);
 
-                var entity = switch (obj.type) {
-                    case CHEST    -> makeChest(key).cell(cell);
-                    case EXIT     -> makeExit(obj.name).cell(cell);
-                    case MANNIKIN -> makeMannikin(key).cell(cell);
-                    case POINT    -> makePoint(obj.name).cell(cell);
-                    case SIGN     -> makeSign(key).cell(cell);
-                    default -> null;
-                };
+                // FIRST, see if a subclass wants to handle it.
+                var entity = handleObject(key, obj);
 
+                // NEXT, if not handle it in the standard way.
+                if (entity == null) {
+                    entity = switch (obj.type) {
+                        case CHEST    -> makeChest(key).cell(cell);
+                        case EXIT     -> makeExit(obj.name).cell(cell);
+                        case MANNIKIN -> makeMannikin(key).cell(cell);
+                        case POINT    -> makePoint(obj.name).cell(cell);
+                        case SIGN     -> makeSign(key).cell(cell);
+                        default -> null;
+                    };
+                }
+
+                // NEXT, if we used the object, save it.
                 if (entity != null) {
                     entities.add(entity);
                 }
@@ -202,12 +209,26 @@ public class DataDrivenRegion extends Region {
         }
     }
 
+    /**
+     * Subclasses can override to handle special cases.
+     * @param key The info key
+     * @param obj The map object
+     */
+    protected Entity handleObject(
+        String key,
+        TiledMapReader.MapObject obj)
+    {
+        return null;
+    }
 
-    // Get the cell corresponding to the MapObject's x/y coordinate.
-    //
-    // For normal objects, we assume that the x,y coordinate is the
-    // pixel coordinate of the upper left corner of the cell.
-    private Cell object2cell(TiledMapReader.MapObject object) {
+
+    /**
+     * Gets the cell corresponding to the MapObject's x/y coordinate.
+     *
+     * @param object
+     * @return
+     */
+    protected Cell object2cell(TiledMapReader.MapObject object) {
         return new Cell(object.y / tileHeight, object.x / tileWidth);
     }
 }
