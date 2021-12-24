@@ -94,8 +94,6 @@ public class Planner {
             return;
         }
 
-        App.println("doPlanInteraction: " + player + ", " + targetCell);
-
         // FIRST, how far away is the target cell?
         var distance = Region.distance(
             c -> isPassable(region, player, c),
@@ -115,11 +113,21 @@ public class Planner {
         if ((result = region.findAt(targetCell, Feature.class)).isPresent()) {
             Entity entity = result.get();
 
-            if (entity.sign() != null) {
+            if (entity.door() != null) {
                 if (distance > MAX_PHYSICAL_RANGE) {
                     region.log("That's too far.");
-                } else {
-                    plan.add(new Step.Interact(entity.id()));
+                } else if (entity.door().isClosed()) {
+                    plan.add(new Step.OpenDoor(entity.id()));
+                } else if (entity.door().isOpen()) {
+                    plan.add(new Step.CloseDoor(entity.id()));
+                }
+            } else if (entity.chest() != null) {
+                if (distance > MAX_PHYSICAL_RANGE) {
+                    region.log("That's too far.");
+                } else if (entity.chest().isClosed()) {
+                    plan.add(new Step.OpenChest(entity.id()));
+                } else if (entity.chest().isOpen()) {
+                    plan.add(new Step.CloseChest(entity.id()));
                 }
             } else if (entity.mannikin() != null) {
                 if (distance > MAX_TALKING_RANGE) {
@@ -127,17 +135,11 @@ public class Planner {
                 } else {
                     plan.add(new Step.Interact(entity.id()));
                 }
-            } else if (entity.door() != null && entity.door().isClosed()) {
+            } else if (entity.sign() != null) {
                 if (distance > MAX_PHYSICAL_RANGE) {
                     region.log("That's too far.");
                 } else {
-                    plan.add(new Step.Open(entity.id()));
-                }
-            } else if (entity.door() != null && entity.door().isOpen()) {
-                if (distance > MAX_PHYSICAL_RANGE) {
-                    region.log("That's too far.");
-                } else {
-                    plan.add(new Step.Close(entity.id()));
+                    plan.add(new Step.Interact(entity.id()));
                 }
             }
         }

@@ -96,7 +96,7 @@ public class Executor {
                         throw new InterruptException(
                             new Interrupt.GoToRegion(feature.exit()));
                     } else {
-                        App.println("Exit is blocked.");
+                        region.log("The way is blocked.");
                         return Result.HALT;
                     }
                 } else {
@@ -104,19 +104,25 @@ public class Executor {
                 }
             }
 
-            case Step.Open goal: {
-                var that = region.get(goal.id());
-
-                // TODO: handle chests as well
-                that.openDoor();
+            case Step.OpenChest chest: {
+                region.get(chest.id()).openChest();
+                // TODO: let them see what's in it.
+                region.log("The chest is empty.");
                 return Result.DO_NEXT;
             }
 
-            case Step.Close goal: {
-                var that = region.get(goal.id());
+            case Step.CloseChest chest: {
+                region.get(chest.id()).closeChest();
+                return Result.DO_NEXT;
+            }
 
-                // TODO: handle chests as well
-                that.closeDoor();
+            case Step.OpenDoor door: {
+                region.get(door.id()).openDoor();
+                return Result.DO_NEXT;
+            }
+
+            case Step.CloseDoor door: {
+                region.get(door.id()).closeDoor();
                 return Result.DO_NEXT;
             }
 

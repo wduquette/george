@@ -16,22 +16,36 @@ public sealed interface Step {
         @Override public String toString() { return "(MoveTo " + cell + ")";}
     }
 
-
     /**
-     * The mobile opens the entity with the given ID.
+     * The mobile opens the chest with the given ID.
      * @param id The ID of the entity to open.
      */
-    record Open(long id) implements Step {
-        @Override public String toString() { return "(Open " + id + ")";}
+    record OpenChest(long id) implements Step {
+        @Override public String toString() { return "(OpenChest " + id + ")";}
     }
 
     /**
-     * The mobile closes the entity with the given ID. The entity must be a
-     * door or chest.
+     * The mobile closes the chest with the given ID.
      * @param id The ID of the entity to open.
      */
-    record Close(long id) implements Step {
-        @Override public String toString() { return "(Close " + id + ")";}
+    record CloseChest(long id) implements Step {
+        @Override public String toString() { return "(CloseChest " + id + ")";}
+    }
+
+    /**
+     * The mobile opens the door with the given ID.
+     * @param id The ID of the entity to open.
+     */
+    record OpenDoor(long id) implements Step {
+        @Override public String toString() { return "(OpenDoor " + id + ")";}
+    }
+
+    /**
+     * The mobile closes the door with the given ID.
+     * @param id The ID of the entity to open.
+     */
+    record CloseDoor(long id) implements Step {
+        @Override public String toString() { return "(CloseDoor " + id + ")";}
     }
 
     /**
