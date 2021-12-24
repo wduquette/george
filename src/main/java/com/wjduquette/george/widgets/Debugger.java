@@ -4,6 +4,7 @@ import com.wjduquette.george.App;
 import com.wjduquette.george.GameView;
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.Exit;
+import com.wjduquette.george.ecs.Player;
 import com.wjduquette.george.ecs.Point;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,8 +13,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -33,6 +33,7 @@ public class Debugger extends StackPane {
     private ObservableList<EntityProxy> entityList;
     private FilteredList<EntityProxy> filteredEntityList;
     private MenuButton gotoMenu;
+    private Label playerCellLabel;
     private ContextMenu entityContextMenu;
 
     // The application
@@ -107,8 +108,15 @@ public class Debugger extends StackPane {
 
         Button refresh = new Button("Refresh");
         refresh.setOnAction(evt -> refresh());
-
         toolbar.getItems().add(refresh);
+
+        Pane spacer1 = new Pane();
+        HBox.setHgrow(spacer1, Priority.ALWAYS);
+        toolbar.getItems().add(spacer1);
+
+        playerCellLabel = new Label("(--,--)");
+        playerCellLabel.setFont(Font.font("Menlo"));
+        toolbar.getItems().add(playerCellLabel);
 
         // EntitiesView
         entityList = FXCollections.observableArrayList();
@@ -250,6 +258,12 @@ public class Debugger extends StackPane {
         var region = app.getCurrentRegion();
         stage.setTitle("George's Debugger: " + region.prefix());
 
+        // Display George's location
+        var player = region.query(Player.class).findFirst().orElseThrow();
+        playerCellLabel.setText(
+            "@(" + player.cell().row() + "," + player.cell().col() + ")");
+
+        // Populate the entities table
         var proxy = entitiesView.getSelectionModel().getSelectedItem();
         entityList.clear();
         for (long id : region.getEntities().ids()) {

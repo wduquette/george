@@ -145,7 +145,6 @@ public class Executor {
             //
             case Step.SetCell step:
                 mob.cell(step.cell());  // Go there.
-                App.println("At " + step.cell());
                 break;
 
             case Step.WaitUntilGone wait:
