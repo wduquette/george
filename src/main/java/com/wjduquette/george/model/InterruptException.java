@@ -1,4 +1,4 @@
-package com.wjduquette.george;
+package com.wjduquette.george.model;
 
 import com.wjduquette.george.model.Interrupt;
 
