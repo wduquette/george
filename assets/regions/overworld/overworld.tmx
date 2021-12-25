@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="40" tileheight="40" infinite="0" nextlayerid="4" nextobjectid="10">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="40" tileheight="40" infinite="0" nextlayerid="4" nextobjectid="12">
  <tileset firstgid="1" name="world map" tilewidth="40" tileheight="40" tilecount="32" columns="8">
   <image source="overworld.png" width="320" height="160"/>
  </tileset>
@@ -212,7 +212,7 @@
 </data>
  </layer>
  <objectgroup id="3" name="Objects">
-  <object id="1" name="origin" type="Point" x="1640" y="1600"/>
+  <object id="1" name="origin" type="Point" x="2000" y="1600"/>
   <object id="2" name="floobham:origin" type="Exit" x="1720" y="1360"/>
   <object id="3" name="bugland:origin" type="Exit" x="2000" y="960"/>
   <object id="4" name="sign.map" type="Sign" x="1600" y="1560"/>
@@ -225,5 +225,8 @@
   </object>
   <object id="8" name="floob_entry:origin" type="Exit" x="1640" y="1160"/>
   <object id="9" name="floobham" type="Point" x="1720" y="1400"/>
+  <object id="11" name="tutor" type="Mannikin" x="1640" y="1480">
+   <point/>
+  </object>
  </objectgroup>
 </map>

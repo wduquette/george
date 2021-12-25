@@ -3,6 +3,7 @@ package com.wjduquette.george;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.regions.FloobhamRegion;
+import com.wjduquette.george.regions.OverworldRegion;
 import com.wjduquette.george.util.Looper;
 import com.wjduquette.george.widgets.Debugger;
 import com.wjduquette.george.widgets.UserInput;
@@ -277,7 +278,7 @@ public class App extends Application {
                 "assets/regions/test/test.region")
         );
         regionFactories.put("overworld",
-            () -> new DataDrivenRegion(this, getClass(),
+            () -> new OverworldRegion(this, getClass(),
                 "assets/regions/overworld/overworld.region")
         );
         regionFactories.put("floobham",

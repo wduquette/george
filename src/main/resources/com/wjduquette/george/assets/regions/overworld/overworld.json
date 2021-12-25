@@ -39,7 +39,7 @@
                  "type":"Point",
                  "visible":true,
                  "width":0,
-                 "x":1640,
+                 "x":2000,
                  "y":1600
                 }, 
                 {
@@ -135,6 +135,18 @@
                  "width":0,
                  "x":1720,
                  "y":1400
+                }, 
+                {
+                 "height":0,
+                 "id":11,
+                 "name":"tutor",
+                 "point":true,
+                 "rotation":0,
+                 "type":"Mannikin",
+                 "visible":true,
+                 "width":0,
+                 "x":1640,
+                 "y":1480
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -143,7 +155,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":10,
+ "nextobjectid":12,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",
