@@ -190,6 +190,9 @@ public class App extends Application {
 
                 // Execute any plans.  (Can throw interrupt.)
                 Executor.doMovement(region);
+
+                // Monitor interactions and tripwires.  Could throw interrupt.
+                Monitor.analyze(region);
             } catch (InterruptException ex) {
                 interrupts.add(ex.get());
             }

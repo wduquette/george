@@ -47,6 +47,7 @@ Warning: Beware of Bugs
 %string tutor.sprite mobile.fillmore
 %block tutor.description
 What an odd looking person.  And what enormous glasses!
+He speaks to you as you approach.
 %end
 %block tutor.greeting
 "Good morning.  You must left-click to move—but I see you've figured

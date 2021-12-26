@@ -2,6 +2,8 @@ package com.wjduquette.george.regions;
 
 import com.wjduquette.george.App;
 import com.wjduquette.george.model.DataDrivenRegion;
+import com.wjduquette.george.model.Step;
+import com.wjduquette.george.model.Trigger;
 import com.wjduquette.george.tmx.TiledMapReader;
 
 public class OverworldRegion extends DataDrivenRegion {
@@ -22,8 +24,11 @@ public class OverworldRegion extends DataDrivenRegion {
         switch (obj.name) {
             case "tutor":
                 var tutor = makeMannikin(key).cell(object2cell(obj));
+                tutor.tripwire(
+                    new Trigger.RadiusOnce(3),
+                    new Step.Interact(tutor.id()));
                 entities.add(tutor);
-                // TODO: Add a tripwire.
+
                 return true;
             default: return false;
         }

@@ -13,7 +13,7 @@ public sealed interface Step {
      * @param cell The cell to which to move the mobile.
      */
     record MoveTo(Cell cell) implements Step {
-        @Override public String toString() { return "(MoveTo " + cell + ")";}
+        @Override public String toString() { return "(Step.MoveTo " + cell + ")";}
     }
 
     /**
@@ -21,7 +21,7 @@ public sealed interface Step {
      * @param id The ID of the entity to open.
      */
     record OpenChest(long id) implements Step {
-        @Override public String toString() { return "(OpenChest " + id + ")";}
+        @Override public String toString() { return "(Step.OpenChest " + id + ")";}
     }
 
     /**
@@ -29,7 +29,7 @@ public sealed interface Step {
      * @param id The ID of the entity to open.
      */
     record CloseChest(long id) implements Step {
-        @Override public String toString() { return "(CloseChest " + id + ")";}
+        @Override public String toString() { return "(Step.CloseChest " + id + ")";}
     }
 
     /**
@@ -37,7 +37,7 @@ public sealed interface Step {
      * @param id The ID of the entity to open.
      */
     record OpenDoor(long id) implements Step {
-        @Override public String toString() { return "(OpenDoor " + id + ")";}
+        @Override public String toString() { return "(Step.OpenDoor " + id + ")";}
     }
 
     /**
@@ -45,16 +45,16 @@ public sealed interface Step {
      * @param id The ID of the entity to open.
      */
     record CloseDoor(long id) implements Step {
-        @Override public String toString() { return "(CloseDoor " + id + ")";}
+        @Override public String toString() { return "(Step.CloseDoor " + id + ")";}
     }
 
     /**
      * The mobile interacts with the entity with the given ID, i.e., reads
-     * reads a sign.
+     * a sign, talks to an NPC.
      * @param id The ID of the entity to interact with
      */
     record Interact(long id) implements Step {
-        @Override public String toString() { return "(Interact " + id + ")";}
+        @Override public String toString() { return "(Step.Interact " + id + ")";}
     }
 
     /**
@@ -63,7 +63,7 @@ public sealed interface Step {
      * @param id The ID of the exit entity.
      */
     record Exit(long id) implements Step {
-        @Override public String toString() { return "(Exit " + id + ")";}
+        @Override public String toString() { return "(Step.Exit " + id + ")";}
     }
 
     //
@@ -77,7 +77,7 @@ public sealed interface Step {
      * @param cell The cell
      */
     record SetCell(Cell cell) implements Step {
-        @Override public String toString() { return "(SetCell " + cell + ")";}
+        @Override public String toString() { return "(Step.SetCell " + cell + ")";}
     }
 
     /**
@@ -85,6 +85,6 @@ public sealed interface Step {
      * @param id An entity ID, e.g. of a VisualEffect entity
      */
     record WaitUntilGone(long id) implements Step {
-        @Override public String toString() { return "(WaitUntilGone " + id + ")";}
+        @Override public String toString() { return "(Step.WaitUntilGone " + id + ")";}
     }
 }
