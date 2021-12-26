@@ -35,7 +35,6 @@ public class Monitor {
                     leader.cell());
 
                 if (dist <= trigger.radius()) {
-                    App.println("Executing " + trigger);
                     leader.put(new Plan());
                     leader.plan().add(step);
                     entity.remove(entity.tripwire());

@@ -4,6 +4,11 @@ import com.wjduquette.george.model.Cell;
 
 public sealed interface UserInput {
     /**
+     * The user has clicked to continue.
+     */
+    public record Continue() implements UserInput {}
+
+    /**
      * The user wants to move to a specific map cell.  Usually a left click.
      * @param cell The cell
      */
