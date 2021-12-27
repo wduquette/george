@@ -1,12 +1,10 @@
 package com.wjduquette.george;
 
 import com.wjduquette.george.ecs.*;
-import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.util.RandomPlus;
 import com.wjduquette.george.widgets.CanvasPane;
-import com.wjduquette.george.widgets.SimplePanel;
 import com.wjduquette.george.widgets.UserInput;
 import com.wjduquette.george.widgets.UserInputEvent;
 import javafx.application.Platform;
@@ -21,7 +19,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 import java.util.*;
 
@@ -71,9 +68,6 @@ public class GameView extends StackPane {
 
     // The currently rendered click targets
     private final List<ClickTarget> targets = new ArrayList<>();
-
-    // TODO: Should be defined on App as a global resource.
-    private final RandomPlus random = new RandomPlus();
 
     private final Set<Button> selected = new HashSet<>();
 

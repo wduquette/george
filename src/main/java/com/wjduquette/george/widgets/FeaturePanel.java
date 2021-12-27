@@ -13,7 +13,7 @@ import javafx.scene.text.Font;
 /**
  * SimplePanel implements a basic sign or mannikin panel.
  */
-public class SimplePanel extends CanvasPane {
+public class FeaturePanel extends CanvasPane {
     private final static double INSET = 50;
 
     private final App app;
@@ -21,7 +21,7 @@ public class SimplePanel extends CanvasPane {
     private final String text;
     private Runnable onClose = null;
 
-    public SimplePanel(App app, Entity entity, String text) {
+    public FeaturePanel(App app, Entity entity, String text) {
         this.app = app;
         this.entity = entity;
         this.text = text;

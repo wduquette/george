@@ -8,7 +8,7 @@ import com.wjduquette.george.regions.OverworldRegion;
 import com.wjduquette.george.util.Looper;
 import com.wjduquette.george.util.RandomPlus;
 import com.wjduquette.george.widgets.Debugger;
-import com.wjduquette.george.widgets.SimplePanel;
+import com.wjduquette.george.widgets.FeaturePanel;
 import com.wjduquette.george.widgets.UserInput;
 import com.wjduquette.george.widgets.UserInputEvent;
 import javafx.application.Application;
@@ -314,7 +314,7 @@ public class App extends Application {
 
     public void displayTextBlock(Entity entity, String text) {
         viewer.repaint();
-        var panel = new SimplePanel(this, entity, text);
+        var panel = new FeaturePanel(this, entity, text);
         looper.stop();
         panel.setOnClose(() -> {
             viewer.getChildren().remove(panel);
