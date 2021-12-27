@@ -4,6 +4,15 @@ package com.wjduquette.george.model;
  * Steps that can be scheduled for Mobiles.
  */
 public sealed interface Step {
+    /**
+     * Indicates whether this step is a transition or not.
+     * A transition is a step that simply waits for a transition animation to
+     * complete, after which the next step will complete a logical action.
+     */
+    public default boolean isTransition() {
+        return false;
+    }
+
     //
     // Goals: Steps scheduled by the planner
     //
@@ -76,15 +85,20 @@ public sealed interface Step {
      * logical location.
      * @param cell The cell
      */
-    record SetCell(Cell cell) implements Step {
-        @Override public String toString() { return "(Step.SetCell " + cell + ")";}
+    record CompleteCellStep(Cell cell) implements Step {
+        @Override public String toString() { return "(Step.CompleteCellStep " + cell + ")";}
     }
 
     /**
-     * Waits until the entity with the given ID no longer exists.
+     * A transition is an animation related to a step that is being taken:
+     * the slide to a new a cell, the flight of an arrow.  The Transition
+     * step waits until the VisualEffect with the given ID no longer exists.
+     * It will be followed immediately by a step that completes the action,
+     * e.g., Step.CompleteCellStep after a SlideTo animation.
      * @param id An entity ID, e.g. of a VisualEffect entity
      */
-    record WaitUntilGone(long id) implements Step {
-        @Override public String toString() { return "(Step.WaitUntilGone " + id + ")";}
+    record Transition(long id) implements Step {
+        @Override public String toString() { return "(Step.Transition " + id + ")";}
+        @Override public boolean isTransition() { return true; }
     }
 }

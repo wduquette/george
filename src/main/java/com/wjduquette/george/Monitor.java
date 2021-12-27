@@ -28,7 +28,14 @@ public class Monitor {
             case Trigger.RadiusOnce trigger -> {
                 // If there is a player character within the radius, make it
                 // execute the step; and forget the tripwire.
+                // TODO: For now, there's just one.
                 var leader = region.query(Player.class).findFirst().orElseThrow();
+
+                if (leader.isTransitionInProgress()) {
+                    return;
+                }
+
+                // TODO: Define a predicate for this
                 var dist = Region.distance(
                     region::isWalkable,
                     entity.cell(),

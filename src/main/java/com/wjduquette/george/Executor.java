@@ -12,8 +12,21 @@ public class Executor {
     private Executor() {} // Not instantiable
 
     // The result of executing a step.
+    //
+    // DO_NEXT indicates that a logical action isn't yet complete; the executor
+    // most also execute the following step in order to complete it.
+    //
+    // PAUSE indicates either that a logical action has been completed, or that
+    // mover is waiting for a transition to complete in order to complete the
+    // logical action; either way, the Executor is done with this mover for
+    // this iteration of the game loop.  Entity::isTransitionInProgress
+    // distinguishes between the two cases.
+    //
+    // HALT means that the plan has failed; e.g., the path to the destination
+    // is now blocked.  This should only occur at a point where the data model
+    // is logically consistent, i.e., not during a transition.
     private enum Result {
-        DO_NEXT,   // Go on to the next step of the plan
+        DO_NEXT,   // Go on to the next step of this plan
         PAUSE,     // Go on to the next mover
         HALT       // Clear this plan, and go on to the next mover
     }
@@ -143,11 +156,16 @@ public class Executor {
             // Primitive Operations: these are used to implement the planned
             // steps
             //
-            case Step.SetCell step:
-                mob.cell(step.cell());  // Go there.
-                break;
 
-            case Step.WaitUntilGone wait:
+            // Completes a mover's cell step, as initiated by the
+            // proceed() method.
+            case Step.CompleteCellStep step:
+                mob.cell(step.cell());  // Go there.
+                // Pause, because we've completed a logical change.  This
+                // gives the Monitor a chance to analyze the current state.
+                return Result.PAUSE;
+
+            case Step.Transition wait:
                 if (region.find(wait.id()).isPresent()) {
                     mob.plan().addFirst(wait); // Keep waiting
                     return Result.PAUSE;
@@ -227,7 +245,7 @@ public class Executor {
         // These will execute in reverse order: we complete
         // the slide, move the next cell, and repeat our initial
         // goal
-        mob.plan().addFirst(new Step.SetCell(cell));
-        mob.plan().addFirst(new Step.WaitUntilGone(effect.id()));
+        mob.plan().addFirst(new Step.CompleteCellStep(cell));
+        mob.plan().addFirst(new Step.Transition(effect.id()));
     }
 }

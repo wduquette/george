@@ -223,6 +223,16 @@ public class Entity {
             .orElse(TerrainType.NONE);
     }
 
+    /**
+     * Returns true if a transition is in progress, and false otherwise.
+     * I.e., it returns true if the next step in the plan has
+     * {@code isTransition() }.
+     * @return true or false
+     */
+    public boolean isTransitionInProgress() {
+        return plan() != null && plan().peekFirst().isTransition();
+    }
+
     //-------------------------------------------------------------------------
     // Component Setters
     //
