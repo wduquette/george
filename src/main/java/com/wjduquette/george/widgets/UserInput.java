@@ -31,4 +31,9 @@ public sealed interface UserInput {
      * Requests that the debugger window be popped up.
      */
     public record ShowDebugger() implements UserInput {}
+
+    /**
+     * Requests that the region map be displayed.
+     */
+    public record DisplayMap() implements UserInput {}
 }

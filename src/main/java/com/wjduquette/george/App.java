@@ -112,13 +112,13 @@ public class App extends Application {
 
     // Handle cells clicks
     private void onUserInput(UserInputEvent event) {
-        if (event.getInput() instanceof UserInput.ShowDebugger) {
-            // Invoke the debugger
-            showDebugger();
-        } else {
-            // Save the input.  It will be assessed by the
-            // Planner on the next iteration of the GameLoop.
-            userInput = event.getInput();
+        switch (event.getInput()) {
+            case UserInput.ShowDebugger $ -> showDebugger();
+            case UserInput.DisplayMap $ -> {
+                viewer.displayMap();
+                interrupts.push(new Interrupt.WaitForInput());
+            }
+            default -> userInput = event.getInput();
         }
     }
 
