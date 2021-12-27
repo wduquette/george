@@ -1,9 +1,7 @@
 package com.wjduquette.george.ecs;
 
 import com.wjduquette.george.graphics.ImageInfo;
-import com.wjduquette.george.model.Cell;
-import com.wjduquette.george.model.Items;
-import com.wjduquette.george.model.TerrainType;
+import com.wjduquette.george.model.*;
 import com.wjduquette.george.util.TypeMap;
 
 import java.util.Objects;
@@ -160,8 +158,7 @@ public class Entity {
      * @return The component
      */
     public <T extends Component> T get(Class<T> cls) {
-        T comp = components.get(cls);
-        return comp;
+        return components.get(cls);
     }
 
     /**
@@ -198,6 +195,7 @@ public class Entity {
     public Sign       sign()       { return components.get(Sign.class); }
     public Sprite     sprite()     { return components.get(Sprite.class); }
     public Terrain    terrain()    { return components.get(Terrain.class); }
+    public Tripwire tripwire()   { return components.get(Tripwire.class); }
 
     // Other simple queries
 
@@ -225,6 +223,16 @@ public class Entity {
             .orElse(TerrainType.NONE);
     }
 
+    /**
+     * Returns true if a transition is in progress, and false otherwise.
+     * I.e., it returns true if the next step in the plan has
+     * {@code isTransition() }.
+     * @return true or false
+     */
+    public boolean isTransitionInProgress() {
+        return plan() != null && plan().peekFirst().isTransition();
+    }
+
     //-------------------------------------------------------------------------
     // Component Setters
     //
@@ -245,6 +253,7 @@ public class Entity {
     public Entity sprite(String name) { return put(new Sprite(name)); }
     public Entity sprite(ImageInfo info) { return put(new Sprite(info.name())); }
     public Entity terrain(TerrainType type) { return put(new Terrain(type)); }
+    public Entity tripwire(Trigger trigger, Step step) { return put(new Tripwire(trigger, step)); }
 
     /**
      * Sets the entity's cell location, clearing any visual offsets.

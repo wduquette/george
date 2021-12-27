@@ -195,6 +195,11 @@ public class GameView extends StackPane {
         var width = canvas.getWidth() - 100;
         var height= canvas.getHeight() - 100;
 
+        targets.clear();
+        var box = new BoundingBox(0, 0, canvas.getWidth(), canvas.getHeight());
+        var input = new UserInput.Continue();
+        targets.add(new ClickTarget(box, () -> fireInputEvent(input)));
+
         // The background
         canvas.gc().setFill(Color.DARKBLUE);
         canvas.gc().fillRect(xLeft, yTop, width, height);
@@ -218,6 +223,7 @@ public class GameView extends StackPane {
         block.setFont(Font.font("Helvetica", 18));
         block.setWrappingWidth(width - 80);
         block.setFill(Color.WHITE);
+        block.setOnMouseClicked(evt -> fireInputEvent(new UserInput.Continue()));
         StackPane.setAlignment(block, Pos.TOP_LEFT);
         StackPane.setMargin(block, new Insets(
             yTop + 40,            // Top

@@ -3,6 +3,7 @@ package com.wjduquette.george;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.regions.FloobhamRegion;
+import com.wjduquette.george.regions.OverworldRegion;
 import com.wjduquette.george.util.Looper;
 import com.wjduquette.george.widgets.Debugger;
 import com.wjduquette.george.widgets.UserInput;
@@ -189,6 +190,9 @@ public class App extends Application {
 
                 // Execute any plans.  (Can throw interrupt.)
                 Executor.doMovement(region);
+
+                // Monitor interactions and tripwires.  Could throw interrupt.
+                Monitor.analyze(region);
             } catch (InterruptException ex) {
                 interrupts.add(ex.get());
             }
@@ -254,11 +258,22 @@ public class App extends Application {
         region.query(Plan.class).forEach(e -> e.remove(Plan.class));
 
         // NEXT, transfer the party and its belongings to the new region.
-        // TODO: Move inventories (if they are stored in the main entity table)
+        // TODO: Handle multiple player characters properly
+        // This will require special logic to position the follower(s).
         Entity player = region.query(Player.class).findFirst().orElseThrow();
 
         region.getEntities().remove(player.id());
         newRegion.getEntities().add(player);
+
+        // Inventory
+        var inventory = region.query(Owner.class)
+            .filter(e -> e.owner().ownerId() == player.id())
+            .toList();
+
+        for (var item : inventory) {
+            region.getEntities().remove(item.id());
+            newRegion.getEntities().add(item);
+        }
 
         // Position the player.
         player.cell(point.get().cell());
@@ -277,7 +292,7 @@ public class App extends Application {
                 "assets/regions/test/test.region")
         );
         regionFactories.put("overworld",
-            () -> new DataDrivenRegion(this, getClass(),
+            () -> new OverworldRegion(this, getClass(),
                 "assets/regions/overworld/overworld.region")
         );
         regionFactories.put("floobham",

@@ -81,6 +81,39 @@ public abstract class Region {
         return !route.isEmpty() ? route.size() : Integer.MAX_VALUE;
     }
 
+    /**
+     * Returns a route from the mobile to the target cell that is passable to
+     * the mobile in terms of Region::isPassable.  The route will be empty if
+     * there's no way to get there.
+     * @param mobile The mobile
+     * @param target The target cell
+     * @return The route
+     */
+    public List<Cell> findPassableRoute(
+        Entity mobile,
+        Cell target)
+    {
+        return Region.findRoute(c -> isPassable(mobile, c),
+            mobile.cell(), target);
+    }
+
+    /**
+     * Finds the distance from the mobile to the target cell using
+     * Region::isPassable for this mobile. The distance will be
+     * Integer.MAX_VALUE if there's no way to get there.
+     * @param mobile The mobile
+     * @param target The target cell
+     * @return The distance
+     */
+    public int passableDistance(
+        Entity mobile,
+        Cell target)
+    {
+        return Region.distance(c -> isPassable(mobile, c),
+            mobile.cell(), target);
+    }
+
+
     //-------------------------------------------------------------------------
     // Instance Variables
 
@@ -272,16 +305,6 @@ public abstract class Region {
     }
 
     /**
-     * Terrain Assessor: checks whether the cell exists and is simply
-     * walkable, without any other concerns.
-     * @param cell The cell
-     * @return true or false
-     */
-    public boolean isWalkable(Cell cell) {
-        return getTerrainType(cell).isWalkable();
-    }
-
-    /**
      * Gets an info parameter, which must exist.
      * @param key The parameter's key
      * @return The value we found.
@@ -343,6 +366,39 @@ public abstract class Region {
         return "You see: " + tile.description();
     }
 
+    /**
+     * Terrain Assessor function.  From a movement planning perspective, can
+     * this mobile expect to be able to enter the given cell given its current
+     * capabilities and the cell's content?
+     *
+     * TODO: At present, all mobiles can walk, and that's all they can do.
+     *
+     * @param mob The mobile entity
+     * @param cell The cell in question
+     * @return true or false
+     */
+    public boolean isPassable(Entity mob, Cell cell) {
+        // FIRST, if there's a mobile blocking the cell, he can't enter.
+        if (query(Mobile.class).anyMatch(m -> m.isAt(cell))) {
+            return false;
+        }
+
+        // NEXT, otherwise it's a matter of the effective terrain and the
+        // mover's capabilities.
+        return getTerrainType(cell).isWalkable();
+    }
+
+    /**
+     * Terrain Assessor: checks whether the cell exists and is simply
+     * walkable, without any other concerns.
+     * @param cell The cell
+     * @return true or false
+     */
+    public boolean isWalkable(Cell cell) {
+        return getTerrainType(cell).isWalkable();
+    }
+
+
     //-------------------------------------------------------------------------
     // Entity Factories
 
@@ -364,7 +420,7 @@ public abstract class Region {
     /**
      * Makes a standard Exit entity, converting a "{regionName}:{pointName}"
      * string.  The entity has no Loc.
-     * @param regionPoint
+     * @param regionPoint A "{pointName}" or "{regionName}:{pointName} string.
      * @return The entity
      */
     public Entity makeExit(String regionPoint) {

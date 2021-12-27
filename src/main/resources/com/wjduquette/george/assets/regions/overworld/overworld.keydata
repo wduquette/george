@@ -36,3 +36,26 @@ Tunnel to Paradise Valley
 
 Warning: Beware of Bugs
 %end
+
+#------------------------------------------------------------------------------
+# Mannikins and NPCs
+
+# Fillmore the Tutor
+# TODO: Make this a full NPC, with dialog
+
+%string tutor.label Fillmore
+%string tutor.sprite mobile.fillmore
+%block tutor.description
+What an odd looking person.  And what enormous glasses!
+He speaks to you as you approach.
+%end
+%block tutor.greeting
+"Good morning.  You must left-click to move—but I see you've figured
+that out.  And you may right-click to interact with things.  For
+example, you can right-click on that sign there to see what it says."
+
+He scratches his head.
+
+"You'll probably need to move next to it first, though."
+%end
+
