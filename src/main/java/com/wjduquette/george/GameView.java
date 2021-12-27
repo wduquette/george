@@ -1,10 +1,8 @@
 package com.wjduquette.george;
 
 import com.wjduquette.george.ecs.*;
-import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.*;
-import com.wjduquette.george.util.RandomPlus;
 import com.wjduquette.george.widgets.CanvasPane;
 import com.wjduquette.george.widgets.UserInput;
 import com.wjduquette.george.widgets.UserInputEvent;
@@ -20,7 +18,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 import java.util.*;
 
@@ -70,9 +67,6 @@ public class GameView extends StackPane {
 
     // The currently rendered click targets
     private final List<ClickTarget> targets = new ArrayList<>();
-
-    // TODO: Should be defined on App as a global resource.
-    private final RandomPlus random = new RandomPlus();
 
     private final Set<Button> selected = new HashSet<>();
 
@@ -161,83 +155,13 @@ public class GameView extends StackPane {
         });
     }
 
-    /**
-     * Describes a feature, based on what it is.  Supported features include
-     * Signs and Mannikins.
-     * @param id The feature entity's ID
-     */
-    public void describeFeature(long id) {
-        repaint();
-        var entity = region.get(id);
-
-        if (entity.sign() != null) {
-            var key = entity.sign().key();
-            var text = region.getInfo(key, "text");
-
-            displayTextBlock(entity, text);
-        } else if (entity.mannikin() != null) {
-            var key = entity.mannikin().key();
-            StringBuilder buff = new StringBuilder();
-            buff.append(region.getInfo(key, "label")).append("\n\n");
-            buff.append(region.getInfo(key, "description")).append("\n\n");
-
-            List<String> greetings = region.info().values(key + ".greeting*");
-            buff.append(random.pickFrom(greetings));
-
-            displayTextBlock(entity, buff.toString());
-        }
-    }
-
-    public void displayTextBlock(Entity entity, String text) {
-        repaint();
-        var xLeft = 50.0;
-        var yTop = 50.0;
-        var width = canvas.getWidth() - 100;
-        var height= canvas.getHeight() - 100;
-
-        targets.clear();
-        var box = new BoundingBox(0, 0, canvas.getWidth(), canvas.getHeight());
-        var input = new UserInput.Continue();
-        targets.add(new ClickTarget(box, () -> fireInputEvent(input)));
-
-        // The background
-        canvas.gc().setFill(Color.DARKBLUE);
-        canvas.gc().fillRect(xLeft, yTop, width, height);
-
-        // The image
-        var ix = xLeft + 20;
-        var iy = yTop + 40;
-        var terrain = region.getTerrain(entity.cell());
-        canvas.gc().drawImage(ImageUtils.embiggen(terrain.image(), 2), ix, iy);
-        canvas.gc().drawImage(ImageUtils.embiggen(img(entity.sprite()), 2), ix, iy);
-
-        // The "click to continue"
-        canvas.gc().setFill(Color.WHITE);
-        canvas.gc().setFont(Font.font("Helvetica", 14));
-        canvas.gc().fillText("Click to continue...",
-            xLeft + 20,
-            yTop + height - 20);
-
-        // The game text
-        Text block = new Text(text);
-        block.setFont(Font.font("Helvetica", 18));
-        block.setWrappingWidth(width - 80);
-        block.setFill(Color.WHITE);
-        block.setOnMouseClicked(evt -> fireInputEvent(new UserInput.Continue()));
-        StackPane.setAlignment(block, Pos.TOP_LEFT);
-        StackPane.setMargin(block, new Insets(
-            yTop + 40,            // Top
-            xLeft + width - 20,   // Right
-            yTop + height - 40,   // Bottom
-            xLeft + 130));        // Left
-
-        getChildren().setAll(canvas, block);
+    public Region getRegion() {
+        return region;
     }
 
     public void repaint() {
         canvas.clear();
         targets.clear();
-        getChildren().setAll(canvas);
 
         // Don't recompute bounds if the player is executing a plan.
         // TODO: Not sure if this is want I want.  At the very least, I need
@@ -287,86 +211,6 @@ public class GameView extends StackPane {
             drawLogMessage(i, messages.get(i).logMessage().message());
         }
     }
-
-    //-------------------------------------------------------------------------
-    // Map Display
-
-    private static final double MAP_MARGIN = 50;
-
-    public void displayMap() {
-        // FIRST, prepare the view
-        repaint();
-        targets.clear();
-
-        // NEXT, prepare to continue on user input
-        // TODO: This appears two places; make it a function.
-        var box = new BoundingBox(0, 0, canvas.getWidth(), canvas.getHeight());
-        targets.add(new ClickTarget(box, () -> fireInputEvent(new UserInput.Continue())));
-
-        // NEXT, how big should we draw the map?  How many pixels per cell?
-        var xSize = mapCellSize(canvas.getWidth(), region.getWidth());
-        var ySize = mapCellSize(canvas.getHeight(), region.getHeight());
-        var cellSize = Math.min(xSize, ySize);
-
-        var mapWidth = region.getWidth() * cellSize;
-        var mapHeight = region.getHeight() * cellSize;
-        var xLeft = (canvas.getWidth() - mapWidth)/2.0;
-        var yTop = (canvas.getHeight() - mapHeight)/2.0;
-
-        canvas.gc().setFill(Color.BLACK);
-        canvas.gc().fillRect(
-            xLeft - 5, yTop - 5,
-            mapWidth + 10, mapHeight + 10);
-
-        for (int r = 0; r < region.getHeight(); r++) {
-            for (int c = 0; c < region.getWidth(); c++) {
-                var cell = new Cell(r,c);
-                var x = xLeft + c * cellSize;
-                var y = yTop + r * cellSize;
-
-                Color color = Color.WHITE;
-
-                if (region.isSeen(r, c)) {
-                    color = switch (region.getTerrainType(cell)) {
-                        case NONE -> Color.BLACK;
-                        case UNKNOWN -> Color.BLACK;
-                        case WATER -> Color.BLUE;
-                        case FLOOR -> Color.SANDYBROWN;
-                        default -> Color.color(0.2, 0.2, 0.2);
-                    };
-                }
-
-                canvas.gc().setFill(color);
-                canvas.gc().fillRect(x, y, cellSize, cellSize);
-            }
-        }
-
-        // NEXT, draw the player/leader a little bigger than its cell.
-        var player = region.query(Player.class).findFirst().orElseThrow();
-
-        var x = xLeft + player.cell().col() * cellSize;
-        var y = yTop + player.cell().row() * cellSize;
-
-        canvas.gc().setFill(Color.CYAN);
-        canvas.gc().fillRect(x - 1, y - 1, cellSize + 2, cellSize + 2);
-
-    }
-
-    private double mapCellSize(double numPixels, double numCells) {
-        numPixels = numPixels - 2*MAP_MARGIN;
-
-        if (numCells >= numPixels) {
-            return 1;
-        }
-
-        var size = 1;
-        while (size*numCells < numPixels) {
-            size++;
-        }
-
-        return size - 1;
-    }
-
 
     //-------------------------------------------------------------------------
     // Button Bar Display
@@ -558,7 +402,7 @@ public class GameView extends StackPane {
                 selected.remove(Button.POINTER);
                 selected.add(Button.MAGNIFIER);
             }
-            case MAP -> fireInputEvent(new UserInput.DisplayMap());
+            case MAP -> fireInputEvent(new UserInput.ShowMap());
             default -> region.log("TODO: " + btn);
         }
     }

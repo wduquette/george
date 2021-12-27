@@ -1,31 +1,32 @@
 package com.wjduquette.george;
 
+import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.regions.FloobhamRegion;
 import com.wjduquette.george.regions.OverworldRegion;
 import com.wjduquette.george.util.Looper;
-import com.wjduquette.george.widgets.Debugger;
-import com.wjduquette.george.widgets.UserInput;
-import com.wjduquette.george.widgets.UserInputEvent;
+import com.wjduquette.george.util.RandomPlus;
+import com.wjduquette.george.widgets.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Stack;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class App extends Application {
     //-------------------------------------------------------------------------
     // Constants
 
+    /** RNG for the game. */
+    public static final RandomPlus RANDOM = new RandomPlus();
+
     // How often the game loop executes
     private static final int LOOP_MSECS = 50;
     private static final int DEBUGGER_REFRESH_TICKS = 10;
+
 
     //-------------------------------------------------------------------------
     // Instance Variables
@@ -95,6 +96,8 @@ public class App extends Application {
 
         // NEXT, configure the GUI
         Scene scene = new Scene(viewer, 800, 600);
+        stage.setMinWidth(800);
+        stage.setMinHeight(600);
         stage.setTitle("George's Saga!");
         stage.setScene(scene);
         stage.show();
@@ -114,10 +117,7 @@ public class App extends Application {
     private void onUserInput(UserInputEvent event) {
         switch (event.getInput()) {
             case UserInput.ShowDebugger $ -> showDebugger();
-            case UserInput.DisplayMap $ -> {
-                viewer.displayMap();
-                interrupts.push(new Interrupt.WaitForInput());
-            }
+            case UserInput.ShowMap $ -> showMap();
             default -> userInput = event.getInput();
         }
     }
@@ -213,22 +213,12 @@ public class App extends Application {
 
     private void handleInterrupts(UserInput input) {
         switch (interrupts.pop()) {
-            case Interrupt.WaitForInput wait -> {
-                if (input == null) {
-                    interrupts.push(wait);
-                }
-            }
+            case Interrupt.GoToRegion info -> gotoRegion(info.exit());
 
-            case Interrupt.Interact feature -> {
+            case Interrupt.Interact feature ->
                 // At present, the only kind of interaction we support is
                 // describing a feature.  So do that.
-                viewer.describeFeature(feature.id());
-
-                // Wait for click.
-                interrupts.add(new Interrupt.WaitForInput());
-            }
-
-            case Interrupt.GoToRegion info -> gotoRegion(info.exit());
+                showFeature(feature.id());
         }
     }
 
@@ -283,6 +273,51 @@ public class App extends Application {
         viewer.setRegion(region);
     }
 
+    /**
+     * Describes a feature, based on what it is.  Supported features include
+     * Signs and Mannikins.
+     * @param id The feature entity's ID
+     */
+    public void showFeature(long id) {
+        var entity = region.get(id);
+
+        if (entity.sign() != null) {
+            var key = entity.sign().key();
+            var text = region.getInfo(key, "text");
+
+            displayTextBlock(entity, text);
+        } else if (entity.mannikin() != null) {
+            var key = entity.mannikin().key();
+            StringBuilder buff = new StringBuilder();
+            buff.append(region.getInfo(key, "label")).append("\n\n");
+            buff.append(region.getInfo(key, "description")).append("\n\n");
+
+            List<String> greetings = region.info().values(key + ".greeting*");
+            buff.append(RANDOM.pickFrom(greetings));
+
+            displayTextBlock(entity, buff.toString());
+        }
+    }
+
+    public void displayTextBlock(Entity entity, String text) {
+        viewer.repaint();
+        showPanel(new FeaturePanel(this, entity, text));
+    }
+
+    public void showMap() {
+        viewer.repaint();
+        showPanel(new MapPanel(this));
+    }
+
+    private void showPanel(Panel panel) {
+        looper.stop();
+        panel.setOnClose(() -> {
+            viewer.getChildren().remove(panel);
+            looper.run();
+        });
+        viewer.getChildren().add(panel.asNode());
+    }
+
     //-------------------------------------------------------------------------
     // Region Definitions
 
@@ -322,6 +357,10 @@ public class App extends Application {
      */
     public Items items() {
         return items;
+    }
+
+    public SpriteSet sprites() {
+        return Sprites.ALL;
     }
 
     //-------------------------------------------------------------------------

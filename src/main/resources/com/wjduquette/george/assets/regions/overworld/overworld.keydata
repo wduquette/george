@@ -50,9 +50,10 @@ What an odd looking person.  And what enormous glasses!
 He speaks to you as you approach.
 %end
 %block tutor.greeting
-"Good morning.  You must left-click to move—but I see you've figured
-that out.  And you may right-click to interact with things.  For
-example, you can right-click on that sign there to see what it says."
+"Good morning.  You must left-click to move—but I see you've
+figured that out.  And you may right-click to interact with
+things.  For example, you can right-click on that sign there
+to see what it says."
 
 He scratches his head.
 
