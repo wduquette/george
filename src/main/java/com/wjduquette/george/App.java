@@ -7,10 +7,7 @@ import com.wjduquette.george.regions.FloobhamRegion;
 import com.wjduquette.george.regions.OverworldRegion;
 import com.wjduquette.george.util.Looper;
 import com.wjduquette.george.util.RandomPlus;
-import com.wjduquette.george.widgets.Debugger;
-import com.wjduquette.george.widgets.FeaturePanel;
-import com.wjduquette.george.widgets.UserInput;
-import com.wjduquette.george.widgets.UserInputEvent;
+import com.wjduquette.george.widgets.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -121,8 +118,9 @@ public class App extends Application {
         switch (event.getInput()) {
             case UserInput.ShowDebugger $ -> showDebugger();
             case UserInput.DisplayMap $ -> {
-                viewer.displayMap();
-                interrupts.push(new Interrupt.WaitForInput());
+                displayMap();
+//                viewer.displayMap();
+//                interrupts.push(new Interrupt.WaitForInput());
             }
             default -> userInput = event.getInput();
         }
@@ -231,7 +229,6 @@ public class App extends Application {
                 // At present, the only kind of interaction we support is
                 // describing a feature.  So do that.
                 describeFeature(feature.id());
-
         }
     }
 
@@ -316,6 +313,18 @@ public class App extends Application {
         viewer.repaint();
         var panel = new FeaturePanel(this, entity, text);
         looper.stop();
+        panel.setOnClose(() -> {
+            viewer.getChildren().remove(panel);
+            looper.run();
+        });
+        viewer.getChildren().add(panel);
+    }
+
+    public void displayMap() {
+        viewer.repaint();
+        var panel = new MapPanel(this);
+        looper.stop();
+        // TODO: Define Panel interface, and generalize this.
         panel.setOnClose(() -> {
             viewer.getChildren().remove(panel);
             looper.run();

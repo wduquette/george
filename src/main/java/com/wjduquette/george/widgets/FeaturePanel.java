@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 /**
- * SimplePanel implements a basic sign or mannikin panel.
+ * FeaturePanel implements a basic sign or mannikin panel.
  */
 public class FeaturePanel extends CanvasPane {
     private final static double INSET = 50;
@@ -35,9 +35,6 @@ public class FeaturePanel extends CanvasPane {
     }
 
     private void onMouseClick(MouseEvent evt) {
-        Point2D mouse = ofMouse(evt);
-        App.println("SimplePanel: " + mouse);
-
         if (onClose != null) {
             onClose.run();
         }
