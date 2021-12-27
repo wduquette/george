@@ -301,25 +301,21 @@ public class App extends Application {
 
     public void displayTextBlock(Entity entity, String text) {
         viewer.repaint();
-        var panel = new FeaturePanel(this, entity, text);
-        looper.stop();
-        panel.setOnClose(() -> {
-            viewer.getChildren().remove(panel);
-            looper.run();
-        });
-        viewer.getChildren().add(panel);
+        showPanel(new FeaturePanel(this, entity, text));
     }
 
     public void showMap() {
         viewer.repaint();
-        var panel = new MapPanel(this);
+        showPanel(new MapPanel(this));
+    }
+
+    private void showPanel(Panel panel) {
         looper.stop();
-        // TODO: Define Panel interface, and generalize this.
         panel.setOnClose(() -> {
             viewer.getChildren().remove(panel);
             looper.run();
         });
-        viewer.getChildren().add(panel);
+        viewer.getChildren().add(panel.asNode());
     }
 
     //-------------------------------------------------------------------------

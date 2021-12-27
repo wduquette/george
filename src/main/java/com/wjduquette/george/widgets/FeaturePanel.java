@@ -6,6 +6,7 @@ import com.wjduquette.george.graphics.ImageUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -13,7 +14,7 @@ import javafx.scene.text.Font;
 /**
  * FeaturePanel implements a basic sign or mannikin panel.
  */
-public class FeaturePanel extends CanvasPane {
+public class FeaturePanel extends CanvasPane implements Panel {
     private final static double INSET = 50;
 
     private final App app;
@@ -30,9 +31,8 @@ public class FeaturePanel extends CanvasPane {
         setOnMouseClicked(this::onMouseClick);
     }
 
-    public void setOnClose(Runnable onClose) {
-        this.onClose = onClose;
-    }
+    @Override public Node asNode() { return this; }
+    @Override public void setOnClose(Runnable func) { this.onClose = func; }
 
     private void onMouseClick(MouseEvent evt) {
         if (onClose != null) {
