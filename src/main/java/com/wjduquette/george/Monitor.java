@@ -14,37 +14,34 @@ public class Monitor {
     public static void analyze(Region region) {
         var tripwires = region.query(Tripwire.class).toList();
 
-        for (var entity : tripwires) {
+        for (var trigger : tripwires) {
             // A tripwire can throw an InterruptException.
-            doTrip(region, entity);
+            for (var player : region.query(Player.class).toList()) {
+                // Mustn't interrupt a transition.
+                if (!player.isTransitionInProgress()) {
+                    doTripwire(region, player, trigger);
+                }
+            }
         }
     }
 
     // See whether the tripwire fires, based on what it is.
-    private static void doTrip(Region region, Entity entity) {
-        var step = entity.tripwire().step();
+    private static void doTripwire(Region region, Entity player, Entity wire) {
+        var step = wire.tripwire().step();
 
-        switch (entity.tripwire().trigger()) {
+        switch (wire.tripwire().trigger()) {
             case Trigger.RadiusOnce trigger -> {
-                // If there is a player character within the radius, make it
+                // If the player character is within the radius, make it
                 // execute the step; and forget the tripwire.
-                // TODO: For now, there's just one.
-                var leader = region.query(Player.class).findFirst().orElseThrow();
-
-                if (leader.isTransitionInProgress()) {
-                    return;
-                }
-
-                // TODO: Define a predicate for this
-                var dist = Region.distance(
-                    region::isWalkable,
-                    entity.cell(),
-                    leader.cell());
+                var dist = region.passableDistance(player, wire.cell());
 
                 if (dist <= trigger.radius()) {
-                    leader.put(new Plan());
-                    leader.plan().add(step);
-                    entity.remove(entity.tripwire());
+                    player.put(new Plan());
+                    player.plan().add(step);
+
+                    // Remove the trigger.
+                    // TODO: In some cases, the entire entity should be removed.
+                    wire.remove(wire.tripwire());
                 }
             }
         }
