@@ -47,9 +47,9 @@ public class Resource {
     /**
      * Given a relative path to a resource and a path relative to that for a
      * related resource, return the path to the related resource.
-     * @param parentPath
-     * @param relPath
-     * @return
+     * @param parentPath The parent resource's path
+     * @param relPath The path relative to the parent's folder
+     * @return The resulting path
      */
     public static String relativeTo(String parentPath, String relPath) {
        return new File(parentPath).toPath().getParent()

@@ -24,7 +24,6 @@ public class Debugger extends StackPane {
     //-------------------------------------------------------------------------
     // Instance Variables
 
-    private final SplitPane mainSplit;
     private final TabPane tabPane;
     private final TextArea outputLog;
 
@@ -67,7 +66,7 @@ public class Debugger extends StackPane {
         outputLog.setFont(Font.font("Menlo", 14));
 
         // main split
-        mainSplit = new SplitPane();
+        SplitPane mainSplit = new SplitPane();
         mainSplit.setOrientation(Orientation.VERTICAL);
         mainSplit.getItems().add(tabPane);
         mainSplit.getItems().add(outputLog);

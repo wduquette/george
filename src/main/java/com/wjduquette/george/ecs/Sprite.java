@@ -1,7 +1,5 @@
 package com.wjduquette.george.ecs;
 
-import javafx.scene.image.Image;
-
 /**
  * A "sprite": a thing that can be drawn in a Cell over the terrain.
  * Sprites are associated with many other components, but almost always

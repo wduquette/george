@@ -1,10 +1,7 @@
 package com.wjduquette.george.widgets;
 
-import com.wjduquette.george.model.Cell;
 import javafx.event.Event;
 import javafx.event.EventType;
-import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
 
 /**
  * The user clicked on a map cell; notify listeners.

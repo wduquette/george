@@ -189,7 +189,7 @@ public final class KeyDataTable {
     public List<String> values(String pattern) {
         return table.entrySet().stream()
             .filter(e -> StringUtil.matches(pattern, e.getKey()))
-            .map(e -> e.getValue())
+            .map(Map.Entry::getValue)
             .toList();
     }
 }

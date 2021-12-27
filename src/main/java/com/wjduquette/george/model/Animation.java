@@ -57,14 +57,9 @@ public sealed interface Animation {
          * @param target The target
          */
         public Loc update(Entity target) {
-            if (target == null) {
-                step = numSteps;
-                return target.loc();
-            } else {
-                var cell = target.cell();
-                if (step < numSteps) { ++step; }
-                return new Loc(cell, step * deltaR, step * deltaC);
-            }
+            var cell = target.cell();
+            if (step < numSteps) { ++step; }
+            return new Loc(cell, step * deltaR, step * deltaC);
         }
 
         @Override

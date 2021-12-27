@@ -230,7 +230,10 @@ public class Entity {
      * @return true or false
      */
     public boolean isTransitionInProgress() {
-        return plan() != null && plan().peekFirst().isTransition();
+        return
+            plan() != null &&
+            !plan().isEmpty() &&
+            plan().peekFirst().isTransition();
     }
 
     //-------------------------------------------------------------------------

@@ -118,7 +118,7 @@ public abstract class Region {
     // Instance Variables
 
     // The application, for application resources.
-    protected App app;
+    protected final App app;
 
     // The resource string, for debugging.
     protected String resource = null;

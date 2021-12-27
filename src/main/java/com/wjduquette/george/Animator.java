@@ -17,8 +17,8 @@ import java.util.List;
  */
 public class Animator {
     private Animator() {} // Not instantiable.
-    public static int MAX_MESSAGES = 3;
-    public static long MESSAGE_DURATION = 40;
+    public static final int MAX_MESSAGES = 3;
+    public static final long MESSAGE_DURATION = 40;
 
     /**
      * Animates visual effects for the region.
@@ -41,8 +41,10 @@ public class Animator {
         switch (animation) {
             case Animation.Slide anim -> {
                 var target = region.get(anim.target());
-                var newLoc = anim.update(target);
-                target.put(newLoc);
+                if (target != null) {
+                    var newLoc = anim.update(target);
+                    target.put(newLoc);
+                }
             }
         }
 

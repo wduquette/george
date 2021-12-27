@@ -9,7 +9,7 @@ public sealed interface Step {
      * A transition is a step that simply waits for a transition animation to
      * complete, after which the next step will complete a logical action.
      */
-    public default boolean isTransition() {
+    default boolean isTransition() {
         return false;
     }
 

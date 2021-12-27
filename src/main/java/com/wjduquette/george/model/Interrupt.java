@@ -11,18 +11,18 @@ public sealed interface Interrupt {
     /**
      * Wait for a click before proceeding.
      */
-    public record WaitForInput() implements Interrupt {}
+    record WaitForInput() implements Interrupt {}
 
     /**
      * Interact with the given entity in a way appropriate for its kind.
      * E.g., for signs, display the sign's text in a box.
      * @param id The feature's entity ID
      */
-    public record Interact(long id) implements Interrupt {}
+    record Interact(long id) implements Interrupt {}
 
     /**
      * Move the party to the given point in the given region.
      * @param exit The exit to the new region.
      */
-    public record GoToRegion(Exit exit) implements Interrupt {}
+    record GoToRegion(Exit exit) implements Interrupt {}
 }

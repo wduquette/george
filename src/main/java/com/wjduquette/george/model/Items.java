@@ -27,7 +27,7 @@ public class Items {
     // Instance Variables
 
     // The game info table for items
-    protected KeyDataTable info;
+    protected final KeyDataTable info;
 
     // The factory functions, by info key.
     private final Map<String, Factory> factories =
