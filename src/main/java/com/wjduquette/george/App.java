@@ -258,11 +258,22 @@ public class App extends Application {
         region.query(Plan.class).forEach(e -> e.remove(Plan.class));
 
         // NEXT, transfer the party and its belongings to the new region.
-        // TODO: Move inventories (if they are stored in the main entity table)
+        // TODO: Handle multiple player characters properly
+        // This will require special logic to position the follower(s).
         Entity player = region.query(Player.class).findFirst().orElseThrow();
 
         region.getEntities().remove(player.id());
         newRegion.getEntities().add(player);
+
+        // Inventory
+        var inventory = region.query(Owner.class)
+            .filter(e -> e.owner().ownerId() == player.id())
+            .toList();
+
+        for (var item : inventory) {
+            region.getEntities().remove(item.id());
+            newRegion.getEntities().add(item);
+        }
 
         // Position the player.
         player.cell(point.get().cell());
