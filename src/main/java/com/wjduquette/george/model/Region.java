@@ -81,39 +81,6 @@ public abstract class Region {
         return !route.isEmpty() ? route.size() : Integer.MAX_VALUE;
     }
 
-    /**
-     * Returns a route from the mobile to the target cell that is passable to
-     * the mobile in terms of Region::isPassable.  The route will be empty if
-     * there's no way to get there.
-     * @param mobile The mobile
-     * @param target The target cell
-     * @return The route
-     */
-    public List<Cell> findPassableRoute(
-        Entity mobile,
-        Cell target)
-    {
-        return Region.findRoute(c -> isPassable(mobile, c),
-            mobile.cell(), target);
-    }
-
-    /**
-     * Finds the distance from the mobile to the target cell using
-     * Region::isPassable for this mobile. The distance will be
-     * Integer.MAX_VALUE if there's no way to get there.
-     * @param mobile The mobile
-     * @param target The target cell
-     * @return The distance
-     */
-    public int passableDistance(
-        Entity mobile,
-        Cell target)
-    {
-        return Region.distance(c -> isPassable(mobile, c),
-            mobile.cell(), target);
-    }
-
-
     //-------------------------------------------------------------------------
     // Instance Variables
 
@@ -397,6 +364,39 @@ public abstract class Region {
     public boolean isWalkable(Cell cell) {
         return getTerrainType(cell).isWalkable();
     }
+
+    /**
+     * Returns a route from the mobile to the target cell that is passable to
+     * the mobile in terms of Region::isPassable.  The route will be empty if
+     * there's no way to get there.
+     * @param mobile The mobile
+     * @param target The target cell
+     * @return The route
+     */
+    public List<Cell> findPassableRoute(
+        Entity mobile,
+        Cell target)
+    {
+        return Region.findRoute(c -> isPassable(mobile, c),
+            mobile.cell(), target);
+    }
+
+    /**
+     * Finds the distance from the mobile to the target cell using
+     * Region::isPassable for this mobile. The distance will be
+     * Integer.MAX_VALUE if there's no way to get there.
+     * @param mobile The mobile
+     * @param target The target cell
+     * @return The distance
+     */
+    public int passableDistance(
+        Entity mobile,
+        Cell target)
+    {
+        return Region.distance(c -> isPassable(mobile, c),
+            mobile.cell(), target);
+    }
+
 
 
     //-------------------------------------------------------------------------
