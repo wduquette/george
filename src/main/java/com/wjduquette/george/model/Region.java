@@ -510,6 +510,7 @@ public abstract class Region {
             .tagAsFeature()
             .sign(key)
             .label("sign")
+            .terrain(TerrainType.FENCE)
             .sprite(getInfo(key, "sprite"));
     }
 }
