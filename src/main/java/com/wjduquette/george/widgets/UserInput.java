@@ -35,5 +35,5 @@ public sealed interface UserInput {
     /**
      * Requests that the region map be displayed.
      */
-    record DisplayMap() implements UserInput {}
+    record ShowMap() implements UserInput {}
 }

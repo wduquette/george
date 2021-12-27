@@ -402,7 +402,7 @@ public class GameView extends StackPane {
                 selected.remove(Button.POINTER);
                 selected.add(Button.MAGNIFIER);
             }
-            case MAP -> fireInputEvent(new UserInput.DisplayMap());
+            case MAP -> fireInputEvent(new UserInput.ShowMap());
             default -> region.log("TODO: " + btn);
         }
     }

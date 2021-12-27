@@ -9,11 +9,6 @@ import com.wjduquette.george.ecs.Exit;
  */
 public sealed interface Interrupt {
     /**
-     * Wait for a click before proceeding.
-     */
-    record WaitForInput() implements Interrupt {}
-
-    /**
      * Interact with the given entity in a way appropriate for its kind.
      * E.g., for signs, display the sign's text in a box.
      * @param id The feature's entity ID

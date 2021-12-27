@@ -117,11 +117,7 @@ public class App extends Application {
     private void onUserInput(UserInputEvent event) {
         switch (event.getInput()) {
             case UserInput.ShowDebugger $ -> showDebugger();
-            case UserInput.DisplayMap $ -> {
-                displayMap();
-//                viewer.displayMap();
-//                interrupts.push(new Interrupt.WaitForInput());
-            }
+            case UserInput.ShowMap $ -> showMap();
             default -> userInput = event.getInput();
         }
     }
@@ -217,18 +213,12 @@ public class App extends Application {
 
     private void handleInterrupts(UserInput input) {
         switch (interrupts.pop()) {
-            case Interrupt.WaitForInput wait -> {
-                if (input == null) {
-                    interrupts.push(wait);
-                }
-            }
-
             case Interrupt.GoToRegion info -> gotoRegion(info.exit());
 
             case Interrupt.Interact feature ->
                 // At present, the only kind of interaction we support is
                 // describing a feature.  So do that.
-                describeFeature(feature.id());
+                showFeature(feature.id());
         }
     }
 
@@ -288,7 +278,7 @@ public class App extends Application {
      * Signs and Mannikins.
      * @param id The feature entity's ID
      */
-    public void describeFeature(long id) {
+    public void showFeature(long id) {
         var entity = region.get(id);
 
         if (entity.sign() != null) {
@@ -320,7 +310,7 @@ public class App extends Application {
         viewer.getChildren().add(panel);
     }
 
-    public void displayMap() {
+    public void showMap() {
         viewer.repaint();
         var panel = new MapPanel(this);
         looper.stop();
