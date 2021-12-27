@@ -1,11 +1,14 @@
 package com.wjduquette.george;
 
+import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.regions.FloobhamRegion;
 import com.wjduquette.george.regions.OverworldRegion;
 import com.wjduquette.george.util.Looper;
+import com.wjduquette.george.util.RandomPlus;
 import com.wjduquette.george.widgets.Debugger;
+import com.wjduquette.george.widgets.SimplePanel;
 import com.wjduquette.george.widgets.UserInput;
 import com.wjduquette.george.widgets.UserInputEvent;
 import javafx.application.Application;
@@ -13,19 +16,20 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Stack;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class App extends Application {
     //-------------------------------------------------------------------------
     // Constants
 
+    /** RNG for the game. */
+    public static final RandomPlus RANDOM = new RandomPlus();
+
     // How often the game loop executes
     private static final int LOOP_MSECS = 50;
     private static final int DEBUGGER_REFRESH_TICKS = 10;
+
 
     //-------------------------------------------------------------------------
     // Instance Variables
@@ -221,16 +225,13 @@ public class App extends Application {
                 }
             }
 
-            case Interrupt.Interact feature -> {
+            case Interrupt.GoToRegion info -> gotoRegion(info.exit());
+
+            case Interrupt.Interact feature ->
                 // At present, the only kind of interaction we support is
                 // describing a feature.  So do that.
-                viewer.describeFeature(feature.id());
+                describeFeature(feature.id());
 
-                // Wait for click.
-//                interrupts.add(new Interrupt.WaitForInput());
-            }
-
-            case Interrupt.GoToRegion info -> gotoRegion(info.exit());
         }
     }
 
@@ -285,6 +286,43 @@ public class App extends Application {
         viewer.setRegion(region);
     }
 
+    /**
+     * Describes a feature, based on what it is.  Supported features include
+     * Signs and Mannikins.
+     * @param id The feature entity's ID
+     */
+    public void describeFeature(long id) {
+        var entity = region.get(id);
+
+        if (entity.sign() != null) {
+            var key = entity.sign().key();
+            var text = region.getInfo(key, "text");
+
+            displayTextBlock(entity, text);
+        } else if (entity.mannikin() != null) {
+            var key = entity.mannikin().key();
+            StringBuilder buff = new StringBuilder();
+            buff.append(region.getInfo(key, "label")).append("\n\n");
+            buff.append(region.getInfo(key, "description")).append("\n\n");
+
+            List<String> greetings = region.info().values(key + ".greeting*");
+            buff.append(RANDOM.pickFrom(greetings));
+
+            displayTextBlock(entity, buff.toString());
+        }
+    }
+
+    public void displayTextBlock(Entity entity, String text) {
+        viewer.repaint();
+        var panel = new SimplePanel(this, entity, text);
+        looper.stop();
+        panel.setOnClose(() -> {
+            viewer.getChildren().remove(panel);
+            looper.run();
+        });
+        viewer.getChildren().add(panel);
+    }
+
     //-------------------------------------------------------------------------
     // Region Definitions
 
@@ -324,6 +362,10 @@ public class App extends Application {
      */
     public Items items() {
         return items;
+    }
+
+    public SpriteSet sprites() {
+        return Sprites.ALL;
     }
 
     //-------------------------------------------------------------------------
