@@ -253,6 +253,10 @@ public class GameView extends StackPane {
             for (int c = colMin; c < colMax; c++) {
                 TerrainTile tile = region.getTerrain(r, c);
                 canvas.drawImage(tile.image(), rc2xy(r, c));
+
+                // TODO: for now, mark a cell "seen" if it has appeared in
+                // the rendered area.
+                region.markSeen(r,c);
             }
         }
 
@@ -320,13 +324,17 @@ public class GameView extends StackPane {
                 var x = xLeft + c * cellSize;
                 var y = yTop + r * cellSize;
 
-                var color = switch (region.getTerrainType(cell)) {
-                    case NONE -> Color.BLACK;
-                    case UNKNOWN -> Color.BLACK;
-                    case WATER -> Color.BLUE;
-                    case FLOOR -> Color.SANDYBROWN;
-                    default -> Color.color(0.2, 0.2, 0.2);
-                };
+                Color color = Color.WHITE;
+
+                if (region.isSeen(r, c)) {
+                    color = switch (region.getTerrainType(cell)) {
+                        case NONE -> Color.BLACK;
+                        case UNKNOWN -> Color.BLACK;
+                        case WATER -> Color.BLUE;
+                        case FLOOR -> Color.SANDYBROWN;
+                        default -> Color.color(0.2, 0.2, 0.2);
+                    };
+                }
 
                 canvas.gc().setFill(color);
                 canvas.gc().fillRect(x, y, cellSize, cellSize);

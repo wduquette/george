@@ -106,6 +106,10 @@ public class DataDrivenRegion extends Region {
         readTerrainLayer(map);
         readFeaturesLayer(map);
         readObjects(map);
+
+        for (int i = 0; i < height*width; i++) {
+            seen.add(false);
+        }
     }
 
     private void readTerrainLayer(TiledMapReader map) {

@@ -111,6 +111,10 @@ public abstract class Region {
     // from the terrainTileSet to match the TiledMap's TERRAIN_LAYER.
     protected final ArrayList<TerrainTile> terrain = new ArrayList<>();
 
+    // The Seen List: true if the tile has been seen by the player, and false
+    // otherwise.
+    protected final ArrayList<Boolean> seen = new ArrayList<>();
+
     // The Entities Table
     protected final EntityTable entities = new EntityTable();
 
@@ -237,6 +241,41 @@ public abstract class Region {
             return null;
         } else {
             return terrain.get(row * width + col);
+        }
+    }
+
+    /**
+     * Determines whether the cell has been seen or not.
+     * @param row The row index, 0 to height - 1
+     * @param col The column index, 0 to width - 1
+     * @return true or false
+     */
+    public boolean isSeen(int row, int col) {
+        if (row < 0 || row >= height || col < 0 || col >= width) {
+            return false;
+        } else {
+            return seen.get(row * width + col);
+        }
+    }
+
+    /**
+     * Determines whether the cell has been seen or not.
+     * @param cell The cell
+     * @return true or false
+     */
+    public boolean isSeen(Cell cell) {
+        return isSeen(cell.row(), cell.col());
+    }
+
+    /**
+     * Marks a cell seen.
+     * @param row The row
+     * @param col The column
+     * @return true or false
+     */
+    public void markSeen(int row, int col) {
+        if (row >= 0 && row < height && col >= 0 && col < width) {
+            seen.set(row * width + col, true);
         }
     }
 
