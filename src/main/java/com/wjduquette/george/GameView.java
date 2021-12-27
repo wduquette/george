@@ -6,6 +6,7 @@ import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.util.RandomPlus;
 import com.wjduquette.george.widgets.CanvasPane;
+import com.wjduquette.george.widgets.SimplePanel;
 import com.wjduquette.george.widgets.UserInput;
 import com.wjduquette.george.widgets.UserInputEvent;
 import javafx.application.Platform;
@@ -161,6 +162,10 @@ public class GameView extends StackPane {
         });
     }
 
+    public Region getRegion() {
+        return region;
+    }
+
     /**
      * Describes a feature, based on what it is.  Supported features include
      * Signs and Mannikins.
@@ -190,54 +195,59 @@ public class GameView extends StackPane {
 
     public void displayTextBlock(Entity entity, String text) {
         repaint();
-        var xLeft = 50.0;
-        var yTop = 50.0;
-        var width = canvas.getWidth() - 100;
-        var height= canvas.getHeight() - 100;
+        System.out.println("GameView size=" + getWidth() + "x" + getHeight());
+        var panel = new SimplePanel(this, entity, text);
+        panel.setOnClose(() -> getChildren().remove(panel));
+        getChildren().add(panel);
 
-        targets.clear();
-        var box = new BoundingBox(0, 0, canvas.getWidth(), canvas.getHeight());
-        var input = new UserInput.Continue();
-        targets.add(new ClickTarget(box, () -> fireInputEvent(input)));
 
-        // The background
-        canvas.gc().setFill(Color.DARKBLUE);
-        canvas.gc().fillRect(xLeft, yTop, width, height);
-
-        // The image
-        var ix = xLeft + 20;
-        var iy = yTop + 40;
-        var terrain = region.getTerrain(entity.cell());
-        canvas.gc().drawImage(ImageUtils.embiggen(terrain.image(), 2), ix, iy);
-        canvas.gc().drawImage(ImageUtils.embiggen(img(entity.sprite()), 2), ix, iy);
-
-        // The "click to continue"
-        canvas.gc().setFill(Color.WHITE);
-        canvas.gc().setFont(Font.font("Helvetica", 14));
-        canvas.gc().fillText("Click to continue...",
-            xLeft + 20,
-            yTop + height - 20);
-
-        // The game text
-        Text block = new Text(text);
-        block.setFont(Font.font("Helvetica", 18));
-        block.setWrappingWidth(width - 80);
-        block.setFill(Color.WHITE);
-        block.setOnMouseClicked(evt -> fireInputEvent(new UserInput.Continue()));
-        StackPane.setAlignment(block, Pos.TOP_LEFT);
-        StackPane.setMargin(block, new Insets(
-            yTop + 40,            // Top
-            xLeft + width - 20,   // Right
-            yTop + height - 40,   // Bottom
-            xLeft + 130));        // Left
-
-        getChildren().setAll(canvas, block);
+//        var xLeft = 50.0;
+//        var yTop = 50.0;
+//        var width = canvas.getWidth() - 100;
+//        var height= canvas.getHeight() - 100;
+//
+//        targets.clear();
+//        var box = new BoundingBox(0, 0, canvas.getWidth(), canvas.getHeight());
+//        var input = new UserInput.Continue();
+//        targets.add(new ClickTarget(box, () -> fireInputEvent(input)));
+//
+//        // The background
+//        canvas.gc().setFill(Color.DARKBLUE);
+//        canvas.gc().fillRect(xLeft, yTop, width, height);
+//
+//        // The image
+//        var ix = xLeft + 20;
+//        var iy = yTop + 40;
+//        var terrain = region.getTerrain(entity.cell());
+//        canvas.gc().drawImage(ImageUtils.embiggen(terrain.image(), 2), ix, iy);
+//        canvas.gc().drawImage(ImageUtils.embiggen(img(entity.sprite()), 2), ix, iy);
+//
+//        // The "click to continue"
+//        canvas.gc().setFill(Color.WHITE);
+//        canvas.gc().setFont(Font.font("Helvetica", 14));
+//        canvas.gc().fillText("Click to continue...",
+//            xLeft + 20,
+//            yTop + height - 20);
+//
+//        // The game text
+//        Text block = new Text(text);
+//        block.setFont(Font.font("Helvetica", 18));
+//        block.setWrappingWidth(width - 80);
+//        block.setFill(Color.WHITE);
+//        block.setOnMouseClicked(evt -> fireInputEvent(new UserInput.Continue()));
+//        StackPane.setAlignment(block, Pos.TOP_LEFT);
+//        StackPane.setMargin(block, new Insets(
+//            yTop + 40,            // Top
+//            xLeft + width - 20,   // Right
+//            yTop + height - 40,   // Bottom
+//            xLeft + 130));        // Left
+//
+//        getChildren().setAll(canvas, block);
     }
 
     public void repaint() {
         canvas.clear();
         targets.clear();
-        getChildren().setAll(canvas);
 
         // Don't recompute bounds if the player is executing a plan.
         // TODO: Not sure if this is want I want.  At the very least, I need

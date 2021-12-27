@@ -95,6 +95,8 @@ public class App extends Application {
 
         // NEXT, configure the GUI
         Scene scene = new Scene(viewer, 800, 600);
+        stage.setMinWidth(800);
+        stage.setMinHeight(600);
         stage.setTitle("George's Saga!");
         stage.setScene(scene);
         stage.show();
@@ -225,7 +227,7 @@ public class App extends Application {
                 viewer.describeFeature(feature.id());
 
                 // Wait for click.
-                interrupts.add(new Interrupt.WaitForInput());
+//                interrupts.add(new Interrupt.WaitForInput());
             }
 
             case Interrupt.GoToRegion info -> gotoRegion(info.exit());
