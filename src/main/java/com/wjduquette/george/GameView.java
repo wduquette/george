@@ -3,7 +3,6 @@ package com.wjduquette.george;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.*;
-import com.wjduquette.george.util.RandomPlus;
 import com.wjduquette.george.widgets.CanvasPane;
 import com.wjduquette.george.widgets.UserInput;
 import com.wjduquette.george.widgets.UserInputEvent;
@@ -212,86 +211,6 @@ public class GameView extends StackPane {
             drawLogMessage(i, messages.get(i).logMessage().message());
         }
     }
-
-    //-------------------------------------------------------------------------
-    // Map Display
-
-    private static final double MAP_MARGIN = 50;
-
-    public void displayMap() {
-        // FIRST, prepare the view
-        repaint();
-        targets.clear();
-
-        // NEXT, prepare to continue on user input
-        // TODO: This appears two places; make it a function.
-        var box = new BoundingBox(0, 0, canvas.getWidth(), canvas.getHeight());
-        targets.add(new ClickTarget(box, () -> fireInputEvent(new UserInput.Continue())));
-
-        // NEXT, how big should we draw the map?  How many pixels per cell?
-        var xSize = mapCellSize(canvas.getWidth(), region.getWidth());
-        var ySize = mapCellSize(canvas.getHeight(), region.getHeight());
-        var cellSize = Math.min(xSize, ySize);
-
-        var mapWidth = region.getWidth() * cellSize;
-        var mapHeight = region.getHeight() * cellSize;
-        var xLeft = (canvas.getWidth() - mapWidth)/2.0;
-        var yTop = (canvas.getHeight() - mapHeight)/2.0;
-
-        canvas.gc().setFill(Color.BLACK);
-        canvas.gc().fillRect(
-            xLeft - 5, yTop - 5,
-            mapWidth + 10, mapHeight + 10);
-
-        for (int r = 0; r < region.getHeight(); r++) {
-            for (int c = 0; c < region.getWidth(); c++) {
-                var cell = new Cell(r,c);
-                var x = xLeft + c * cellSize;
-                var y = yTop + r * cellSize;
-
-                Color color = Color.WHITE;
-
-                if (region.isSeen(r, c)) {
-                    color = switch (region.getTerrainType(cell)) {
-                        case NONE -> Color.BLACK;
-                        case UNKNOWN -> Color.BLACK;
-                        case WATER -> Color.BLUE;
-                        case FLOOR -> Color.SANDYBROWN;
-                        default -> Color.color(0.2, 0.2, 0.2);
-                    };
-                }
-
-                canvas.gc().setFill(color);
-                canvas.gc().fillRect(x, y, cellSize, cellSize);
-            }
-        }
-
-        // NEXT, draw the player/leader a little bigger than its cell.
-        var player = region.query(Player.class).findFirst().orElseThrow();
-
-        var x = xLeft + player.cell().col() * cellSize;
-        var y = yTop + player.cell().row() * cellSize;
-
-        canvas.gc().setFill(Color.CYAN);
-        canvas.gc().fillRect(x - 1, y - 1, cellSize + 2, cellSize + 2);
-
-    }
-
-    private double mapCellSize(double numPixels, double numCells) {
-        numPixels = numPixels - 2*MAP_MARGIN;
-
-        if (numCells >= numPixels) {
-            return 1;
-        }
-
-        var size = 1;
-        while (size*numCells < numPixels) {
-            size++;
-        }
-
-        return size - 1;
-    }
-
 
     //-------------------------------------------------------------------------
     // Button Bar Display
