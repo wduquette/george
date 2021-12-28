@@ -287,15 +287,6 @@ public class App extends Application {
 
             displayTextBlock(entity, text);
         } else if (entity.mannikin() != null) {
-//            var key = entity.mannikin().key();
-//            StringBuilder buff = new StringBuilder();
-//            buff.append(region.getInfo(key, "label")).append("\n\n");
-//            buff.append(region.getInfo(key, "description")).append("\n\n");
-//
-//            List<String> greetings = region.info().values(key + ".greeting*");
-//            buff.append(RANDOM.pickFrom(greetings));
-//
-//            displayTextBlock(entity, buff.toString());
             var dialog = region.findDialog(entity.id());
 
             if (dialog.isPresent()) {
