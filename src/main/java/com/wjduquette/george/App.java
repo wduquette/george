@@ -288,7 +288,7 @@ public class App extends Application {
             showPanel(new FeaturePanel(this, entity, text));
         } else if (entity.mannikin() != null) {
             region.findDialog(entity.id()).ifPresent(dlg ->
-                showPanel(new NPCDialogPanel(this, dlg)));
+                showPanel(new DialogPanel(this, dlg)));
         }
     }
 

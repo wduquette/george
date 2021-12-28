@@ -377,7 +377,7 @@ public abstract class Region {
      * @param id The entity ID
      * @return The dialog
      */
-    public Optional<NPCDialog> findDialog(long id) {
+    public Optional<Dialog> findDialog(long id) {
         var entity = get(id);
 
         return entity.mannikin() != null

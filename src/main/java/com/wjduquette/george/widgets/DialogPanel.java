@@ -2,7 +2,7 @@ package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.App;
 import com.wjduquette.george.graphics.ImageUtils;
-import com.wjduquette.george.model.NPCDialog;
+import com.wjduquette.george.model.Dialog;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
@@ -12,12 +12,11 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * A panel for talking to NPCs.
  */
-public class NPCDialogPanel extends CanvasPane implements Panel {
+public class DialogPanel extends CanvasPane implements Panel {
     //-------------------------------------------------------------------------
     // Constants
 
@@ -38,7 +37,7 @@ public class NPCDialogPanel extends CanvasPane implements Panel {
     private final App app;
 
     // The data model
-    private final NPCDialog dialog;
+    private final Dialog dialog;
 
     // Interaction widgets
     private final List<Node> widgets = new ArrayList<>();
@@ -54,7 +53,7 @@ public class NPCDialogPanel extends CanvasPane implements Panel {
      * @param app The application
      * @param dialog The dialog
      */
-    public NPCDialogPanel(App app, NPCDialog dialog) {
+    public DialogPanel(App app, Dialog dialog) {
         this.app = app;
         this.dialog = dialog;
         setPadding(new Insets(INSET));
@@ -148,7 +147,7 @@ public class NPCDialogPanel extends CanvasPane implements Panel {
     }
 
     // Handle the response, and close the panel when the dialog is complete.
-    private void onResponse(NPCDialog.Response response) {
+    private void onResponse(Dialog.Response response) {
         dialog.respond(response);
 
         if (dialog.isComplete()) {

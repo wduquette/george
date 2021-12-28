@@ -5,7 +5,6 @@ import com.wjduquette.george.ecs.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * A dialog class for simple mannikins. The mannikin will pick a speech
@@ -13,10 +12,10 @@ import java.util.Optional;
  * more speeches the player hasn't seen.  A "goodbye" response is always
  * available.
  */
-public class MannikinDialog implements NPCDialog {
+public class MannikinDialog extends AbstractDialog {
     private enum State {
         CONTINUE,
-        GOODBYE
+        END
     }
     private static final List<Response> RESPONSES = List.of(
         new Response(State.CONTINUE, "Is that so?"),
@@ -31,20 +30,11 @@ public class MannikinDialog implements NPCDialog {
     //-------------------------------------------------------------------------
     // Instance Variables
 
-    // The region
-    private final Region region;
-
-    // The Mannikin entity
-    private final Entity npc;
-
-    // The Mannikin's info key
-    private final String key;
-
-    // The Mannkin's speeches
+    // The Mannikin's speeches
     private final List<String> speeches = new ArrayList<>();
 
-    // Is the dialog at an end?
-    private boolean isComplete = false;
+    // The dialog state
+    private State state = State.CONTINUE;
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -55,40 +45,18 @@ public class MannikinDialog implements NPCDialog {
      * @param npc The entity
      */
     public MannikinDialog(Region region, Entity npc) {
-        this.region = region;
-        this.npc = npc;
-        this.key = npc.mannikin().key();
+        super(region, npc, npc.mannikin().key());
 
         // FIRST, get the text strings.
-        speeches.addAll(region.info().values(key + ".greeting*"));
+        speeches.addAll(region.info().values(key() + ".greeting*"));
     }
 
     //-------------------------------------------------------------------------
     // NPCDialog API
 
     @Override
-    public String getName() {
-        return region.getInfo(key, "label");
-    }
-
-    @Override
-    public Optional<String> getDescription() {
-        return Optional.of(region.getInfo(key, "description"));
-    }
-
-    @Override
-    public String foregroundSprite() {
-        return npc.sprite().name();
-    }
-
-    @Override
-    public String backgroundSprite() {
-        return region.getTerrain(npc.cell()).name();
-    }
-
-    @Override
     public boolean isComplete() {
-        return isComplete;
+        return state == State.END;
     }
 
     @Override
@@ -104,13 +72,13 @@ public class MannikinDialog implements NPCDialog {
             list.add(App.RANDOM.pickFrom(RESPONSES));
         }
 
-        list.add(new Response(State.GOODBYE, "Goodbye."));
+        list.add(new Response(State.END, "Goodbye."));
 
         return list;
     }
 
     @Override
     public void respond(Response response) {
-        isComplete = response.tag() == State.GOODBYE;
+        state = (State)response.state();
     }
 }

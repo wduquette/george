@@ -1,18 +1,15 @@
 package com.wjduquette.george.model;
 
-import javafx.scene.image.Image;
-
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
- * An NPC Dialog is an object that provides the data model for a dialog
- * interaction with a normal NPC (as opposed to, say, a shopkeeper).  It
- * provides the necessary information for NPCDialogPanel to manage the dialog
+ * A Dialog is an object that provides the data model for a dialog
+ * interaction between the user and some entity, e.g., an NPC.
+ * It provides the necessary information to DialogPanel to manage the dialog
  * with the user.
  */
-public interface NPCDialog {
+public interface Dialog {
     /**
      * Returns the NPC's name.
      * @return the name
@@ -67,8 +64,8 @@ public interface NPCDialog {
 
     /**
      * A response the player can make.
-     * @param tag An identifying tag
+     * @param state The next dialog state
      * @param text The text to display
      */
-    record Response(Object tag , String text) {}
+    record Response(Object state , String text) {}
 }

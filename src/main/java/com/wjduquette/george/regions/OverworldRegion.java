@@ -7,7 +7,6 @@ import com.wjduquette.george.tmx.TiledMapReader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 public class OverworldRegion extends DataDrivenRegion {
@@ -39,7 +38,7 @@ public class OverworldRegion extends DataDrivenRegion {
     }
 
     @Override
-    public final Optional<NPCDialog> findDialog(long id) {
+    public final Optional<Dialog> findDialog(long id) {
         var entity = get(id);
         if (entity.mannikin() != null &&
             entity.mannikin().key().equals("overworld.tutor"))
@@ -53,7 +52,7 @@ public class OverworldRegion extends DataDrivenRegion {
     //-------------------------------------------------------------------------
     // NPCs
 
-    private class TutorDialog implements NPCDialog {
+    private class TutorDialog extends AbstractDialog {
         enum State {
             START,
             LEFTCLICK,
@@ -65,37 +64,22 @@ public class OverworldRegion extends DataDrivenRegion {
         //---------------------------------------------------------------------
         // Instance Variables
 
-        private final Entity npc;
-        private final String key;
         private State state = State.START;
 
         //---------------------------------------------------------------------
         // Constructor
 
         TutorDialog(Entity npc) {
-            this.npc = npc;
-            this.key = npc.mannikin().key();
+            super(OverworldRegion.this, npc, npc.mannikin().key());
         }
 
         //---------------------------------------------------------------------
         // NPCDialog API
 
-        @Override public String getName() {
-            return "A Man in Black";
-        }
+        @Override public String getName() { return "A Man in Black"; }
 
         @Override public Optional<String> getDescription() {
             return Optional.empty();
-        }
-
-        @Override
-        public String foregroundSprite() {
-            return npc.sprite().name();
-        }
-
-        @Override
-        public String backgroundSprite() {
-            return getTerrain(npc.cell()).name();
         }
 
         @Override
@@ -105,7 +89,7 @@ public class OverworldRegion extends DataDrivenRegion {
 
         @Override
         public String getDisplayText() {
-            return getInfo(key, state.toString().toLowerCase());
+            return getInfo(key(), state.toString().toLowerCase());
         }
 
         @Override
@@ -131,7 +115,7 @@ public class OverworldRegion extends DataDrivenRegion {
 
         @Override
         public void respond(Response response) {
-            state = (State)response.tag();
+            state = (State)response.state();
         }
     }
 }
