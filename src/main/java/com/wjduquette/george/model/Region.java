@@ -271,7 +271,6 @@ public abstract class Region {
      * Marks a cell seen.
      * @param row The row
      * @param col The column
-     * @return true or false
      */
     public void markSeen(int row, int col) {
         if (row >= 0 && row < height && col >= 0 && col < width) {
@@ -370,6 +369,20 @@ public abstract class Region {
 
         var tile = getTerrain(cell);
         return "You see: " + tile.description();
+    }
+
+    /**
+     * Gets an NPC dialog for the given entity.  Subclasses can override to
+     * provide custom dialogs.
+     * @param id The entity ID
+     * @return The dialog
+     */
+    public Optional<NPCDialog> findDialog(long id) {
+        var entity = get(id);
+
+        return entity.mannikin() != null
+            ? Optional.of(new MannikinDialog(this, entity))
+            : Optional.empty();
     }
 
     /**

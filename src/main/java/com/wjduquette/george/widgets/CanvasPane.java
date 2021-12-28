@@ -101,6 +101,29 @@ public class CanvasPane extends Pane {
         gc().drawImage(img, point.getX(), point.getY());
     }
 
+    /**
+     * Draws the text in the block using the given line spacing in pixels.  The
+     * block is split into lines, and each line is drawn <i>spacing</i> pixels
+     * below its predecessor.  Drawing uses the current text parameters.
+     * @param text The text block
+     * @param tx The x coordinate
+     * @param ty The first y coordinate
+     * @param spacing The spacing
+     */
+    public void fillTextBlock(
+        String text,
+        double tx,
+        double ty,
+        double spacing)
+    {
+        String[] lines = text.split("\n");
+
+        for (var line : lines) {
+            gc().fillText(line, tx, ty);
+            ty += spacing;
+        }
+    }
+
     //-------------------------------------------------------------------------
     // Coordinate Conversion Helpers
 
