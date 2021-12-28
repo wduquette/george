@@ -12,7 +12,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 /**
- * FeaturePanel implements a basic sign or mannikin panel.
+ * FeaturePanel implements a basic sign or other feature description
+ * panel.
  */
 public class FeaturePanel extends CanvasPane implements Panel {
     private final static double INSET = 50;
@@ -58,15 +59,16 @@ public class FeaturePanel extends CanvasPane implements Panel {
         gc().drawImage(ImageUtils.embiggen(sprite, 2), ix, iy);
 
         // Draw the text
+        var tx = 30 + 2*terrain.image().getHeight() + 30;
         gc().setTextBaseline(VPos.TOP);
         gc().setFill(Color.WHITE);
-        gc().setFont(Font.font("Helvetica", 18));
-        gc().fillText(text, 30 + 2*terrain.image().getHeight() + 30, 30);
+        gc().setFont(Font.font("Helvetica", 16));
+        fillTextBlock(text, tx, 30, 20);
 
         // Draw the "Click to continue..."
-        gc().setFill(Color.WHITE);
-        gc().setFont(Font.font("Helvetica", 14));
+        gc().setFill(Color.YELLOW);
+        gc().setFont(Font.font("Helvetica", 16));
         gc().setTextBaseline(VPos.BASELINE);
-        gc().fillText("Click to continue...", 30, h - 30);
+        gc().fillText("Click to continue...", tx, h - 50);
     }
 }
