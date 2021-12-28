@@ -70,7 +70,7 @@ to Paradise Valley."
 # Joe Pro
 
 %string joe.label Joe Pro
-%string joe.sprite mobile.peasant4
+%string joe.sprite mobile.joepro
 %string joe.description He's lean but not mean.
 
 %block joe.greeting

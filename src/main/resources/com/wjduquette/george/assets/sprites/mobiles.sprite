@@ -20,6 +20,7 @@
 %sprite peasant5
 %sprite princess
 %sprite wizard2
+%sprite joepro
 
 # Animals
 %file mobile_animal.png
