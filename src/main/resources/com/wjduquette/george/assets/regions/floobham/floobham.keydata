@@ -209,25 +209,33 @@ direction.
 %string fillip.sprite mobile.fillmore
 
 %block fillip.description
-He's behind the bar, so he must be the innkeeper...but what's with the
-lab coat?
+He's behind the bar, so he must be the innkeeper...but what's with the lab coat?
 %end
 
-%block fillip.greeting
+%block fillip.start
 The innkeeper is polishing a glass.  "Howdy, stranger," he says.
-
-"Look, we both know how this works.  You talk to me
-so you can pretend to take a room for the night,
-and rest up and regain your health, and you talk to 
-those guys over there to hear rumors and get quests."
+"Look, we both know how this works.  You talk to me so you can
+pretend to take a room for the night, and rest up and regain
+your health, and you talk to those guys over there to hear
+rumors and get quests."
 
 He grunts.
 
-"I don't know why spending the night should restore
-all of your health; the beds here are good quality,
-but there's nothing magical about them.  Still, 
-there it is: narrative causality at work.  Who I
-am to fight it?"
+"It's just narrative causality at work.  Who am I to fight it?"
+%end
+
+%block fillip.spend_night
+Fillip waves the hand that's holding the bar towel.
+
+"Tweedle-eedle-eedle," he says.  "The lights go down and
+come back up.  It's morning again. Woohoo."
+%end
+
+%block fillip.rumour
+Fillip jerks his head at the folks at the tables.
+
+"I already told you, that's what those guys are for.
+Take it up with them."
 %end
 
 #------------------------------------------------------------------------------

@@ -449,7 +449,16 @@ public abstract class Region {
             mobile.cell(), target);
     }
 
-
+    /**
+     * Gets whether the target cell is in the line of sight of the mobile.
+     * @param mobile The mobile
+     * @param target The target cell
+     * @return true or false
+     */
+    public boolean isInLineOfSight(Entity mobile, Cell target) {
+        // TODO: Do line of sight computation
+        return true;
+    }
 
     //-------------------------------------------------------------------------
     // Entity Factories

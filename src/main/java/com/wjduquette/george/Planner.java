@@ -93,10 +93,7 @@ public class Planner {
             return;
         }
 
-        // FIRST, how far away is the target cell?
-        var distance = region.passableDistance(player, targetCell);
-
-        // NEXT, what's there?  Could be a normal cell, a feature, or a mobile
+        // FIRST, what's there?  Could be a normal cell, a feature, or a mobile
         var plan = new Plan();
         player.put(plan);
 
@@ -111,6 +108,8 @@ public class Planner {
             Entity entity = result.get();
 
             if (entity.door() != null) {
+                var distance = region.passableDistance(player, targetCell);
+
                 if (distance > MAX_PHYSICAL_RANGE) {
                     region.log("That's too far.");
                 } else if (entity.door().isClosed()) {
@@ -119,6 +118,8 @@ public class Planner {
                     plan.add(new Step.CloseDoor(entity.id()));
                 }
             } else if (entity.chest() != null) {
+                var distance = region.passableDistance(player, targetCell);
+
                 if (distance > MAX_PHYSICAL_RANGE) {
                     region.log("That's too far.");
                 } else if (entity.chest().isClosed()) {
@@ -127,12 +128,18 @@ public class Planner {
                     plan.add(new Step.CloseChest(entity.id()));
                 }
             } else if (entity.mannikin() != null) {
-                if (distance > MAX_TALKING_RANGE) {
+                var distance = player.cell().distance(targetCell);
+
+                if (distance > MAX_TALKING_RANGE ||
+                    !region.isInLineOfSight(player, targetCell))
+                {
                     region.log("That's too far.");
                 } else {
                     plan.add(new Step.Interact(entity.id()));
                 }
             } else if (entity.sign() != null) {
+                var distance = region.passableDistance(player, targetCell);
+
                 if (distance > MAX_PHYSICAL_RANGE) {
                     region.log("That's too far.");
                 } else {
