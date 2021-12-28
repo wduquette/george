@@ -373,6 +373,20 @@ public abstract class Region {
     }
 
     /**
+     * Gets an NPC dialog for the given entity.  Subclasses can override to
+     * provide custom dialogs.
+     * @param id The entity ID
+     * @return The dialog
+     */
+    public Optional<NPCDialog> findDialog(long id) {
+        var entity = get(id);
+
+        return entity.mannikin() != null
+            ? Optional.of(new MannikinDialog(this, entity))
+            : Optional.empty();
+    }
+
+    /**
      * Terrain Assessor function.  From a movement planning perspective, can
      * this mobile expect to be able to enter the given cell given its current
      * capabilities and the cell's content?
