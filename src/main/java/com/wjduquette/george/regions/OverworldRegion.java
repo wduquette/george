@@ -113,12 +113,14 @@ public class OverworldRegion extends DataDrivenRegion {
             List<Response> result = new ArrayList<>();
 
             switch (state) {
-                case START ->
-                    result.add(new Response(State.LEFTCLICK, "Left-click?"));
+                case START -> result.add(new Response(State.LEFTCLICK,
+                    "What do you mean \"Left-click\"?"));
                 case LEFTCLICK ->
-                    result.add(new Response(State.INTERACT, "Interact?"));
+                    result.add(new Response(State.INTERACT,
+                        "Interact?"));
                 case INTERACT ->
-                    result.add(new Response(State.FINAL, "Anything Else?"));
+                    result.add(new Response(State.FINAL,
+                        "Anything else I should know?"));
                 default -> {}
             }
 
