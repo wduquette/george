@@ -70,9 +70,9 @@ you gotta right-click."
 "Interact?" you say. "That's an odd sort of word."
 
 "Yeah, like if you want to read a sign or open a door.
-Right-click on it, and you'll be right.  I wouldn't
-put you on the bus to Abilene. You can right-click on
-one of these here signs if you don't believe me."
+Right-click on it, and you'll be right.  You can right-click
+on one of these here signs if you don't believe me—I
+wouldn't put you on a bus to Abilene, you know."
 
 He scratches his chin.
 
@@ -82,12 +82,14 @@ He scratches his chin.
 %block tutor.final
 "Is there anything else?" you say.
 
-"No, that about wraps it up.  You might head on into
+"If you want to know what something is, use that magnifier
+down there.  Click it, and then the thing you're curious
+about."
+
+He shrugs.  "That's about it.  You might head on into
 town, talk to the locals, if you're minded to have
 an adventure or two."
 
-He nods a goodbye.
-
-"You'll see me around, here and there."
+He nods a goodbye. "You'll see me around, here and there."
 %end
 

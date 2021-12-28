@@ -74,6 +74,8 @@ to Paradise Valley."
 %string joe.description He's lean but not mean.
 
 %block joe.greeting
+The man nods in greeting.
+
 "You gotta be able to shoot straight, and you gotta be
 able to think straight.  A good pair of boots doesn't
 hurt either."
@@ -83,15 +85,13 @@ hurt either."
 
 %string samwise.label Samwise
 %string samwise.sprite mobile.peasant1
-%string samwise.description This peasant's smock kind of fades into the grass.
+%string samwise.description His smock kind of fades into the grass.
 
 %block samwise.greeting
 "You can't see me: I'm a ninja!"
 %end
 
 # Generic Townsman
-#
-# TODO: Really, we'd like a number of random things here.
 
 %string townsman.label Townsman
 %string townsman.sprite mobile.peasant4

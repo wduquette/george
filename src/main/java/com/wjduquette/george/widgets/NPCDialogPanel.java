@@ -12,6 +12,7 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A panel for talking to NPCs.
@@ -21,6 +22,11 @@ public class NPCDialogPanel extends CanvasPane implements Panel {
     // Constants
 
     private final static double INSET = 50;
+    private final static double NAME_SIZE = 24;
+    private final static double NAME_SPACING = 30;
+    private final static double DESCRIPTION_SIZE = 12;
+    private final static double DESCRIPTION_SPACING = 26;
+    private final static double MAIN_SIZE = 16;
     private final static double MAIN_SPACING = 20;
     private final static double RESPONSE_SIZE = 16;
     private final static double RESPONSE_SPACING = 30;
@@ -90,7 +96,28 @@ public class NPCDialogPanel extends CanvasPane implements Panel {
         var ty = 30.0;
         gc().setTextBaseline(VPos.TOP);
         gc().setFill(Color.WHITE);
-        gc().setFont(Font.font("Helvetica", 16));
+
+        // Name
+        gc().setFont(Font.font("Helvetica", NAME_SIZE));
+        gc().fillText(dialog.getName(), tx, ty);
+        ty += NAME_SPACING;
+
+        // Description
+        gc().setFont(Font.font("Helvetica", DESCRIPTION_SIZE));
+        var description = dialog.getDescription();
+
+        if (description.isPresent()) {
+            gc().fillText(description.get(), tx, ty);
+            ty += DESCRIPTION_SPACING;
+        }
+
+        gc().setStroke(Color.WHITE);
+        gc().setLineWidth(2);
+        gc().strokeLine(tx, ty, w - 30, ty);
+
+        ty += MAIN_SPACING;
+
+        gc().setFont(Font.font("Helvetica", MAIN_SIZE));
         fillTextBlock(dialog.getDisplayText(), tx, ty, MAIN_SPACING);
 
         // Draw the responses

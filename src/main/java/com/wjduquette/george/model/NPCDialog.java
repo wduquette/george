@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * An NPC Dialog is an object that provides the data model for a dialog
@@ -12,6 +13,18 @@ import java.util.Map;
  * with the user.
  */
 public interface NPCDialog {
+    /**
+     * Returns the NPC's name.
+     * @return the name
+     */
+    String getName();
+
+    /**
+     * Returns the NPC's description.
+     * @return the name
+     */
+    Optional<String> getDescription();
+
     /**
      * The foreground image for the NPC, i.e., its sprite image.
      * @return The image

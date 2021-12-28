@@ -5,6 +5,7 @@ import com.wjduquette.george.ecs.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A dialog class for simple mannikins. The mannikin will pick a speech
@@ -36,8 +37,8 @@ public class MannikinDialog implements NPCDialog {
     // The Mannikin entity
     private final Entity npc;
 
-    // The Mannikin's name and description
-    private final String header;
+    // The Mannikin's info key
+    private final String key;
 
     // The Mannkin's speeches
     private final List<String> speeches = new ArrayList<>();
@@ -56,20 +57,24 @@ public class MannikinDialog implements NPCDialog {
     public MannikinDialog(Region region, Entity npc) {
         this.region = region;
         this.npc = npc;
+        this.key = npc.mannikin().key();
 
         // FIRST, get the text strings.
-        var key = npc.mannikin().key();
-
-        String buff =
-            region.getInfo(key, "label") + "\n\n" +
-            region.getInfo(key, "description") + "\n\n";
-        this.header = buff;
-
         speeches.addAll(region.info().values(key + ".greeting*"));
     }
 
     //-------------------------------------------------------------------------
     // NPCDialog API
+
+    @Override
+    public String getName() {
+        return region.getInfo(key, "label");
+    }
+
+    @Override
+    public Optional<String> getDescription() {
+        return Optional.of(region.getInfo(key, "description"));
+    }
 
     @Override
     public String foregroundSprite() {
@@ -88,7 +93,7 @@ public class MannikinDialog implements NPCDialog {
 
     @Override
     public String getDisplayText() {
-        return header + App.RANDOM.takeFrom(speeches);
+        return App.RANDOM.takeFrom(speeches);
     }
 
     @Override

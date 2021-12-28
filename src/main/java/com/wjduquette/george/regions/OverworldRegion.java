@@ -77,6 +77,17 @@ public class OverworldRegion extends DataDrivenRegion {
             this.key = npc.mannikin().key();
         }
 
+        //---------------------------------------------------------------------
+        // NPCDialog API
+
+        @Override public String getName() {
+            return "A Man in Black";
+        }
+
+        @Override public Optional<String> getDescription() {
+            return Optional.empty();
+        }
+
         @Override
         public String foregroundSprite() {
             return npc.sprite().name();
