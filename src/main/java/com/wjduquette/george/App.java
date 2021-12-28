@@ -285,19 +285,11 @@ public class App extends Application {
             var key = entity.sign().key();
             var text = region.getInfo(key, "text");
 
-            displayTextBlock(entity, text);
+            showPanel(new FeaturePanel(this, entity, text));
         } else if (entity.mannikin() != null) {
-            var dialog = region.findDialog(entity.id());
-
-            if (dialog.isPresent()) {
-                showPanel(new NPCDialogPanel(this, dialog.get()));
-            }
+            region.findDialog(entity.id()).ifPresent(dlg ->
+                showPanel(new NPCDialogPanel(this, dlg)));
         }
-    }
-
-    public void displayTextBlock(Entity entity, String text) {
-        viewer.repaint();
-        showPanel(new FeaturePanel(this, entity, text));
     }
 
     public void showMap() {
@@ -308,7 +300,7 @@ public class App extends Application {
     private void showPanel(Panel panel) {
         looper.stop();
         panel.setOnClose(() -> {
-            viewer.getChildren().remove(panel);
+            viewer.getChildren().remove(panel.asNode());
             looper.run();
         });
         viewer.getChildren().add(panel.asNode());
