@@ -271,7 +271,6 @@ public abstract class Region {
      * Marks a cell seen.
      * @param row The row
      * @param col The column
-     * @return true or false
      */
     public void markSeen(int row, int col) {
         if (row >= 0 && row < height && col >= 0 && col < width) {

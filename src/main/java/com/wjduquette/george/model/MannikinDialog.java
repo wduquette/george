@@ -59,12 +59,11 @@ public class MannikinDialog implements NPCDialog {
 
         // FIRST, get the text strings.
         var key = npc.mannikin().key();
-        StringBuilder buff = new StringBuilder();
-        buff.append(region.getInfo(key, "label"))
-            .append("\n\n")
-            .append(region.getInfo(key, "description"))
-            .append("\n\n");
-        this.header = buff.toString();
+
+        String buff =
+            region.getInfo(key, "label") + "\n\n" +
+            region.getInfo(key, "description") + "\n\n";
+        this.header = buff;
 
         speeches.addAll(region.info().values(key + ".greeting*"));
     }
