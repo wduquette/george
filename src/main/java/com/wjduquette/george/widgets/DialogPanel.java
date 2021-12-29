@@ -6,7 +6,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
@@ -28,9 +27,6 @@ public class DialogPanel extends GamePane implements Panel {
 
     // The data model
     private final Dialog dialog;
-
-    // Interaction widgets
-    private final List<Node> widgets = new ArrayList<>();
 
     // The onClose handler
     private Runnable onClose = null;
@@ -60,9 +56,6 @@ public class DialogPanel extends GamePane implements Panel {
 
     // Paint the current state of the dialog.
     protected void onRepaint() {
-        // FIRST, Clear any old responses.
-        canvas().getChildren().removeAll(widgets);
-
         var region = app().getCurrentRegion();
         var w = getWidth() - 2*INSET;
         var h = getHeight() - 2*INSET;
@@ -118,19 +111,14 @@ public class DialogPanel extends GamePane implements Panel {
         gc().fillText("You respond:", tx, ty);
         ty += RESPONSE_LEADING;
 
-        widgets.clear();
         for (var response : responses) {
             Text text = new Text(response.text());
 
             text.setTextOrigin(VPos.TOP);
             text.setFill(Color.YELLOW);
             text.setFont(NORMAL_FONT);
-            text.setX(tx + 20); // widget coordinates
-            text.setY(ty);
-            text.setOnMouseClicked(evt -> onResponse(response));
 
-            widgets.add(text);
-            canvas().getChildren().add(text);
+            place(text, tx + 20, ty, () -> onResponse(response));
 
             ty += RESPONSE_LEADING;
         }

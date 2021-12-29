@@ -200,7 +200,7 @@ public class GameView extends GamePane {
             fill(fill, box);
             drawImage(toImage(btn.sprite()), bx, by);
 
-            addTarget(box, () -> buttonClick(btn));
+            target(box, () -> buttonClick(btn));
         }
     }
 
@@ -241,7 +241,7 @@ public class GameView extends GamePane {
 
         var box = new BoundingBox(xLeft, yTop, boxWidth, boxHeight);
         var input = new UserInput.StatusBox(player.id());
-        addTarget(box, () -> fireInputEvent(input));
+        target(box, () -> fireInputEvent(input));
 
         fill(Color.BLACK, box);
         fill(Color.WHITE,

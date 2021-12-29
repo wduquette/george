@@ -7,6 +7,8 @@ import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.graphics.SpriteSet;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
@@ -15,6 +17,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +51,9 @@ public abstract class GamePane extends StackPane {
 
     // The canvas pane, for content.
     private final CanvasPane canvas;
+
+    // The list of child widgets the subclass has defined.
+    private List<Node> widgets = new ArrayList<>();
 
     // The list of things the user can click on.
     private final List<ClickTarget> targets = new ArrayList<>();
@@ -124,7 +130,7 @@ public abstract class GamePane extends StackPane {
      * Adds a click target to the pane.
      * @param target The target
      */
-    protected void addTarget(ClickTarget target) {
+    protected void target(ClickTarget target) {
         targets.add(target);
     }
 
@@ -133,8 +139,37 @@ public abstract class GamePane extends StackPane {
      * @param bounds The bounding box
      * @param action The action to take on click
      */
-    protected void addTarget(Bounds bounds, Runnable action) {
+    protected void target(Bounds bounds, Runnable action) {
         targets.add(new ClickTarget(bounds, action));
+    }
+
+    /**
+     * Adds the Text shape to the canvas at the given location.  It will be
+     * cleaned up prior to the next repaint.  This is the easiest way to
+     * add a text target.
+     * @param widget The text shape
+     * @param x The X position in pixels
+     * @param y The Y position in pixels
+     */
+    protected void place(Text widget, double x, double y) {
+        widget.setX(x);
+        widget.setY(y);
+        widgets.add(widget);
+        canvas.getChildren().add(widget);
+    }
+
+    /**
+     * Adds the Text shape to the canvas at the given location.  It will be
+     * cleaned up prior to the next repaint.  This is the easiest way to
+     * add a text target.
+     * @param widget The text shape
+     * @param x The X position in pixels
+     * @param y The Y position in pixels
+     * @param action An action to take when the widget is clicked.
+     */
+    protected void place(Text widget, double x, double y, Runnable action) {
+        widget.setOnMouseClicked(evt -> action.run());
+        place(widget, x, y);
     }
 
     /**
@@ -254,6 +289,7 @@ public abstract class GamePane extends StackPane {
     public void repaint() {
         // FIRST, clear the old content
         canvas.clear();
+        canvas.getChildren().removeAll(widgets);
         targets.clear();
 
         // NEXT, repaint the content
