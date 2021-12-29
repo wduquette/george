@@ -96,6 +96,7 @@ public class App extends Application {
 
         // NEXT, configure the GUI
         Scene scene = new Scene(viewer, 800, 600);
+        scene.getStylesheets().add("/com/wjduquette/george/app.css");
         stage.setMinWidth(800);
         stage.setMinHeight(600);
         stage.setTitle("George's Saga!");
