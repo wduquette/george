@@ -8,9 +8,6 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * A panel for talking to NPCs.
  */
