@@ -92,7 +92,6 @@ public class App extends Application {
             .sprite(Sprites.ALL.getInfo("mobile.george"));
 
         viewer = new GameView(this);
-        viewer.setSprites(Sprites.ALL);
         viewer.addEventHandler(UserInputEvent.USER_INPUT, this::onUserInput);
         viewer.setRegion(region);
 

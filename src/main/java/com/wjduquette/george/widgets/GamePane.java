@@ -1,6 +1,7 @@
 package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.App;
+import com.wjduquette.george.graphics.SpriteSet;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 
@@ -40,9 +41,10 @@ public abstract class GamePane extends StackPane {
     // Protected API
 
     // Components
-    protected App app() { return app; }
-    protected CanvasPane canvas() { return canvas; }
-    protected GraphicsContext gc() { return canvas.gc(); }
+    protected App             app()     { return app; }
+    protected CanvasPane      canvas()  { return canvas; }
+    protected GraphicsContext gc()      { return canvas.gc(); }
+    protected SpriteSet       sprites() { return app.sprites(); }
 
     /**
      * Subclasses must override to provide content.

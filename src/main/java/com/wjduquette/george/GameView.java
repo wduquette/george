@@ -1,7 +1,6 @@
 package com.wjduquette.george;
 
 import com.wjduquette.george.ecs.*;
-import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.widgets.GamePane;
 import com.wjduquette.george.widgets.UserInput;
@@ -56,11 +55,6 @@ public class GameView extends GamePane {
 
     // The region currently being displayed
     private Region region = null;
-
-    // The sprite set to use for rendering.  (This is used for entities only;
-    // the base terrain is drawn using the tiles from the region's
-    // TerrainTileSet.)
-    private SpriteSet sprites = null;
 
     // The currently rendered click targets
     private final List<ClickTarget> targets = new ArrayList<>();
@@ -129,28 +123,10 @@ public class GameView extends GamePane {
     //-------------------------------------------------------------------------
     // Public Methods
 
-    /**
-     * Gets the sprite set in use by the renderer.
-     * @return The set.
-     */
-    public SpriteSet getSprites() {
-        return sprites;
-    }
-
-    /**
-     * Sets the sprite set to use for rendering.
-     * @param set The set
-     */
-    public void setSprites(SpriteSet set) {
-        this.sprites = set;
-    }
-
     public void setRegion(Region map) {
         this.region = map;
 
-        Platform.runLater(() -> {
-            repaint();
-        });
+        Platform.runLater(this::repaint);
     }
 
     public Region getRegion() {
@@ -218,8 +194,8 @@ public class GameView extends GamePane {
     private void drawButtonBar() {
         var w = canvas().getWidth();
         var h = canvas().getHeight();
-        var bw = sprites.width();
-        var bh = sprites.height();
+        var bw = sprites().width();
+        var bh = sprites().height();
         var border = 4;
 
         var nbuttons = Button.values().length;
@@ -241,7 +217,7 @@ public class GameView extends GamePane {
 
             gc().setFill(fill);
             gc().fillRect(bx, by, bw, bh);
-            gc().drawImage(sprites.get(btn.sprite()), bx, by);
+            gc().drawImage(sprites().get(btn.sprite()), bx, by);
 
             var box = new BoundingBox(bx, by, bw, bh);
             targets.add(new ClickTarget(box, () -> buttonClick(btn)));
@@ -335,7 +311,7 @@ public class GameView extends GamePane {
     }
 
     private Image img(Sprite sprite) {
-        return sprites.get(sprite.name());
+        return sprites().get(sprite.name());
     }
 
     // Gets the pixel coordinates at which to draw the entity's tile.
