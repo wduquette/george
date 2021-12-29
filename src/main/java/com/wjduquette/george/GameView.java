@@ -3,7 +3,7 @@ package com.wjduquette.george;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.*;
-import com.wjduquette.george.widgets.CanvasPane;
+import com.wjduquette.george.widgets.GamePane;
 import com.wjduquette.george.widgets.UserInput;
 import com.wjduquette.george.widgets.UserInputEvent;
 import javafx.application.Platform;
@@ -15,13 +15,12 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.util.*;
 
-public class GameView extends StackPane {
+public class GameView extends GamePane {
     //-------------------------------------------------------------------------
     // Statics
 
@@ -47,9 +46,6 @@ public class GameView extends StackPane {
     //-------------------------------------------------------------------------
     // Instance Variables
 
-    // The canvas on which the map is drawn.
-    private final CanvasPane canvas;
-
     private int rowOffset = 0;
     private int colOffset = 0;
 
@@ -74,15 +70,14 @@ public class GameView extends StackPane {
     //-------------------------------------------------------------------------
     // Constructor
 
-    public GameView() {
-        // Configure the Canvas
-        canvas = new CanvasPane();
-        getChildren().add(canvas);
-        canvas.setBackground(new Background(
+    public GameView(App app) {
+        super(app);
+
+        // Configure the pane
+        setBackground(new Background(
             new BackgroundFill(Color.BLACK, null, null)));
-        canvas.setOnResize(this::repaint);
-        canvas.setOnMouseClicked(this::onMouseClick);
-        canvas.setOnKeyPressed(this::onKeyPressed);
+        setOnMouseClicked(this::onMouseClick);
+        setOnKeyPressed(this::onKeyPressed);
 
         // Configure the buttons
         selected.add(Button.POINTER);
@@ -93,7 +88,7 @@ public class GameView extends StackPane {
 
     // Convert mouse clicks into user input
     private void onMouseClick(MouseEvent evt) {
-        Point2D mouse = canvas.ofMouse(evt);
+        Point2D mouse = canvas().ofMouse(evt);
 
         // FIRST, did they click a specific target?
         for (ClickTarget target : targets) {
@@ -162,8 +157,8 @@ public class GameView extends StackPane {
         return region;
     }
 
-    public void repaint() {
-        canvas.clear();
+    protected void onRepaint() {
+        canvas().clear();
         targets.clear();
 
         // Don't recompute bounds if the player is executing a plan.
@@ -179,7 +174,7 @@ public class GameView extends StackPane {
         for (int r = rowMin; r < rowMax; r++) {
             for (int c = colMin; c < colMax; c++) {
                 TerrainTile tile = region.getTerrain(r, c);
-                canvas.drawImage(tile.image(), rc2xy(r, c));
+                canvas().drawImage(tile.image(), rc2xy(r, c));
 
                 // TODO: for now, mark a cell "seen" if it has appeared in
                 // the rendered area.
@@ -189,17 +184,17 @@ public class GameView extends StackPane {
 
         // NEXT, render the features
         for (Entity feature : region.query(Feature.class).toList()) {
-            canvas.drawImage(img(feature.sprite()), entity2xy(feature));
+            canvas().drawImage(img(feature.sprite()), entity2xy(feature));
         }
 
         // NEXT, render the mobiles on top
         for (Entity mobile : region.query(Mobile.class).toList()) {
-            canvas.drawImage(img(mobile.sprite()), entity2xy(mobile));
+            canvas().drawImage(img(mobile.sprite()), entity2xy(mobile));
         }
 
         // NEXT, render other visual effects that have their own tiles.
         for (Entity effect : region.query(VisualEffect.class, Sprite.class).toList()) {
-            canvas.drawImage(img(effect.sprite()), entity2xy(effect));
+            canvas().drawImage(img(effect.sprite()), entity2xy(effect));
         }
 
         // NEXT, render the controls.
@@ -213,9 +208,6 @@ public class GameView extends StackPane {
         for (int i = 0; i < messages.size(); i++) {
             drawLogMessage(i, messages.get(i).logMessage().message());
         }
-
-        // NEXT, request the keyboard focus
-        canvas.requestFocus();
     }
 
     //-------------------------------------------------------------------------
@@ -224,8 +216,8 @@ public class GameView extends StackPane {
     private static final double BAR_MARGIN = 10;
 
     private void drawButtonBar() {
-        var w = canvas.getWidth();
-        var h = canvas.getHeight();
+        var w = canvas().getWidth();
+        var h = canvas().getHeight();
         var bw = sprites.width();
         var bh = sprites.height();
         var border = 4;
@@ -237,8 +229,8 @@ public class GameView extends StackPane {
         var bary = h - (barh + BAR_MARGIN);
         var barx = (w - barw)/2.0;
 
-        canvas.gc().setFill(Color.BLACK);
-        canvas.gc().fillRect(barx, bary, barw, barh);
+        gc().setFill(Color.BLACK);
+        gc().fillRect(barx, bary, barw, barh);
 
         for (Button btn : Button.values()) {
             var i = btn.ordinal();
@@ -247,9 +239,9 @@ public class GameView extends StackPane {
 
             var fill = selected.contains(btn) ? Color.LIGHTGRAY : Color.GRAY;
 
-            canvas.gc().setFill(fill);
-            canvas.gc().fillRect(bx, by, bw, bh);
-            canvas.gc().drawImage(sprites.get(btn.sprite()), bx, by);
+            gc().setFill(fill);
+            gc().fillRect(bx, by, bw, bh);
+            gc().drawImage(sprites.get(btn.sprite()), bx, by);
 
             var box = new BoundingBox(bx, by, bw, bh);
             targets.add(new ClickTarget(box, () -> buttonClick(btn)));
@@ -266,14 +258,14 @@ public class GameView extends StackPane {
 
     private void drawLogMessage(int index, String message) {
         double x = LOG_X;
-        double y = canvas.getHeight() - (index*LOG_HEIGHT + LOG_MIN_Y);
+        double y = getHeight() - (index*LOG_HEIGHT + LOG_MIN_Y);
 
-        canvas.gc().setStroke(Color.BLACK);
-        canvas.gc().setLineWidth(1);
-        canvas.gc().setFill(Color.WHITE);
-        canvas.gc().setFont(Font.font("Helvetica", LOG_HEIGHT));
-        canvas.gc().strokeText(message, x, y);
-        canvas.gc().fillText(message, x, y);
+        gc().setStroke(Color.BLACK);
+        gc().setLineWidth(1);
+        gc().setFill(Color.WHITE);
+        gc().setFont(Font.font("Helvetica", LOG_HEIGHT));
+        gc().strokeText(message, x, y);
+        gc().fillText(message, x, y);
     }
 
     //-------------------------------------------------------------------------
@@ -296,20 +288,20 @@ public class GameView extends StackPane {
         var input = new UserInput.StatusBox(player.id());
         targets.add(new ClickTarget(box, () -> fireInputEvent(input)));
 
-        canvas.gc().setFill(Color.BLACK);
-        canvas.gc().fillRect(xLeft, yTop, boxWidth, boxHeight);
+        gc().setFill(Color.BLACK);
+        gc().fillRect(xLeft, yTop, boxWidth, boxHeight);
 
-        canvas.gc().setFill(Color.WHITE);
-        canvas.gc().fillRect(
+        gc().setFill(Color.WHITE);
+        gc().fillRect(
             xLeft + oborder, yTop + oborder,
             boxWidth - 2 * oborder, boxHeight - 2 * oborder);
 
-        canvas.gc().setFill(Color.CYAN);
-        canvas.gc().fillRect(
+        gc().setFill(Color.CYAN);
+        gc().fillRect(
             xLeft + border, yTop + border,
             boxWidth - 2 * border, boxHeight - 2 * border);
 
-        canvas.gc().drawImage(sprite, xLeft + border, yTop + border);
+        gc().drawImage(sprite, xLeft + border, yTop + border);
     }
 
 
@@ -317,21 +309,21 @@ public class GameView extends StackPane {
     // Utilities
 
     private void drawRoute(List<Cell> route) {
-        canvas.gc().setStroke(Color.WHITE);
-        canvas.gc().setLineWidth(3);
+        gc().setStroke(Color.WHITE);
+        gc().setLineWidth(3);
 
         for (int i = 1; i < route.size(); i++) {
             Point2D a = cell2centerxy(route.get(i - 1));
             Point2D b = cell2centerxy(route.get(i));
-            canvas.gc().strokeLine(a.getX(), a.getY(), b.getX(), b.getY());
+            gc().strokeLine(a.getX(), a.getY(), b.getX(), b.getY());
         }
     }
 
     // Compute the row and column offsets so that the given cell is in the
     // middle of the view pane
     private void computeBounds(Cell cell) {
-        double heightInTiles = canvas.getHeight() / region.getTileHeight();
-        double widthInTiles = canvas.getWidth() / region.getTileWidth();
+        double heightInTiles = canvas().getHeight() / region.getTileHeight();
+        double widthInTiles = canvas().getWidth() / region.getTileWidth();
         rowOffset = cell.row() - (int) heightInTiles / 2;
         colOffset = cell.col() - (int) widthInTiles / 2;
 

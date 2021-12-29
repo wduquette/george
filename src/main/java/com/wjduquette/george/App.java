@@ -32,7 +32,7 @@ public class App extends Application {
     // Instance Variables
 
     // The GUI component
-    private final GameView viewer = new GameView();
+    private GameView viewer;
 
     // The timer for the game loop
     private final Looper looper = new Looper(LOOP_MSECS, this::gameLoop);
@@ -72,6 +72,7 @@ public class App extends Application {
         items = new Items(getClass(), "assets/items.keydata");
 
         // TEMP
+
 //        region = getRegion("test");
 //        region = getRegion("floobham");
         region = getRegion("overworld");
@@ -90,6 +91,7 @@ public class App extends Application {
             .cell(origin)
             .sprite(Sprites.ALL.getInfo("mobile.george"));
 
+        viewer = new GameView(this);
         viewer.setSprites(Sprites.ALL);
         viewer.addEventHandler(UserInputEvent.USER_INPUT, this::onUserInput);
         viewer.setRegion(region);
