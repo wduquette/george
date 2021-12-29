@@ -28,7 +28,7 @@ import java.util.List;
  */
 public abstract class GamePane extends StackPane {
     /** The title font. */
-    public static final Font TITLE_FONT = Font.font("Helvetica", 16);
+    public static final Font TITLE_FONT = Font.font("Helvetica", 24);
 
     /** The normal text font. */
     public static final Font NORMAL_FONT = Font.font("Helvetica", 16);

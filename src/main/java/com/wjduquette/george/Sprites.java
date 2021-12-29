@@ -14,5 +14,6 @@ public class Sprites {
         ALL = new SpriteSet(App.class, "assets/sprites/mobiles.sprite");
         ALL.add(new SpriteSet(App.class, "assets/sprites/Features.sprite"));
         ALL.add(new SpriteSet(App.class, "assets/sprites/Buttons.sprite"));
+        ALL.add(new SpriteSet(App.class, "assets/sprites/Items.sprite"));
     }
 }
