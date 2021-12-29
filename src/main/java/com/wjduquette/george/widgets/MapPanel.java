@@ -47,8 +47,8 @@ public class MapPanel extends GamePane implements Panel {
         var yTop = FRAME + (h - mapHeight)/2.0;
 
         // Fill the background
-        gc().setFill(Color.BLACK);
-        gc().fillRect(xLeft - FRAME, yTop - FRAME,
+        fill(Color.BLACK,
+            xLeft - FRAME, yTop - FRAME,
             mapWidth + 2*FRAME, mapHeight + 2*FRAME);
 
         for (int r = 0; r < region.getHeight(); r++) {
@@ -69,8 +69,7 @@ public class MapPanel extends GamePane implements Panel {
                     };
                 }
 
-                gc().setFill(color);
-                gc().fillRect(x, y, cellSize, cellSize);
+                fill(color, x, y, cellSize, cellSize);
             }
         }
 
@@ -80,9 +79,7 @@ public class MapPanel extends GamePane implements Panel {
         var x = xLeft + player.cell().col() * cellSize;
         var y = yTop + player.cell().row() * cellSize;
 
-        gc().setFill(Color.CYAN);
-        gc().fillRect(x - 1, y - 1, cellSize + 2, cellSize + 2);
-
+        fill(Color.CYAN, x - 1, y - 1, cellSize + 2, cellSize + 2);
     }
 
     private double mapCellSize(double numPixels, double numCells) {
