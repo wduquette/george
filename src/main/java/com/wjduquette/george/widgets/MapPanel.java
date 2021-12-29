@@ -11,31 +11,28 @@ import javafx.scene.paint.Color;
 /**
  * MapPanel displays the known portions of the current region's map.
  */
-public class MapPanel extends CanvasPane implements Panel {
+public class MapPanel extends GamePane implements Panel {
     private final static double INSET = 50;
     private final static double FRAME = 5;
 
-    private final App app;
     private Runnable onClose = null;
 
     public MapPanel(App app) {
-        this.app = app;
+        super(app);
         setPadding(new Insets(INSET));
-        setOnResize(this::repaint);
-        setOnMouseClicked(this::onMouseClick);
     }
 
     @Override public Node asNode() { return this; }
     @Override public void setOnClose(Runnable func) { this.onClose = func; }
 
-    private void onMouseClick(MouseEvent evt) {
+    protected void onMouseClick(MouseEvent evt) {
         if (onClose != null) {
             onClose.run();
         }
     }
 
-    private void repaint() {
-        var region = app.getCurrentRegion();
+    protected void onRepaint() {
+        var region = app().getCurrentRegion();
         var w = getWidth() - 2*INSET;
         var h = getHeight() - 2*INSET;
 
