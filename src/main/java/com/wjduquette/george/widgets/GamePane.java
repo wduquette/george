@@ -11,6 +11,8 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,6 +140,16 @@ public abstract class GamePane extends StackPane {
 
     protected void drawImage(Image image, Point2D point) {
         gc().drawImage(image, point.getX(), point.getY());
+    }
+
+    protected void fill(Paint paint, double x, double y, double width, double height) {
+        gc().setFill(paint);
+        gc().fillRect(x, y, width, height);
+    }
+
+    protected void fill(Paint paint, Bounds box) {
+        gc().setFill(paint);
+        gc().fillRect(box.getMinX(), box.getMinY(), box.getWidth(), box.getHeight());
     }
 
     //-------------------------------------------------------------------------

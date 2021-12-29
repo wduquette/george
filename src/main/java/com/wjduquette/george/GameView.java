@@ -7,7 +7,6 @@ import com.wjduquette.george.widgets.UserInput;
 import com.wjduquette.george.widgets.UserInputEvent;
 import javafx.application.Platform;
 import javafx.geometry.*;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -189,21 +188,18 @@ public class GameView extends GamePane {
         var bary = h - (barh + BAR_MARGIN);
         var barx = (w - barw)/2.0;
 
-        gc().setFill(Color.BLACK);
-        gc().fillRect(barx, bary, barw, barh);
+        fill(Color.BLACK, barx, bary, barw, barh);
 
         for (Button btn : Button.values()) {
             var i = btn.ordinal();
             var bx = barx + border + i*(bw + border);
             var by = bary + border;
-
+            var box = new BoundingBox(bx, by, bw, bh);
             var fill = selected.contains(btn) ? Color.LIGHTGRAY : Color.GRAY;
 
-            gc().setFill(fill);
-            gc().fillRect(bx, by, bw, bh);
+            fill(fill, box);
             drawImage(toImage(btn.sprite()), bx, by);
 
-            var box = new BoundingBox(bx, by, bw, bh);
             addTarget(box, () -> buttonClick(btn));
         }
     }
@@ -247,16 +243,12 @@ public class GameView extends GamePane {
         var input = new UserInput.StatusBox(player.id());
         addTarget(box, () -> fireInputEvent(input));
 
-        gc().setFill(Color.BLACK);
-        gc().fillRect(xLeft, yTop, boxWidth, boxHeight);
-
-        gc().setFill(Color.WHITE);
-        gc().fillRect(
+        fill(Color.BLACK, box);
+        fill(Color.WHITE,
             xLeft + oborder, yTop + oborder,
             boxWidth - 2 * oborder, boxHeight - 2 * oborder);
 
-        gc().setFill(Color.CYAN);
-        gc().fillRect(
+        fill(Color.CYAN,
             xLeft + border, yTop + border,
             boxWidth - 2 * border, boxHeight - 2 * border);
 
