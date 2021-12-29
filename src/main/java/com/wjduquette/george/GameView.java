@@ -144,17 +144,17 @@ public class GameView extends GamePane {
 
         // NEXT, render the features
         for (Entity feature : region.query(Feature.class).toList()) {
-            canvas().drawImage(img(feature.sprite()), entity2xy(feature));
+            canvas().drawImage(toImage(feature), entity2xy(feature));
         }
 
         // NEXT, render the mobiles on top
         for (Entity mobile : region.query(Mobile.class).toList()) {
-            canvas().drawImage(img(mobile.sprite()), entity2xy(mobile));
+            canvas().drawImage(toImage(mobile), entity2xy(mobile));
         }
 
         // NEXT, render other visual effects that have their own tiles.
         for (Entity effect : region.query(VisualEffect.class, Sprite.class).toList()) {
-            canvas().drawImage(img(effect.sprite()), entity2xy(effect));
+            canvas().drawImage(toImage(effect), entity2xy(effect));
         }
 
         // NEXT, render the controls.
@@ -237,7 +237,7 @@ public class GameView extends GamePane {
         double border = oborder + iborder;
         double hName = 12;
         double gap = 5;
-        Image sprite = img(player.sprite());
+        Image sprite = toImage(player);
         double boxHeight = sprite.getHeight() + 2 * border + hName;
         double boxWidth = sprite.getWidth() + 2 * border;
 
@@ -283,9 +283,6 @@ public class GameView extends GamePane {
         colMin = Math.max(0, colOffset);
     }
 
-    private Image img(Sprite sprite) {
-        return sprites().get(sprite.name());
-    }
 
     // Gets the pixel coordinates at which to draw the entity's tile.
     private Point2D entity2xy(Entity entity) {

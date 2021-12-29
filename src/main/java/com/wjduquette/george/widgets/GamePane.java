@@ -1,10 +1,13 @@
 package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.App;
+import com.wjduquette.george.ecs.Entity;
+import com.wjduquette.george.ecs.Sprite;
 import com.wjduquette.george.graphics.SpriteSet;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -98,6 +101,36 @@ public abstract class GamePane extends StackPane {
     protected void clearTargets() {
         targets.clear();
     }
+
+    /**
+     * Get a sprite image given its name.
+     * @param name The sprite name
+     * @return The image
+     */
+    protected Image toImage(String name) {
+        return sprites().get(name);
+    }
+
+    /**
+     * Get a sprite image given a Sprite component.
+     * @param sprite The Sprite component
+     * @return The image
+     */
+    protected Image toImage(Sprite sprite) {
+        return sprites().get(sprite.name());
+    }
+
+    /**
+     * Get a sprite image given an entity, from its Sprite component.
+     * @param entity The entity
+     * @return The image
+     */
+    protected Image toImage(Entity entity) {
+        return sprites().get(entity.sprite().name());
+    }
+
+    //-------------------------------------------------------------------------
+    // Framework Methods
 
     /**
      * Subclasses must override to paint content content.
