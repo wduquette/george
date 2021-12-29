@@ -1,2 +1,9 @@
 /* CSS File for George's Saga */
 
+/* Panel subclasses that use CSS styles. */
+.app-panel {
+    -fx-font-family: Helvetica;
+    -fx-font-size: 16;
+    -fx-text-fill: white;
+    -fx-background-color: darkblue;
+}

@@ -33,6 +33,11 @@ public sealed interface UserInput {
     record ShowDebugger() implements UserInput {}
 
     /**
+     * Requests that the inventory panel be popped up.
+     */
+    record ShowInventory() implements UserInput {}
+
+    /**
      * Requests that the region map be displayed.
      */
     record ShowMap() implements UserInput {}

@@ -96,7 +96,7 @@ public class App extends Application {
 
         // NEXT, configure the GUI
         Scene scene = new Scene(viewer, 800, 600);
-        scene.getStylesheets().add("/com/wjduquette/george/app.css");
+        viewer.getStylesheets().add("/com/wjduquette/george/app.css");
         stage.setMinWidth(800);
         stage.setMinHeight(600);
         stage.setTitle("George's Saga!");
@@ -118,6 +118,7 @@ public class App extends Application {
     private void onUserInput(UserInputEvent event) {
         switch (event.getInput()) {
             case UserInput.ShowDebugger $ -> showDebugger();
+            case UserInput.ShowInventory $ -> showInventory();
             case UserInput.ShowMap $ -> showMap();
             default -> userInput = event.getInput();
         }
@@ -293,8 +294,18 @@ public class App extends Application {
         }
     }
 
+    /**
+     * Shows the inventory panel for the current leader.
+     */
+    public void showInventory() {
+        showPanel(new InventoryPanel(this));
+    }
+
+    /**
+     * Displays the map panel, showing that part of the map the player has
+     * seen.
+     */
     public void showMap() {
-        viewer.repaint();
         showPanel(new MapPanel(this));
     }
 
@@ -302,6 +313,7 @@ public class App extends Application {
         looper.stop();
         panel.setOnClose(() -> {
             viewer.getChildren().remove(panel.asNode());
+            viewer.repaint();
             looper.run();
         });
         viewer.getChildren().add(panel.asNode());

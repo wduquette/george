@@ -29,6 +29,7 @@ public class GameView extends StackPane {
         MODE("button.normal"),
         POINTER("button.pointer"),
         MAGNIFIER("button.magnifier"),
+        INVENTORY("button.backpack"),
         SCROLL("button.scroll"),
         MAP("button.map");
 
@@ -122,8 +123,11 @@ public class GameView extends StackPane {
 
     // Convert keypresses into user input
     private void onKeyPressed(KeyEvent evt) {
-        if (evt.getCode() == KeyCode.F1) {
-            fireEvent(new UserInputEvent(new UserInput.ShowDebugger()));
+        if (evt.getCode() == KeyCode.I) {
+            App.println("GameView: " + evt);
+            fireInputEvent(new UserInput.ShowInventory());
+        } else if (evt.getCode() == KeyCode.F1) {
+            fireInputEvent(new UserInput.ShowDebugger());
         }
     }
 
@@ -151,7 +155,6 @@ public class GameView extends StackPane {
 
         Platform.runLater(() -> {
             repaint();
-            canvas.requestFocus(); // Only needed for keystrokes
         });
     }
 
@@ -210,6 +213,9 @@ public class GameView extends StackPane {
         for (int i = 0; i < messages.size(); i++) {
             drawLogMessage(i, messages.get(i).logMessage().message());
         }
+
+        // NEXT, request the keyboard focus
+        canvas.requestFocus();
     }
 
     //-------------------------------------------------------------------------
@@ -402,6 +408,7 @@ public class GameView extends StackPane {
                 selected.remove(Button.POINTER);
                 selected.add(Button.MAGNIFIER);
             }
+            case INVENTORY -> fireInputEvent(new UserInput.ShowInventory());
             case MAP -> fireInputEvent(new UserInput.ShowMap());
             default -> region.log("TODO: " + btn);
         }
