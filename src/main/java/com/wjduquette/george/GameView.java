@@ -56,9 +56,7 @@ public class GameView extends GamePane {
     // The region currently being displayed
     private Region region = null;
 
-    // The currently rendered click targets
-    private final List<ClickTarget> targets = new ArrayList<>();
-
+    // Which selectable buttons are selected.
     private final Set<Button> selected = new HashSet<>();
 
     //-------------------------------------------------------------------------
@@ -70,27 +68,16 @@ public class GameView extends GamePane {
         // Configure the pane
         setBackground(new Background(
             new BackgroundFill(Color.BLACK, null, null)));
-        setOnMouseClicked(this::onMouseClick);
-        setOnKeyPressed(this::onKeyPressed);
 
         // Configure the buttons
         selected.add(Button.POINTER);
     }
 
     //-------------------------------------------------------------------------
-    // Event Handling
+    // GamePane API
 
-    // Convert mouse clicks into user input
-    private void onMouseClick(MouseEvent evt) {
+    protected void onMouseClick(MouseEvent evt) {
         Point2D mouse = canvas().ofMouse(evt);
-
-        // FIRST, did they click a specific target?
-        for (ClickTarget target : targets) {
-            if (target.bounds().contains(mouse)) {
-                target.action.run();
-                return;
-            }
-        }
 
         // NEXT, did they click a cell?
         Cell cell = xy2rc(mouse);
@@ -111,7 +98,7 @@ public class GameView extends GamePane {
     }
 
     // Convert keypresses into user input
-    private void onKeyPressed(KeyEvent evt) {
+    protected void onKeyPress(KeyEvent evt) {
         if (evt.getCode() == KeyCode.I) {
             App.println("GameView: " + evt);
             fireInputEvent(new UserInput.ShowInventory());
@@ -134,8 +121,8 @@ public class GameView extends GamePane {
     }
 
     protected void onRepaint() {
-        canvas().clear();
-        targets.clear();
+        canvas().clear();  // TODO: Provide clear method(s)
+        clearTargets();
 
         // Don't recompute bounds if the player is executing a plan.
         // TODO: Not sure if this is want I want.  At the very least, I need
@@ -220,7 +207,7 @@ public class GameView extends GamePane {
             gc().drawImage(sprites().get(btn.sprite()), bx, by);
 
             var box = new BoundingBox(bx, by, bw, bh);
-            targets.add(new ClickTarget(box, () -> buttonClick(btn)));
+            addTarget(box, () -> buttonClick(btn));
         }
     }
 
@@ -262,7 +249,7 @@ public class GameView extends GamePane {
 
         var box = new BoundingBox(xLeft, yTop, boxWidth, boxHeight);
         var input = new UserInput.StatusBox(player.id());
-        targets.add(new ClickTarget(box, () -> fireInputEvent(input)));
+        addTarget(box, () -> fireInputEvent(input));
 
         gc().setFill(Color.BLACK);
         gc().fillRect(xLeft, yTop, boxWidth, boxHeight);
@@ -283,17 +270,6 @@ public class GameView extends GamePane {
 
     //-------------------------------------------------------------------------
     // Utilities
-
-    private void drawRoute(List<Cell> route) {
-        gc().setStroke(Color.WHITE);
-        gc().setLineWidth(3);
-
-        for (int i = 1; i < route.size(); i++) {
-            Point2D a = cell2centerxy(route.get(i - 1));
-            Point2D b = cell2centerxy(route.get(i));
-            gc().strokeLine(a.getX(), a.getY(), b.getX(), b.getY());
-        }
-    }
 
     // Compute the row and column offsets so that the given cell is in the
     // middle of the view pane
@@ -333,15 +309,6 @@ public class GameView extends GamePane {
             loc.cell().col() + loc.colOffset());
     }
 
-    // Convert cell coordinates to the pixel coordinates of the center of the
-    // cell.
-    private Point2D cell2centerxy(Cell cell) {
-        Point2D p = rc2xy(cell.row(), cell.col());
-        return new Point2D(
-            p.getX() + (double) region.getTileWidth()/2,
-            p.getY() + (double) region.getTileHeight()/2);
-    }
-
     private Point2D rc2xy(double row, double col) {
         double x = (col - colOffset) * region.getTileWidth();
         double y = (row - rowOffset) * region.getTileHeight();
@@ -358,9 +325,6 @@ public class GameView extends GamePane {
 
     //-------------------------------------------------------------------------
     // ClickTarget: canned bounds on which the user can click, plus actions.
-
-    // If the user clicks in the bounds, the user input is sent.
-    private record ClickTarget(Bounds bounds, Runnable action) {}
 
     private void fireInputEvent(UserInput input) {
         fireEvent(new UserInputEvent(input));
