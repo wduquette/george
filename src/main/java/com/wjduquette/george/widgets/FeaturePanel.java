@@ -53,12 +53,12 @@ public class FeaturePanel extends GamePane implements Panel {
         var tx = 30 + 2*sprites().width() + 30;
         gc().setTextBaseline(VPos.TOP);
         gc().setFill(Color.WHITE);
-        gc().setFont(NORMAL_TEXT);
+        gc().setFont(NORMAL_FONT);
         fillTextBlock(text, tx, 30, 20);
 
         // Draw the "Click to continue..."
         gc().setFill(Color.YELLOW);
-        gc().setFont(NORMAL_TEXT);
+        gc().setFont(NORMAL_FONT);
         gc().setTextBaseline(VPos.BASELINE);
         gc().fillText("Click to continue...", tx, h - 50);
     }

@@ -24,7 +24,21 @@ import java.util.List;
  * This is used for the main game view and a variety of other panels.
  */
 public abstract class GamePane extends StackPane {
-    public static final Font NORMAL_TEXT = Font.font("Helvetica", 16);
+    /** The title font. */
+    public static final Font TITLE_FONT = Font.font("Helvetica", 16);
+
+    /** The normal text font. */
+    public static final Font NORMAL_FONT = Font.font("Helvetica", 16);
+
+    /** The small text font. */
+    public static final Font SMALL_FONT = Font.font("Helvetica", 12);
+
+    /** The leading we use with the TITLE_FONT. */
+    public static final double TITLE_LEADING = 30;
+
+    /** The leading we use with the NORMAL_FONT. */
+    public static final double NORMAL_LEADING = 20;
+
 
     //-------------------------------------------------------------------------
     // Instance Variables

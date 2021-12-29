@@ -20,14 +20,8 @@ public class DialogPanel extends GamePane implements Panel {
     // Constants
 
     private final static double INSET = 50;
-    private final static double NAME_SIZE = 24;
-    private final static double NAME_SPACING = 30;
-    private final static double DESCRIPTION_SIZE = 12;
     private final static double DESCRIPTION_SPACING = 26;
-    private final static double MAIN_SIZE = 16;
-    private final static double MAIN_SPACING = 20;
-    private final static double RESPONSE_SIZE = 16;
-    private final static double RESPONSE_SPACING = 30;
+    private final static double RESPONSE_LEADING = NORMAL_LEADING + 10;
 
     //-------------------------------------------------------------------------
     // Instance Variables
@@ -85,10 +79,6 @@ public class DialogPanel extends GamePane implements Panel {
             toImage(dialog.foregroundSprite()),
             toImage(dialog.backgroundSprite()),
             ix, iy, 2);
-//        var bgimage = sprites().get(dialog.backgroundSprite());
-//        var fgimage = sprites().get(dialog.foregroundSprite());
-//        gc().drawImage(ImageUtils.embiggen(bgimage, 2), ix, iy);
-//        gc().drawImage(ImageUtils.embiggen(fgimage, 2), ix, iy);
 
         // Draw the text.  tx and ty are in canvas coordinates
         var tx = 30 + 2*sprites().height() + 30;
@@ -97,12 +87,12 @@ public class DialogPanel extends GamePane implements Panel {
         gc().setFill(Color.WHITE);
 
         // Name
-        gc().setFont(Font.font("Helvetica", NAME_SIZE));
+        gc().setFont(TITLE_FONT);
         gc().fillText(dialog.getName(), tx, ty);
-        ty += NAME_SPACING;
+        ty += TITLE_LEADING;
 
         // Description
-        gc().setFont(Font.font("Helvetica", DESCRIPTION_SIZE));
+        gc().setFont(SMALL_FONT);
         var description = dialog.getDescription();
 
         if (description.isPresent()) {
@@ -114,19 +104,19 @@ public class DialogPanel extends GamePane implements Panel {
         gc().setLineWidth(2);
         gc().strokeLine(tx, ty, w - 30, ty);
 
-        ty += MAIN_SPACING;
+        ty += NORMAL_LEADING;
 
-        gc().setFont(Font.font("Helvetica", MAIN_SIZE));
-        fillTextBlock(dialog.getDisplayText(), tx, ty, MAIN_SPACING);
+        gc().setFont(NORMAL_FONT);
+        fillTextBlock(dialog.getDisplayText(), tx, ty, NORMAL_LEADING);
 
         // Draw the responses
         var responses = dialog.getResponses();
         ty = h - 30 - 20*(1 + responses.size()) - 25;
 
         gc().setFill(Color.WHITE);
-        gc().setFont(NORMAL_TEXT);
+        gc().setFont(NORMAL_FONT);
         gc().fillText("You respond:", tx, ty);
-        ty += RESPONSE_SPACING;
+        ty += RESPONSE_LEADING;
 
         widgets.clear();
         for (var response : responses) {
@@ -134,7 +124,7 @@ public class DialogPanel extends GamePane implements Panel {
 
             text.setTextOrigin(VPos.TOP);
             text.setFill(Color.YELLOW);
-            text.setFont(NORMAL_TEXT);
+            text.setFont(NORMAL_FONT);
             text.setX(tx + 20); // widget coordinates
             text.setY(ty);
             text.setOnMouseClicked(evt -> onResponse(response));
@@ -142,7 +132,7 @@ public class DialogPanel extends GamePane implements Panel {
             widgets.add(text);
             canvas().getChildren().add(text);
 
-            ty += RESPONSE_SPACING;
+            ty += RESPONSE_LEADING;
         }
     }
 
