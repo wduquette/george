@@ -1,7 +1,6 @@
 package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.App;
-import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.model.Dialog;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -81,13 +80,18 @@ public class DialogPanel extends GamePane implements Panel {
         // Draw the entity's image
         var ix = 30;
         var iy = 30;
-        var bgimage = sprites().get(dialog.backgroundSprite());
-        var fgimage = sprites().get(dialog.foregroundSprite());
-        gc().drawImage(ImageUtils.embiggen(bgimage, 2), ix, iy);
-        gc().drawImage(ImageUtils.embiggen(fgimage, 2), ix, iy);
+
+        drawFramedSprites(
+            toImage(dialog.foregroundSprite()),
+            toImage(dialog.backgroundSprite()),
+            ix, iy, 2);
+//        var bgimage = sprites().get(dialog.backgroundSprite());
+//        var fgimage = sprites().get(dialog.foregroundSprite());
+//        gc().drawImage(ImageUtils.embiggen(bgimage, 2), ix, iy);
+//        gc().drawImage(ImageUtils.embiggen(fgimage, 2), ix, iy);
 
         // Draw the text.  tx and ty are in canvas coordinates
-        var tx = 30 + 2*bgimage.getHeight() + 30;
+        var tx = 30 + 2*sprites().height() + 30;
         var ty = 30.0;
         gc().setTextBaseline(VPos.TOP);
         gc().setFill(Color.WHITE);
@@ -120,7 +124,7 @@ public class DialogPanel extends GamePane implements Panel {
         ty = h - 30 - 20*(1 + responses.size()) - 25;
 
         gc().setFill(Color.WHITE);
-        gc().setFont(Font.font("Helvetica", RESPONSE_SIZE));
+        gc().setFont(NORMAL_TEXT);
         gc().fillText("You respond:", tx, ty);
         ty += RESPONSE_SPACING;
 
@@ -130,9 +134,7 @@ public class DialogPanel extends GamePane implements Panel {
 
             text.setTextOrigin(VPos.TOP);
             text.setFill(Color.YELLOW);
-            text.setFont(Font.font("Helvetica", RESPONSE_SIZE));
-//            text.setX(INSET + tx + 20); // widget coordinates
-//            text.setY(INSET + ty);
+            text.setFont(NORMAL_TEXT);
             text.setX(tx + 20); // widget coordinates
             text.setY(ty);
             text.setOnMouseClicked(evt -> onResponse(response));

@@ -2,14 +2,11 @@ package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.Entity;
-import com.wjduquette.george.graphics.ImageUtils;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 /**
  * FeaturePanel implements a basic sign or other feature description
@@ -50,7 +47,7 @@ public class FeaturePanel extends GamePane implements Panel {
         var ix = 30;
         var iy = 30;
 
-        drawBorderedEntity(entity, ix, iy, 2);
+        drawFramedEntity(entity, ix, iy, 2);
 
         // Draw the text
         var tx = 30 + 2*sprites().width() + 30;

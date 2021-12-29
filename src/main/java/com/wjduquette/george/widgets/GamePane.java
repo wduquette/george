@@ -177,28 +177,46 @@ public abstract class GamePane extends StackPane {
      * @param x The left x coordinate, in pixels
      * @param y The top y coordinate, in pixels
      */
-    protected void drawBorderedEntity(Entity entity, double x, double y, int factor) {
+    protected void drawFramedEntity(Entity entity, double x, double y, int factor) {
         var terrain = entity.cell() != null
             ? app().getCurrentRegion().getTerrain(entity.cell())
             : null;
 
+        drawFramedSprites(toImage(entity), terrain.image(), x, y, factor);
+    }
+
+    /**
+     * Draws the pair of images at the given factor size, surrounded by a
+     * white border.  If the background image is null, uses a cyan background.
+     * @param fgImage The foreground image
+     * @param bgImage The background image, or null
+     * @param x The left x coordinate, in pixels
+     * @param y The top y coordinate, in pixels
+     */
+    protected void drawFramedSprites(
+        Image fgImage,
+        Image bgImage,
+        double x,
+        double y,
+        int factor)
+    {
         var border = 2;
         var ix = x + border;
         var iy = y + border;
-        var iw = factor * sprites().width();
-        var ih = factor * sprites().height();
+        var iw = factor * fgImage.getWidth();
+        var ih = factor * fgImage.getHeight();
         var w = iw + 2*border;
         var h = ih + 2*border;
 
         fill(Color.WHITE, x, y, w, h);
 
-        if (terrain != null) {
-            drawImage(ImageUtils.embiggen(terrain.image(), factor), ix, iy);
+        if (bgImage != null) {
+            drawImage(ImageUtils.embiggen(bgImage, factor), ix, iy);
         } else {
             fill(Color.CYAN, ix, iy, iw, ih);
         }
 
-        drawImage(ImageUtils.embiggen(toImage(entity), factor), ix, iy);
+        drawImage(ImageUtils.embiggen(fgImage, factor), ix, iy);
     }
 
     protected void fill(Paint paint, double x, double y, double width, double height) {
