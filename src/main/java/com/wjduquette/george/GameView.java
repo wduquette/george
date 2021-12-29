@@ -77,7 +77,7 @@ public class GameView extends GamePane {
     // GamePane API
 
     protected void onMouseClick(MouseEvent evt) {
-        Point2D mouse = canvas().ofMouse(evt);
+        Point2D mouse = toPoint(evt);
 
         // NEXT, did they click a cell?
         Cell cell = xy2rc(mouse);
@@ -121,9 +121,6 @@ public class GameView extends GamePane {
     }
 
     protected void onRepaint() {
-        canvas().clear();  // TODO: Provide clear method(s)
-        clearTargets();
-
         // Don't recompute bounds if the player is executing a plan.
         // TODO: Not sure if this is want I want.  At the very least, I need
         // recompute if the player is outside the current bounds.
@@ -179,8 +176,8 @@ public class GameView extends GamePane {
     private static final double BAR_MARGIN = 10;
 
     private void drawButtonBar() {
-        var w = canvas().getWidth();
-        var h = canvas().getHeight();
+        var w = getWidth();
+        var h = getHeight();
         var bw = sprites().width();
         var bh = sprites().height();
         var border = 4;
@@ -274,8 +271,8 @@ public class GameView extends GamePane {
     // Compute the row and column offsets so that the given cell is in the
     // middle of the view pane
     private void computeBounds(Cell cell) {
-        double heightInTiles = canvas().getHeight() / region.getTileHeight();
-        double widthInTiles = canvas().getWidth() / region.getTileWidth();
+        double heightInTiles = getHeight() / region.getTileHeight();
+        double widthInTiles = getWidth() / region.getTileWidth();
         rowOffset = cell.row() - (int) heightInTiles / 2;
         colOffset = cell.col() - (int) widthInTiles / 2;
 

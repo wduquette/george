@@ -26,6 +26,7 @@ public abstract class GamePane extends StackPane {
     // The canvas pane, for content.
     private final CanvasPane canvas;
 
+    // The list of things the user can click on.
     private final List<ClickTarget> targets = new ArrayList<>();
 
     //-------------------------------------------------------------------------
@@ -51,7 +52,7 @@ public abstract class GamePane extends StackPane {
     // Handles all mouse clicks.  Click targets are handled directly; other
     // clicks are passed on to the subclass.
     private void handleMouseClick(MouseEvent evt) {
-        Point2D mouse = canvas.ofMouse(evt);
+        Point2D mouse = canvas.toPoint(evt);
 
         // FIRST, did they click a specific target?
         for (ClickTarget target : targets) {
@@ -120,11 +121,19 @@ public abstract class GamePane extends StackPane {
     // Public API
 
     public void repaint() {
-        // FIRST, repaint the content
+        // FIRST, clear the old content
+        canvas.clear();
+        targets.clear();
+
+        // NEXT, repaint the content
         onRepaint();
 
         // NEXT, request the keyboard focus.
         canvas.requestFocus();
+    }
+
+    public Point2D toPoint(MouseEvent evt) {
+        return canvas.toPoint(evt);
     }
 
     //-------------------------------------------------------------------------
