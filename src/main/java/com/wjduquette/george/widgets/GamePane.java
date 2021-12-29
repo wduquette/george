@@ -130,6 +130,17 @@ public abstract class GamePane extends StackPane {
     }
 
     //-------------------------------------------------------------------------
+    // Drawing API
+
+    protected void drawImage(Image image, double x, double y) {
+        gc().drawImage(image, x, y);
+    }
+
+    protected void drawImage(Image image, Point2D point) {
+        gc().drawImage(image, point.getX(), point.getY());
+    }
+
+    //-------------------------------------------------------------------------
     // Framework Methods
 
     /**
