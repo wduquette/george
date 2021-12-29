@@ -3,6 +3,7 @@ package com.wjduquette.george.widgets;
 import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.Sprite;
+import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.graphics.SpriteSet;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -13,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,8 @@ import java.util.List;
  * This is used for the main game view and a variety of other panels.
  */
 public abstract class GamePane extends StackPane {
+    public static final Font NORMAL_TEXT = Font.font("Helvetica", 16);
+
     //-------------------------------------------------------------------------
     // Instance Variables
 
@@ -142,6 +146,39 @@ public abstract class GamePane extends StackPane {
         gc().drawImage(image, point.getX(), point.getY());
     }
 
+    /**
+     * Draws the entity as shown in dialogs, etc.  The entity and its
+     * background terrain are drawn double-sized at the given location,
+     * with a white border.  The upper left corner of the entity's sprite
+     * is at x,y.
+     * @param entity The entity
+     * @param x The left x coordinate, in pixels
+     * @param y The top y coordinate, in pixels
+     */
+    protected void drawBorderedEntity(Entity entity, double x, double y, int factor) {
+        var terrain = entity.cell() != null
+            ? app().getCurrentRegion().getTerrain(entity.cell())
+            : null;
+
+        var border = 2;
+        var ix = x + border;
+        var iy = y + border;
+        var iw = factor * sprites().width();
+        var ih = factor * sprites().height();
+        var w = iw + 2*border;
+        var h = ih + 2*border;
+
+        fill(Color.WHITE, x, y, w, h);
+
+        if (terrain != null) {
+            drawImage(ImageUtils.embiggen(terrain.image(), factor), ix, iy);
+        } else {
+            fill(Color.CYAN, ix, iy, iw, ih);
+        }
+
+        drawImage(ImageUtils.embiggen(toImage(entity), factor), ix, iy);
+    }
+
     protected void fill(Paint paint, double x, double y, double width, double height) {
         gc().setFill(paint);
         gc().fillRect(x, y, width, height);
@@ -150,6 +187,11 @@ public abstract class GamePane extends StackPane {
     protected void fill(Paint paint, Bounds box) {
         gc().setFill(paint);
         gc().fillRect(box.getMinX(), box.getMinY(), box.getWidth(), box.getHeight());
+    }
+
+    protected void fillTextBlock(String block, double x, double y, double spacing) {
+        // TODO: Move fill text block here.
+        canvas.fillTextBlock(block, x, y, spacing);
     }
 
     //-------------------------------------------------------------------------
