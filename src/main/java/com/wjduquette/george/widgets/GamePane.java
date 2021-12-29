@@ -76,6 +76,28 @@ public abstract class GamePane extends StackPane {
     }
 
     //-------------------------------------------------------------------------
+    // Framework Methods
+
+    /**
+     * Subclasses must override to paint content content.
+     */
+    abstract protected void onRepaint();
+
+    /**
+     * Subclasses may override to receive mouse clicks (that were not
+     * handled by defined click targets).
+     * @param evt The event
+     */
+    protected void onMouseClick(MouseEvent evt) {}
+
+    /**
+     * Subclasses may override to receive key events.
+     * @param evt The event.
+     */
+    protected void onKeyPress(KeyEvent evt) {}
+
+
+    //-------------------------------------------------------------------------
     // Protected API
 
     // Components
@@ -193,27 +215,6 @@ public abstract class GamePane extends StackPane {
         // TODO: Move fill text block here.
         canvas.fillTextBlock(block, x, y, spacing);
     }
-
-    //-------------------------------------------------------------------------
-    // Framework Methods
-
-    /**
-     * Subclasses must override to paint content content.
-     */
-    abstract protected void onRepaint();
-
-    /**
-     * Subclasses may override to receive mouse clicks (that were not
-     * handled by defined click targets).
-     * @param evt The event
-     */
-    protected void onMouseClick(MouseEvent evt) {}
-
-    /**
-     * Subclasses may override to receive key events.
-     * @param evt The event.
-     */
-    protected void onKeyPress(KeyEvent evt) {}
 
     //-------------------------------------------------------------------------
     // Public API

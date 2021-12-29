@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * A panel for talking to NPCs.
  */
-public class DialogPanel extends CanvasPane implements Panel {
+public class DialogPanel extends GamePane implements Panel {
     //-------------------------------------------------------------------------
     // Constants
 
@@ -32,9 +32,6 @@ public class DialogPanel extends CanvasPane implements Panel {
 
     //-------------------------------------------------------------------------
     // Instance Variables
-
-    // The application
-    private final App app;
 
     // The data model
     private final Dialog dialog;
@@ -54,10 +51,9 @@ public class DialogPanel extends CanvasPane implements Panel {
      * @param dialog The dialog
      */
     public DialogPanel(App app, Dialog dialog) {
-        this.app = app;
+        super(app);
         this.dialog = dialog;
         setPadding(new Insets(INSET));
-        setOnResize(this::repaint);
     }
 
     //-------------------------------------------------------------------------
@@ -70,11 +66,11 @@ public class DialogPanel extends CanvasPane implements Panel {
     // Implementation
 
     // Paint the current state of the dialog.
-    private void repaint() {
+    protected void onRepaint() {
         // FIRST, Clear any old responses.
-        getChildren().removeAll(widgets);
+        canvas().getChildren().removeAll(widgets);
 
-        var region = app.getCurrentRegion();
+        var region = app().getCurrentRegion();
         var w = getWidth() - 2*INSET;
         var h = getHeight() - 2*INSET;
 
@@ -85,8 +81,8 @@ public class DialogPanel extends CanvasPane implements Panel {
         // Draw the entity's image
         var ix = 30;
         var iy = 30;
-        var bgimage = app.sprites().get(dialog.backgroundSprite());
-        var fgimage = app.sprites().get(dialog.foregroundSprite());
+        var bgimage = sprites().get(dialog.backgroundSprite());
+        var fgimage = sprites().get(dialog.foregroundSprite());
         gc().drawImage(ImageUtils.embiggen(bgimage, 2), ix, iy);
         gc().drawImage(ImageUtils.embiggen(fgimage, 2), ix, iy);
 
@@ -135,12 +131,14 @@ public class DialogPanel extends CanvasPane implements Panel {
             text.setTextOrigin(VPos.TOP);
             text.setFill(Color.YELLOW);
             text.setFont(Font.font("Helvetica", RESPONSE_SIZE));
-            text.setX(INSET + tx + 20); // widget coordinates
-            text.setY(INSET + ty);
+//            text.setX(INSET + tx + 20); // widget coordinates
+//            text.setY(INSET + ty);
+            text.setX(tx + 20); // widget coordinates
+            text.setY(ty);
             text.setOnMouseClicked(evt -> onResponse(response));
 
             widgets.add(text);
-            getChildren().add(text);
+            canvas().getChildren().add(text);
 
             ty += RESPONSE_SPACING;
         }
