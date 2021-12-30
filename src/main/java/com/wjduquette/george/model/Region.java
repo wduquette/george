@@ -226,8 +226,20 @@ public abstract class Region {
      * Gets the region's entities table.
      * @return The table.
      */
-    public EntityTable getEntities() {
+    public EntityTable entities() {
         return entities;
+    }
+
+    /**
+     * Gets the cell associated with the point name
+     * @param name The point name
+     * @return The cell, if found.
+     */
+    public Optional<Cell> point(String name) {
+        return query(Point.class)
+            .filter(e -> e.point().name().equals(name))
+            .map(Entity::cell)
+            .findFirst();
     }
 
     /**

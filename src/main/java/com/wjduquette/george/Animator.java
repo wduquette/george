@@ -49,7 +49,7 @@ public class Animator {
         }
 
         if (animation.isComplete()) {
-            region.getEntities().remove(effect.id());
+            region.entities().remove(effect.id());
         }
     }
 
@@ -67,13 +67,13 @@ public class Animator {
             if (msg.lastTick() == 0) {
                 e.put(new LogMessage(gameTick + MESSAGE_DURATION, msg.message()));
             } else if (msg.lastTick() <= gameTick) {
-                region.getEntities().remove(e.id());
+                region.entities().remove(e.id());
             }
         }
 
         // NEXT, get rid of excess messages.
         for (int i = MAX_MESSAGES; i < messages.size(); i++) {
-            region.getEntities().remove(messages.get(i).id());
+            region.entities().remove(messages.get(i).id());
         }
     }
 }

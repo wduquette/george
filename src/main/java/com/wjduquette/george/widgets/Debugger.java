@@ -278,7 +278,7 @@ public class Debugger extends StackPane {
         var selectedEntity = entitiesView.getSelectionModel().getSelectedItem();
         entityList.clear();
 
-        for (long id : region.getEntities().ids()) {
+        for (long id : region.entities().ids()) {
             var entity = region.get(id);
             var newProxy = new EntityProxy(entity);
             entityList.add(newProxy);
