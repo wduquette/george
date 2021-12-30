@@ -2,7 +2,7 @@ package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.Entity;
-import com.wjduquette.george.ecs.Player;
+import com.wjduquette.george.ecs.Inventory;
 import com.wjduquette.george.model.Region;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.VPos;
@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryPanel extends GamePane implements Panel {
@@ -21,13 +22,14 @@ public class InventoryPanel extends GamePane implements Panel {
 
     private Runnable onClose = null;
     private final Region region;
+    private final Entity player;
 
     //-------------------------------------------------------------------------
     // Constructor
 
-    public InventoryPanel(App app) {
+    public InventoryPanel(App app, Entity player) {
         super(app);
-
+        this.player = player;
         this.region = app().getCurrentRegion();
     }
 
@@ -84,12 +86,7 @@ public class InventoryPanel extends GamePane implements Panel {
     private double bx;    // Backpack origin
     private double by;
 
-    Entity player;        // The player
-
     protected void onRepaint() {
-        // TODO: This will change when we have a party.
-        player = region.query(Player.class).findFirst().orElseThrow();
-
         // Fill the background
         fill(Color.DARKBLUE, 0, 0, getWidth(), getHeight());
 
@@ -129,27 +126,8 @@ public class InventoryPanel extends GamePane implements Panel {
         gc().fillText(player.label().text() + "'s Backpack", tx, ty);
 
         // Draw Backpack slots
-//        // TODO Items need a slot location in the inventory.
-//        List<Entity> items = region.query(Owner.class)
-//            .filter(e -> e.owner().ownerId() == player.id())
-//            .toList();
-//
-//        var iw = sprites().width() + 4;
-//        var ih = sprites().height() + 4;
-//
-//        for (int r = 0; r < 4; r++) {
-//            var iy = by + r*ih;
-//            for (int c = 0; c < 5; c++) {
-//                var index = r*5 + c;
-//                var ix = bx + c*iw;
-//
-//                if (index < items.size()) {
-//                    drawItemBox(index, items.get(index), ix, iy);
-//                } else {
-//                    drawItemBox(index, null, ix, iy);
-//                }
-//            }
-//        }
+        drawSlots(bx, by, 4, getBackpackSlots(),
+            i -> App.println("Selected backpack: " + i));
     }
 
     private void drawBackButton() {
@@ -182,6 +160,31 @@ public class InventoryPanel extends GamePane implements Panel {
         if (entity != null) {
             drawImage(toImage(entity), ix, iy);
         }
+    }
+
+    //-------------------------------------------------------------------------
+    // Slot Management
+
+    List<SlotBox> getBackpackSlots() {
+        var list = new ArrayList<SlotBox>();
+        var inv = player.inventory();
+
+        for (int i = 0; i < inv.size(); i++) {
+            var slot = inv.get(i);
+            SlotBox box;
+            if (slot == Inventory.EMPTY) {
+                box = new SlotBox(player, i, null);
+            } else {
+                box = new SlotBox(player, i, slot.entity().sprite().name());
+
+                box.actions().add(new Action("Drop",
+                    () -> App.println("TODO: Drop!")));
+            }
+
+            list.add(box);
+        }
+
+        return list;
     }
 
 }

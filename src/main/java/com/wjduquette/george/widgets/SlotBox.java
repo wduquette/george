@@ -15,6 +15,7 @@ public class SlotBox {
     private final Entity owner;
     private final int index;
     private final String contentSprite;
+    private boolean selected = false;
     private final List<Action> actions = new ArrayList<>();
 
     //-------------------------------------------------------------------------
@@ -32,5 +33,12 @@ public class SlotBox {
     public Entity       owner()         { return owner; }
     public int          index()         { return index; }
     public String       contentSprite() { return contentSprite; }
+    public int          count()         { return owner.inventory().get(index).count(); }
+    public boolean      isSelected()    { return selected; }
     public List<Action> actions()       { return actions; }
+
+    public void setSelected(boolean flag) {
+        selected = flag;
+    }
+
 }

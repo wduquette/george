@@ -88,6 +88,10 @@ public class Inventory implements Component {
         Arrays.fill(slots, EMPTY);
     }
 
+    public final int size() {
+        return slots.length;
+    }
+
     /**
      * Gets the slot at the index.
      * @param index The index

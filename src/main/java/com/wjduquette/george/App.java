@@ -110,6 +110,7 @@ public class App extends Application {
         player.setHitPoints(10, 10);
         var inv = new Inventory(Player.INVENTORY_SIZE);
         inv.add(items().make("vial.healing"));
+        inv.add(items().make("vial.healing"));
 
         return new Entity()
             .player(player)
@@ -309,7 +310,7 @@ public class App extends Application {
      * Shows the inventory panel for the current leader.
      */
     public void showInventory() {
-        showPanel(new InventoryPanel(this));
+        showPanel(new InventoryPanel(this, leader()));
     }
 
     /**

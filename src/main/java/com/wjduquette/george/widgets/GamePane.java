@@ -5,6 +5,7 @@ import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.Sprite;
 import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.graphics.SpriteSet;
+import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
@@ -21,6 +22,7 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * A canvas pane extended with tools related to the game and its data.
@@ -281,6 +283,61 @@ public abstract class GamePane extends StackPane {
     protected void fillTextBlock(String block, double x, double y, double spacing) {
         // TODO: Move fill text block here.
         canvas.fillTextBlock(block, x, y, spacing);
+    }
+
+    /**
+     * Draws an array of slot boxes.  cols*rows must equal the length of the
+     * slots list.
+     * @param x The left x coordinate of the array
+     * @param y The top y coordinate of the array
+     * @param cols The number of columns
+     * @param slots The slots to draw.
+     * @param onSelect Handler to call when the box is selected.
+     */
+    protected void drawSlots(
+        double x,
+        double y,
+        int cols,
+        List<SlotBox> slots,
+        Consumer<Integer> onSelect
+    ) {
+        var border = 2;
+        var sw = sprites().width() + border;
+        var sh = sprites().height() + border;
+        var rows = slots.size()/cols;
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                var index = r*cols + c;
+                var sx = x + c*sw;
+                var sy = y + r*sh;
+                var slot = slots.get(index);
+                var box = new BoundingBox(sx, sy, sw + border, sh + border);
+
+                // Draw frame
+                var bg = slot.isSelected() ? Color.LIGHTGRAY : Color.DIMGRAY;
+                fill(Color.WHITE, box);
+                fill(bg, sx + border, sy + border, sw - border, sh - border);
+
+                if (slot.contentSprite() != null) {
+                    drawImage(sprites().get(slot.contentSprite()),
+                        sx + border, sy + border);
+                }
+
+                if (slot.count() > 1) {
+                    var count = Integer.toString(slot.count());
+                    var tw = Gui.pixelWidth(SMALL_FONT, count);
+                    var tx = sx + sw - 4 - tw;
+                    var ty = sy + sh - 4;
+
+                    gc().setFill(Color.WHITE);
+                    gc().setFont(SMALL_FONT);
+                    gc().setTextBaseline(VPos.BOTTOM);
+                    gc().fillText(count, tx, ty);
+                }
+                target(box, () -> onSelect.accept(index));
+            }
+        }
     }
 
     //-------------------------------------------------------------------------
