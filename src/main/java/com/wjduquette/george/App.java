@@ -62,14 +62,20 @@ public class App extends Application {
     // The game tick
     private long gameTick = 0;
 
+    // The Party!
+    private Entity george;
+
     //-------------------------------------------------------------------------
     // Main Program
 
     @Override
     public void start(Stage stage) {
-        // Set up global resources
+        // FIRST, Set up global resources
         populateRegionFactories();
         items = new Items(getClass(), "assets/items.keydata");
+
+        // NEXT, Create the player(s)
+        george = makeGeorge();
 
         // TEMP
 
@@ -77,19 +83,9 @@ public class App extends Application {
 //        region = getRegion("floobham");
         region = getRegion("overworld");
 
-        // TODO: add point-retrieval method
-        Cell origin = region.query(Point.class)
-            .filter(e -> e.point().name().equals("origin"))
-            .map(Entity::cell)
-            .findFirst()
-            .orElse(new Cell(10, 10));
-
-        Entity george = region.getEntities().make()
-            .mobile("george") // Key
-            .tagAsPlayer()
-            .label("George")
-            .cell(origin)
-            .sprite(Sprites.ALL.getInfo("mobile.george"));
+        // Put the player(s) in the region
+        Cell origin = region.point("origin").orElse(new Cell(10, 10));
+        region.entities().add(george.cell(origin));
 
         viewer = new GameView(this);
         viewer.addEventHandler(UserInputEvent.USER_INPUT, this::onUserInput);
@@ -108,8 +104,15 @@ public class App extends Application {
         Platform.runLater(looper::run);
     }
 
-    public static void main(String[] args) {
-        launch();
+    // Creates George as of the beginning of the game.
+    private Entity makeGeorge() {
+        Player player = new Player("George");
+        player.setHitPoints(10, 10);
+
+        return new Entity()
+            .mobile("george") // Key
+            .player(player)
+            .sprite(Sprites.ALL.getInfo("mobile.george"));
     }
 
     //-------------------------------------------------------------------------
@@ -255,8 +258,8 @@ public class App extends Application {
         // This will require special logic to position the follower(s).
         Entity player = region.query(Player.class).findFirst().orElseThrow();
 
-        region.getEntities().remove(player.id());
-        newRegion.getEntities().add(player);
+        region.entities().remove(player.id());
+        newRegion.entities().add(player);
 
         // Inventory
         var inventory = region.query(Owner.class)
@@ -264,8 +267,8 @@ public class App extends Application {
             .toList();
 
         for (var item : inventory) {
-            region.getEntities().remove(item.id());
-            newRegion.getEntities().add(item);
+            region.entities().remove(item.id());
+            newRegion.entities().add(item);
         }
 
         // Position the player.
@@ -378,5 +381,13 @@ public class App extends Application {
         }
 
         System.out.println(text);
+    }
+
+
+    //-------------------------------------------------------------------------
+    // Main
+
+    public static void main(String[] args) {
+        launch();
     }
 }

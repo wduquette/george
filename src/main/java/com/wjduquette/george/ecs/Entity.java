@@ -254,8 +254,7 @@ public class Entity {
     // Others just add the component given the arguments.
 
     public Entity tagAsFeature() { return put(new Feature()); }
-    public Entity tagAsPlayer() { return put(new Player()); }
-
+    public Entity player(Player player) { return put(player).label(player.name()); }
     public Entity exit(String region, String point) { return put(new Exit(region, point)); }
     public Entity item(String key, Items.Type type) { return put(new Item(key, type)); }
     public Entity label(String text) { return put(new Label(text)); }
