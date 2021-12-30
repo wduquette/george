@@ -17,10 +17,21 @@ public class Items {
 
     /** The available item types. */
     public enum Type {
-        UNKNOWN,
-        KEY_ITEM,
-        VIAL_OF_HEALING,
-        SCROLL_OF_MAPPING
+        //               stacks?
+        NONE             (false),   // No item here
+        KEY_ITEM         (false),
+        VIAL_OF_HEALING  (true),
+        SCROLL_OF_MAPPING(true);
+
+        // Whether or not items of this type can be stacked.  If they can,
+        // all items of this type must be effectively identical.
+        private final boolean stacks;
+
+        Type(boolean stacks) {
+            this.stacks = stacks;
+        }
+
+        public boolean stacks() { return stacks; }
     }
 
     //-------------------------------------------------------------------------

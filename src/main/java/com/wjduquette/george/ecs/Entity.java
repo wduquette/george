@@ -63,7 +63,7 @@ public class Entity {
     private final long id;
 
     // The TypeMap containing the components
-    private final TypeMap components = new TypeMap();
+    private final TypeMap components;
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -85,6 +85,17 @@ public class Entity {
      */
     public Entity(long id) {
         this.id = id;
+        components = new TypeMap();
+    }
+
+    /**
+     * Creates a shallow copy of the given entity, assigning a new ID.
+     * This should only be used for entities that are effectively immutable.
+     * @param other The other entity
+     */
+    public Entity(Entity other) {
+        this.id = Entity.nextId;
+        this.components = other.components;
     }
 
     //-------------------------------------------------------------------------

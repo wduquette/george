@@ -11,8 +11,19 @@ public final class TypeMap {
     //-------------------------------------------------------------------------
     // Constructor
 
+    /**
+     * Creates an empty type map.
+     */
     public TypeMap() {
         // nothing to do
+    }
+
+    /**
+     * Creates a shallow copy of the type map.
+     * @param other The other type map.
+     */
+    public TypeMap(TypeMap other) {
+        map.putAll(other.map);
     }
 
     //-------------------------------------------------------------------------
