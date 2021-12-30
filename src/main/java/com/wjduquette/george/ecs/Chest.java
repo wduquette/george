@@ -1,6 +1,5 @@
 package com.wjduquette.george.ecs;
 
-import com.wjduquette.george.model.Inventory;
 import com.wjduquette.george.model.Opening;
 
 /**
@@ -22,9 +21,6 @@ public class Chest implements Component {
     // The chest's current state.
     private Opening state;
 
-    // The chest's content
-    private final Inventory inventory = new Inventory(INVENTORY_SIZE);
-
     //-------------------------------------------------------------------------
     // Constructor
 
@@ -42,12 +38,6 @@ public class Chest implements Component {
 
     //-------------------------------------------------------------------------
     // Chest API
-
-    /**
-     * Gets the chest's inventory.
-     * @return The inventory.
-     */
-    public Inventory inventory() { return inventory; }
 
     /**
      * Opens the chest.

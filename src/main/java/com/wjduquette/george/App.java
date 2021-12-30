@@ -108,10 +108,13 @@ public class App extends Application {
     private Entity makeGeorge() {
         Player player = new Player("George");
         player.setHitPoints(10, 10);
+        var inv = new Inventory(Player.INVENTORY_SIZE);
+        inv.add(items().make("vial.healing"));
 
         return new Entity()
-            .mobile("george") // Key
             .player(player)
+            .mobile("george") // Key
+            .put(inv)
             .sprite(Sprites.ALL.getInfo("mobile.george"));
     }
 
@@ -217,6 +220,20 @@ public class App extends Application {
         }
     }
 
+    //-------------------------------------------------------------------------
+    // Movers
+
+    /**
+     * Returns the party leader.
+     * @return The leader
+     */
+    public Entity leader() {
+        return george;
+    }
+
+    //-------------------------------------------------------------------------
+    // Interrupts and Panels
+
     private void handleInterrupts(UserInput input) {
         switch (interrupts.pop()) {
             case Interrupt.GoToRegion info -> gotoRegion(info.exit());
@@ -312,6 +329,7 @@ public class App extends Application {
         });
         viewer.getChildren().add(panel.asNode());
     }
+
 
     //-------------------------------------------------------------------------
     // Region Definitions

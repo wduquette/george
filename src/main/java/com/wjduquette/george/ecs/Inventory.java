@@ -1,6 +1,5 @@
-package com.wjduquette.george.model;
+package com.wjduquette.george.ecs;
 
-import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.model.Items.Type;
 
 import java.util.Arrays;
@@ -11,7 +10,7 @@ import java.util.Optional;
  * elements in the array can be empty.  Each element has a count, allowing for
  * stackable items.
  */
-public class Inventory {
+public class Inventory implements Component {
     //-------------------------------------------------------------------------
     // Types and Constants
 

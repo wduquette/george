@@ -118,7 +118,7 @@ public class Executor {
                 region.get(open.id()).openChest();
                 var chest = region.get(open.id());
                 chest.openChest();
-                var invent = chest.chest().inventory();
+                var invent = chest.inventory();
 
                 // TODO: pop up chest panel
                 // For now, just give them everything.
@@ -126,9 +126,9 @@ public class Executor {
                     region.log("The chest is empty.");
                 } else {
                     // Give the contents to the owner, as much as will fit.
-                    mob.player().inventory().addAll(invent);
+                    mob.inventory().addAll(invent);
                     App.println("Player " + mob.player().name() + " has:");
-                    App.println(mob.player().inventory().toString());
+                    App.println(mob.inventory().toString());
                 }
                 return Result.DO_NEXT;
             }

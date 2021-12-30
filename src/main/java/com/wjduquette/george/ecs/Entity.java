@@ -194,6 +194,7 @@ public class Entity {
     public Exit       exit()       { return components.get(Exit.class); }
     public Feature    feature()    { return components.get(Feature.class); }
     public Item       item()       { return components.get(Item.class); }
+    public Inventory  inventory()  { return components.get(Inventory.class); }
     public Label      label()      { return components.get(Label.class); }
     public Loc        loc()        { return components.get(Loc.class); }
     public LogMessage logMessage() { return components.get(LogMessage.class); }

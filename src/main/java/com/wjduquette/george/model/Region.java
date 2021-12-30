@@ -490,6 +490,7 @@ public abstract class Region {
         return new Entity()
             .tagAsFeature()
             .chest(chest)
+            .put(new Inventory(Chest.INVENTORY_SIZE))
             .terrain(TerrainType.FENCE);
     }
 

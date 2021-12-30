@@ -31,13 +31,13 @@ public class FloobhamRegion extends DataDrivenRegion {
             case "town_chest1":
             case "town_chest2": {
                 var chest = makeChest(key).cell(object2cell(obj));
-                chest.chest().inventory().add(app.items().make("vial.healing"));
+                chest.inventory().add(app.items().make("vial.healing"));
                 entities.add(chest);
                 return true;
             }
             case "town_chest3": {
                 var chest = makeChest(key).cell(object2cell(obj));
-                chest.chest().inventory().add(app.items().make("scroll.mapping"));
+                chest.inventory().add(app.items().make("scroll.mapping"));
                 entities.add(chest);
                 return true;
             }

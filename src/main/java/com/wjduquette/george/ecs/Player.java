@@ -1,7 +1,5 @@
 package com.wjduquette.george.ecs;
 
-import com.wjduquette.george.model.Inventory;
-
 /**
  * This component represents a player character, with its name, stats, status,
  * etc.
@@ -20,9 +18,6 @@ public class Player implements Component {
     private int hitPoints = 0;
     private int maxHitPoints = 0;
 
-    // Inventory
-    private final Inventory inventory;
-
     //-------------------------------------------------------------------------
     // Constructor
 
@@ -32,14 +27,12 @@ public class Player implements Component {
      */
     public Player(String name) {
         this.name = name;
-        this.inventory = new Inventory(INVENTORY_SIZE);
     }
 
     //-------------------------------------------------------------------------
     // Player API
 
     public String name() { return name; }
-    public Inventory inventory() { return inventory; }
 
     /**
      * Initializes the player's hit point stats.
