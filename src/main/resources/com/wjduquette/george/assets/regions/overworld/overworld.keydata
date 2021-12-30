@@ -52,7 +52,7 @@ A man in black speaks to you as you approach.
 
 "There are things you need to know, and I guess I'm the one
 to tell you.  First thing is, you have to left-click to move—
-but I guess you already know that."
+but it seems you already know that."
 %end
 
 %block tutor.leftclick
