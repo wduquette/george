@@ -261,16 +261,6 @@ public class App extends Application {
         region.entities().remove(player.id());
         newRegion.entities().add(player);
 
-        // Inventory
-        var inventory = region.query(Owner.class)
-            .filter(e -> e.owner().ownerId() == player.id())
-            .toList();
-
-        for (var item : inventory) {
-            region.entities().remove(item.id());
-            newRegion.entities().add(item);
-        }
-
         // Position the player.
         player.cell(point.get().cell());
 

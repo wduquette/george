@@ -83,6 +83,13 @@ public class Inventory {
     // Slot Manipulation
 
     /**
+     * Removes everything from the inventory.
+     */
+    public final void clear() {
+        Arrays.fill(slots, EMPTY);
+    }
+
+    /**
      * Gets the slot at the index.
      * @param index The index
      * @return The item
@@ -110,20 +117,33 @@ public class Inventory {
         slots[index] = slot;
     }
 
+
+    // Adds the contents of the slot to this inventory, returning true
+    // on success, and false if there was no capacity.
+    private boolean add(Slot slot) {
+        var index = add(slot.entity);
+        if (index != -1) {
+            slots[index].increment(slot.count - 1);
+            return true;
+        }
+        return false;
+    }
+
     //-------------------------------------------------------------------------
     // Item Management
 
     /**
      * Adds an Item entity, either stacking it with similar items or putting it
-     * in the first open slot.  Returns false if the entity couldn't be added
+     * in the first open slot.  Returns the index of the slot the entity was
+     * added to, or -1 if the entity couldn't be added
      * because the inventory is full.
      *
      * <p>Note: if the entity is stacked with others of its type, the
      * entity itself is gone.</p>
      * @param entity The entity to add.
-     * @return true or false
+     * @return The index of the slot.
      */
-    public boolean add(Entity entity) {
+    public int add(Entity entity) {
         if (entity.item() == null) {
             throw new IllegalArgumentException("Adding non-Item to Inventory");
         }
@@ -134,7 +154,7 @@ public class Inventory {
             var index = indexOf(entity.item().type());
             if (index != -1) {
                 slots[index] = slots[index].increment(1);
-                return true;
+                return index;
             }
         }
 
@@ -143,10 +163,9 @@ public class Inventory {
 
         if (index != -1) {
             slots[index] = new Slot(entity,1);
-            return true;
         }
 
-        return false;
+        return index;
     }
 
     /**
@@ -176,5 +195,56 @@ public class Inventory {
             slots[index] = slots[index].decrement(1);
             return Optional.of(entity);
         }
+    }
+
+    /**
+     * Gets whether the inventory is empty or not.
+     * @return true or false
+     */
+    public boolean isEmpty() {
+        for (var slot : slots) {
+            if (slot != EMPTY) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Takes everything from the other inventory and adds it to this one,
+     * until this one is full.
+     * @param other The other inventory.
+     * @return true if everything could be taken.
+     */
+    public boolean addAll(Inventory other) {
+        for (int i = 0; i < other.slots.length; i++) {
+            if (other.slots[i] == EMPTY) {
+                continue;
+            }
+
+            if (add(other.slots[i])) {
+                other.slots[i] = EMPTY;
+            }
+        }
+
+        return other.isEmpty();
+    }
+
+    @Override public String toString() {
+        var buff = new StringBuilder();
+        for (var i = 0; i < slots.length; i++) {
+
+            if (slots[i] != EMPTY) {
+                buff.append("[")
+                    .append(String.format("%02d", i))
+                    .append("] - ")
+                    .append(Integer.toString(slots[i].count))
+                    .append(" ")
+                    .append(slots[i].entity.label().text());
+            }
+            buff.append("\n");
+        }
+        return buff.toString();
     }
 }

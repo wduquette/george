@@ -1,35 +1,66 @@
 package com.wjduquette.george.ecs;
 
+import com.wjduquette.george.model.Inventory;
 import com.wjduquette.george.model.Opening;
 
 /**
  * A chest feature on the map.
  */
-public record Chest(
-    String key,
-    Opening state,
-    String closedSprite,
-    String openSprite
-) implements Component {
-    @Override public String toString() {
-        return "(Chest " + key + " " + state + " " + closedSprite + " " +
-            openSprite + ")";
+public class Chest implements Component {
+    public static final int INVENTORY_SIZE = 16;
+
+    //-------------------------------------------------------------------------
+    // Instance Variables
+
+    // The chest's info key.  (Does it need one?)
+    private final String key;
+
+    // The sprites to use when the chest is open or closed.
+    private final String openSprite;
+    private final String closedSprite;
+
+    // The chest's current state.
+    private Opening state;
+
+    // The chest's content
+    private final Inventory inventory = new Inventory(INVENTORY_SIZE);
+
+    //-------------------------------------------------------------------------
+    // Constructor
+
+    public Chest(
+        String key,
+        String closedSprite,
+        String openSprite,
+        Opening state)
+    {
+        this.key = key;
+        this.closedSprite = closedSprite;
+        this.openSprite = openSprite;
+        this.state = state;
+    }
+
+    //-------------------------------------------------------------------------
+    // Chest API
+
+    /**
+     * Gets the chest's inventory.
+     * @return The inventory.
+     */
+    public Inventory inventory() { return inventory; }
+
+    /**
+     * Opens the chest.
+     */
+    public void open() {
+        state = Opening.OPEN;
     }
 
     /**
-     * Returns a chest that's open, all else held equal.
-     * @return The modified chest.
+     * Closes the chest.
      */
-    public Chest open() {
-        return new Chest(key, Opening.OPEN, closedSprite, openSprite);
-    }
-
-    /**
-     * Returns a chest that's closed, all else held equal.
-     * @return The modified chest.
-     */
-    public Chest close() {
-        return new Chest(key, Opening.CLOSED, closedSprite, openSprite);
+    public void close() {
+        state = Opening.CLOSED;
     }
 
     /**
@@ -73,4 +104,13 @@ public record Chest(
             return new Sprite(openSprite);
         }
     }
+
+    //-------------------------------------------------------------------------
+    // Component API
+
+    @Override public String toString() {
+        return "(Chest " + key + " " + state + " " + closedSprite + " " +
+            openSprite + ")";
+    }
+
 }

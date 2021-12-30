@@ -302,7 +302,7 @@ public class Debugger extends StackPane {
     //-------------------------------------------------------------------------
     // Helper Classes
 
-    public class EntityProxy {
+    public static class EntityProxy {
         private final Entity entity;
 
         EntityProxy(Entity entity) {
@@ -326,10 +326,7 @@ public class Debugger extends StackPane {
         }
 
         public String getPlace() {
-            if (entity.owner() != null) {
-                var id = entity.owner().ownerId();
-                return id + " " + app.getCurrentRegion().get(id).label().text();
-            } else if (entity.loc() != null) {
+            if (entity.loc() != null) {
                 return entity.cell().displayString();
             } else {
                 return "--";

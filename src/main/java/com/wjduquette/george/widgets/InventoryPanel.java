@@ -2,7 +2,6 @@ package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.Entity;
-import com.wjduquette.george.ecs.Owner;
 import com.wjduquette.george.ecs.Player;
 import com.wjduquette.george.model.Region;
 import javafx.geometry.BoundingBox;
@@ -130,27 +129,27 @@ public class InventoryPanel extends GamePane implements Panel {
         gc().fillText(player.label().text() + "'s Backpack", tx, ty);
 
         // Draw Backpack slots
-        // TODO Items need a slot location in the inventory.
-        List<Entity> items = region.query(Owner.class)
-            .filter(e -> e.owner().ownerId() == player.id())
-            .toList();
-
-        var iw = sprites().width() + 4;
-        var ih = sprites().height() + 4;
-
-        for (int r = 0; r < 4; r++) {
-            var iy = by + r*ih;
-            for (int c = 0; c < 5; c++) {
-                var index = r*5 + c;
-                var ix = bx + c*iw;
-
-                if (index < items.size()) {
-                    drawItemBox(index, items.get(index), ix, iy);
-                } else {
-                    drawItemBox(index, null, ix, iy);
-                }
-            }
-        }
+//        // TODO Items need a slot location in the inventory.
+//        List<Entity> items = region.query(Owner.class)
+//            .filter(e -> e.owner().ownerId() == player.id())
+//            .toList();
+//
+//        var iw = sprites().width() + 4;
+//        var ih = sprites().height() + 4;
+//
+//        for (int r = 0; r < 4; r++) {
+//            var iy = by + r*ih;
+//            for (int c = 0; c < 5; c++) {
+//                var index = r*5 + c;
+//                var ix = bx + c*iw;
+//
+//                if (index < items.size()) {
+//                    drawItemBox(index, items.get(index), ix, iy);
+//                } else {
+//                    drawItemBox(index, null, ix, iy);
+//                }
+//            }
+//        }
     }
 
     private void drawBackButton() {

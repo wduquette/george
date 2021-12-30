@@ -1,6 +1,5 @@
 package com.wjduquette.george.ecs;
 
-import com.wjduquette.george.ecs.Component;
 import com.wjduquette.george.model.Inventory;
 
 /**
@@ -16,7 +15,8 @@ public class Player implements Component {
     // The player's name.  This will be used to set its Label.
     private final String name;
 
-    // Hit Points
+    // Hit Points: Possibly, this should be a component shared with
+    // monsters.
     private int hitPoints = 0;
     private int maxHitPoints = 0;
 
@@ -51,11 +51,19 @@ public class Player implements Component {
         this.maxHitPoints = maxHitPoints;
     }
 
+    /**
+     * Indicates whether the player has taken damage or not.
+     * @return true or false.
+     */
+    public boolean isInjured() {
+        return hitPoints < maxHitPoints;
+    }
+
     //-------------------------------------------------------------------------
     // Component API
 
     @Override
     public String toString() {
-        return "(Player)";
+        return "(Player " + name + ")";
     }
 }

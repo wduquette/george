@@ -114,20 +114,21 @@ public class Executor {
                 }
             }
 
-            case Step.OpenChest chest: {
-                region.get(chest.id()).openChest();
-                var contents = region.query(Item.class, Owner.class)
-                    .filter(e -> e.owner().ownerId() == chest.id())
-                    .toList();
+            case Step.OpenChest open: {
+                region.get(open.id()).openChest();
+                var chest = region.get(open.id());
+                chest.openChest();
+                var invent = chest.chest().inventory();
 
-                if (contents.isEmpty()) {
+                // TODO: pop up chest panel
+                // For now, just give them everything.
+                if (invent.isEmpty()) {
                     region.log("The chest is empty.");
                 } else {
-                    // Give the contents to the owner
-                    for (var e : contents) {
-                        e.owner(mob.id());
-                        region.log("You got: " + e.label().text());
-                    }
+                    // Give the contents to the owner, as much as will fit.
+                    mob.player().inventory().addAll(invent);
+                    App.println("Player " + mob.player().name() + " has:");
+                    App.println(mob.player().inventory().toString());
                 }
                 return Result.DO_NEXT;
             }

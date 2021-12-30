@@ -482,8 +482,11 @@ public abstract class Region {
      * @return The entity
      */
     public Entity makeChest(String key) {
-        var chest = new Chest(key, Opening.CLOSED,
-            "feature.chest", "feature.open_chest");
+        var chest = new Chest(
+            key,
+            "feature.chest",
+            "feature.open_chest",
+            Opening.CLOSED);
         return new Entity()
             .tagAsFeature()
             .chest(chest)
