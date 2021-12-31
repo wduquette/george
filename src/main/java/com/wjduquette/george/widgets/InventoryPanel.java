@@ -3,6 +3,7 @@ package com.wjduquette.george.widgets;
 import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.Inventory;
+import com.wjduquette.george.model.ItemSlot;
 import com.wjduquette.george.model.Region;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.VPos;
@@ -24,6 +25,8 @@ public class InventoryPanel extends GamePane implements Panel {
     private final Region region;
     private final Entity player;
 
+    private ItemSlot selectedSlot = null;
+
     //-------------------------------------------------------------------------
     // Constructor
 
@@ -34,6 +37,12 @@ public class InventoryPanel extends GamePane implements Panel {
     }
 
     //-------------------------------------------------------------------------
+    // Panel API
+
+    @Override public Node asNode() { return this; }
+    @Override public void setOnClose(Runnable func) { this.onClose = func; }
+
+    //-------------------------------------------------------------------------
     // Event Handling
 
     private void onClose() { onClose.run(); }
@@ -42,15 +51,11 @@ public class InventoryPanel extends GamePane implements Panel {
         App.println("Clicked PC: " + pc);
     }
 
-    private void onClickBackpack(int index) {
-        App.println("Clicked package slot: " + index);
+    private void onSelectBackpackSlot(ItemSlot slot) {
+        App.println("Clicked backpack slot: " + slot);
+        selectedSlot = slot;
+        repaint();
     }
-
-    //-------------------------------------------------------------------------
-    // Panel API
-
-    @Override public Node asNode() { return this; }
-    @Override public void setOnClose(Runnable func) { this.onClose = func; }
 
     //-------------------------------------------------------------------------
     // GamePane Framework
@@ -126,8 +131,8 @@ public class InventoryPanel extends GamePane implements Panel {
         gc().fillText(player.label().text() + "'s Backpack", tx, ty);
 
         // Draw Backpack slots
-        drawSlots(bx, by, 4, getBackpackSlots(),
-            i -> App.println("Selected backpack: " + i));
+        drawSlots(bx, by, 4, getBackpackSlots(), selectedSlot,
+            this::onSelectBackpackSlot);
     }
 
     private void drawBackButton() {
@@ -142,26 +147,6 @@ public class InventoryPanel extends GamePane implements Panel {
         place(text, px + pw - text.getLayoutBounds().getWidth(), py + ph);
     }
 
-    private void drawItemBox(int index, Entity entity, double x, double y) {
-        var border = 2;
-        var ix = x + border;
-        var iy = y + border;
-        var iw = sprites().width();
-        var ih = sprites().height();
-        var w = iw + 2*border;
-        var h = ih + 2*border;
-
-        var box = new BoundingBox(x, y, w, h);
-        target(box, () -> onClickBackpack(index));
-
-        fill(Color.WHITE, box);
-        fill(Color.LIGHTGRAY, ix, iy, iw, ih);
-
-        if (entity != null) {
-            drawImage(toImage(entity), ix, iy);
-        }
-    }
-
     //-------------------------------------------------------------------------
     // Slot Management
 
@@ -171,11 +156,13 @@ public class InventoryPanel extends GamePane implements Panel {
 
         for (int i = 0; i < inv.size(); i++) {
             var slot = inv.get(i);
+            var itemSlot = new ItemSlot.Inventory(player.id(), i);
+
             SlotBox box;
             if (slot == Inventory.EMPTY) {
-                box = new SlotBox(player, i, null);
+                box = new SlotBox(itemSlot, 0, null);
             } else {
-                box = new SlotBox(player, i, slot.entity().sprite().name());
+                box = new SlotBox(itemSlot, slot.count(), slot.entity());
 
                 box.actions().add(new Action("Drop",
                     () -> App.println("TODO: Drop!")));
@@ -186,5 +173,4 @@ public class InventoryPanel extends GamePane implements Panel {
 
         return list;
     }
-
 }

@@ -5,6 +5,7 @@ import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.Sprite;
 import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.graphics.SpriteSet;
+import com.wjduquette.george.model.ItemSlot;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -291,41 +292,43 @@ public abstract class GamePane extends StackPane {
      * @param x The left x coordinate of the array
      * @param y The top y coordinate of the array
      * @param cols The number of columns
-     * @param slots The slots to draw.
+     * @param selectedSlot The selected slot box
+     * @param boxes The slots to draw.
      * @param onSelect Handler to call when the box is selected.
      */
     protected void drawSlots(
         double x,
         double y,
         int cols,
-        List<SlotBox> slots,
-        Consumer<Integer> onSelect
+        List<SlotBox> boxes,
+        ItemSlot selectedSlot,
+        Consumer<ItemSlot> onSelect
     ) {
         var border = 2;
         var sw = sprites().width() + border;
         var sh = sprites().height() + border;
-        var rows = slots.size()/cols;
+        var rows = boxes.size()/cols;
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 var index = r*cols + c;
                 var sx = x + c*sw;
                 var sy = y + r*sh;
-                var slot = slots.get(index);
-                var box = new BoundingBox(sx, sy, sw + border, sh + border);
+                var box = boxes.get(index);
+                var bounds = new BoundingBox(sx, sy, sw + border, sh + border);
 
                 // Draw frame
-                var bg = slot.isSelected() ? Color.LIGHTGRAY : Color.DIMGRAY;
-                fill(Color.WHITE, box);
+                var bg = box.slot().equals(selectedSlot) ? Color.LIGHTGRAY : Color.DIMGRAY;
+                fill(Color.WHITE, bounds);
                 fill(bg, sx + border, sy + border, sw - border, sh - border);
 
-                if (slot.contentSprite() != null) {
-                    drawImage(sprites().get(slot.contentSprite()),
+                if (box.item() != null) {
+                    drawImage(sprites().get(box.item().sprite().name()),
                         sx + border, sy + border);
                 }
 
-                if (slot.count() > 1) {
-                    var count = Integer.toString(slot.count());
+                if (box.count() > 1) {
+                    var count = Integer.toString(box.count());
                     var tw = Gui.pixelWidth(SMALL_FONT, count);
                     var tx = sx + sw - 4 - tw;
                     var ty = sy + sh - 4;
@@ -335,7 +338,7 @@ public abstract class GamePane extends StackPane {
                     gc().setTextBaseline(VPos.BOTTOM);
                     gc().fillText(count, tx, ty);
                 }
-                target(box, () -> onSelect.accept(index));
+                target(bounds, () -> onSelect.accept(box.slot()));
             }
         }
     }
