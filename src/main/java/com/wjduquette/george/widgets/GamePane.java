@@ -292,7 +292,7 @@ public abstract class GamePane extends StackPane {
      * @param x The left x coordinate of the array
      * @param y The top y coordinate of the array
      * @param cols The number of columns
-     * @param selectedSlot The selected slot box
+     * @param selectedBox The selected slot box
      * @param boxes The slots to draw.
      * @param onSelect Handler to call when the box is selected.
      */
@@ -301,8 +301,8 @@ public abstract class GamePane extends StackPane {
         double y,
         int cols,
         List<SlotBox> boxes,
-        ItemSlot selectedSlot,
-        Consumer<ItemSlot> onSelect
+        SlotBox selectedBox,
+        Consumer<SlotBox> onSelect
     ) {
         var border = 2;
         var sw = sprites().width() + border;
@@ -318,6 +318,7 @@ public abstract class GamePane extends StackPane {
                 var bounds = new BoundingBox(sx, sy, sw + border, sh + border);
 
                 // Draw frame
+                var selectedSlot = selectedBox != null ? selectedBox.slot() : null;
                 var bg = box.slot().equals(selectedSlot) ? Color.LIGHTGRAY : Color.DIMGRAY;
                 fill(Color.WHITE, bounds);
                 fill(bg, sx + border, sy + border, sw - border, sh - border);
@@ -338,7 +339,8 @@ public abstract class GamePane extends StackPane {
                     gc().setTextBaseline(VPos.BOTTOM);
                     gc().fillText(count, tx, ty);
                 }
-                target(bounds, () -> onSelect.accept(box.slot()));
+
+                target(bounds, () -> onSelect.accept(box));
             }
         }
     }

@@ -6,7 +6,16 @@ package com.wjduquette.george.widgets;
  * @param handler The action to take, or null.
  */
 public record Action(String label, Runnable handler) {
+    /**
+     * Is the action disabled?
+     * TODO: Might not use this
+     * @return true or false
+     */
     public boolean isDisabled() {
         return handler == null;
+    }
+
+    public void perform() {
+        handler.run();
     }
 }

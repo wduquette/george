@@ -17,6 +17,8 @@ import java.util.List;
 public class InventoryPanel extends GamePane implements Panel {
     private static final double MARGIN = 30;
     private static final double COLUMN_GAP = 20;
+    private static final double OPTION_LEADING = 24;
+    private static final double BACKPACK_COLS = 4;
 
     //-------------------------------------------------------------------------
     // Instance Variables
@@ -25,7 +27,7 @@ public class InventoryPanel extends GamePane implements Panel {
     private final Region region;
     private final Entity player;
 
-    private ItemSlot selectedSlot = null;
+    private SlotBox selectedSlot = null;
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -51,9 +53,9 @@ public class InventoryPanel extends GamePane implements Panel {
         App.println("Clicked PC: " + pc);
     }
 
-    private void onSelectBackpackSlot(ItemSlot slot) {
-        App.println("Clicked backpack slot: " + slot);
-        selectedSlot = slot;
+    private void onSelectBackpackSlot(SlotBox box) {
+        App.println("Clicked backpack slot: " + box.slot());
+        selectedSlot = box;
         repaint();
     }
 
@@ -78,64 +80,99 @@ public class InventoryPanel extends GamePane implements Panel {
      |        ...
     */
 
-    // Transient repainting data
-    private double px;    // The panel x origin
-    private double py;    // The panel y origin
-    private double pw;    // The panel width
-    private double ph;    // The panel height
-
-    private double cx;    // Character button origin
-    private double cy;
-    private double cw;    // Character button column width
-
-    private double bx;    // Backpack origin
-    private double by;
-
     protected void onRepaint() {
         // Fill the background
         fill(Color.DARKBLUE, 0, 0, getWidth(), getHeight());
 
-        // The usable region
-        px = MARGIN;
-        py = MARGIN;
-        pw = getWidth() - 2*MARGIN;
-        ph = getHeight() - 2*MARGIN;
+        // The panel's usable area
+        var px = MARGIN;                     // X origin of panel content
+        var py = MARGIN;                     // Y origin of panel content
+        var pw = getWidth() - 2*MARGIN;      // width of panel content
+        var ph = getHeight() - 2*MARGIN;     // height of panel content
+        var pbox = new BoundingBox(px, py, pw, ph);
 
         // Area origins
-        cx = px;
-        cw = sprites().width() + 4; // sprite + frame width
-        bx = cx + cw + COLUMN_GAP;          // character button column + spacing
-        by = py + NORMAL_LEADING;   // Room for name header
-        cy = by;
+        var pcx = px;                        // X origin of PC box column
+        var pcw = sprites().width() + 4;     // width of PC box column
+        var bpx = pcx + pcw + COLUMN_GAP;    // X origin of backpack array
+        var bpy = py + NORMAL_LEADING;       // Y origin of backpack array
+        var bpw = bpx +                      // Width of backpack array
+            (4 + sprites().width())*BACKPACK_COLS;
+        var pcy = bpy;                       // Y origin of PC box column
+        var iox = bpw + COLUMN_GAP;          // X origin of item options
+        var ioy = py;                        // Y origin of item options
+        var bbx = px + pw;                   // X origin of back button
+        var bby = py + ph;                   // Y origin of back button
 
         // Draw components
-        drawPlayerCharacterButtons();
-        drawBackpack();
-        drawBackButton();
+        drawPCBox(pcx, pcy);
+        drawBackpackArray(bpx, bpy);
+        drawItemOptions(iox, ioy);
+        drawBackButton(bbx, bby);
     }
 
-    private void drawPlayerCharacterButtons() {
-        drawFramedSprites(toImage(player), null, cx, cy, 1);
-        var box = new BoundingBox(cx, cy,
+    // Draws the player character buttons in a column, starting at (x,y)
+    private void drawPCBox(double x, double y) {
+        drawFramedSprites(toImage(player), null, x, y, 1);
+        var box = new BoundingBox(x, y,
             sprites().width() + 4, sprites().height() + 4);
         target(box, () -> onClickPlayerCharacter(player));
     }
 
-    private void drawBackpack() {
+    // Draws the array of backpack slots at (x,y)
+    private void drawBackpackArray(double x, double y) {
         // Draw title
-        var tx = bx;
-        var ty = by - NORMAL_LEADING;
+        var tx = x;
+        var ty = y - NORMAL_LEADING;
         gc().setFont(NORMAL_FONT);
         gc().setFill(Color.WHITE);
         gc().setTextBaseline(VPos.TOP);
         gc().fillText(player.label().text() + "'s Backpack", tx, ty);
 
         // Draw Backpack slots
-        drawSlots(bx, by, 4, getBackpackSlots(), selectedSlot,
+        drawSlots(x, y, 4, getBackpackSlots(), selectedSlot,
             this::onSelectBackpackSlot);
     }
 
-    private void drawBackButton() {
+    // Draws the item options for the selected item
+    private void drawItemOptions(double x, double y) {
+        if (selectedSlot == null ||
+            selectedSlot.item() == null)
+        {
+            drawText("Select an Item", x, y);
+            return;
+        }
+
+        // The item name
+        var tx = x;
+        var ty = y;
+
+        drawText(selectedSlot.item().label().text(), tx, ty);
+        ty += OPTION_LEADING;
+
+        for (var action : selectedSlot.actions()) {
+            drawAction(action, tx, ty);
+            ty += OPTION_LEADING;
+        }
+    }
+
+    private void drawAction(Action action, double x, double y) {
+        Text text = new Text(action.label());
+
+        text.setTextOrigin(VPos.TOP);
+        text.setFill(action.isDisabled() ? Color.LIGHTGRAY : Color.YELLOW);
+        text.setFont(NORMAL_FONT);
+
+        if (!action.isDisabled()) {
+            text.setOnMouseClicked(evt -> action.perform());
+        }
+
+        place(text, x, y);
+
+    }
+
+    // Draws the back button with its lower right corner at (x,y)
+    private void drawBackButton(double x, double y) {
         // Draw the "Back" button
         Text text = new Text("Back");
 
@@ -144,7 +181,16 @@ public class InventoryPanel extends GamePane implements Panel {
         text.setFont(TITLE_FONT);
         text.setOnMouseClicked(evt -> onClose());
 
-        place(text, px + pw - text.getLayoutBounds().getWidth(), py + ph);
+        place(text, x - text.getLayoutBounds().getWidth(), y);
+    }
+
+    // Draws a text string with the normal font and leading, using the given
+    // color.  The origin is the top left.
+    private void drawText(String text, double x, double y) {
+        gc().setFont(NORMAL_FONT);
+        gc().setFill(Color.WHITE);
+        gc().setTextBaseline(VPos.TOP);
+        gc().fillText(text, x, y);
     }
 
     //-------------------------------------------------------------------------
