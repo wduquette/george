@@ -11,6 +11,7 @@ import com.wjduquette.george.widgets.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.*;
@@ -31,8 +32,14 @@ public class App extends Application {
     //-------------------------------------------------------------------------
     // Instance Variables
 
-    // The GUI component
+    // The hull widget
+    private StackPane hull = new StackPane();
+
+    // The main GUI pane
     private GameView viewer;
+
+    // The log pane
+    private LogPane logPane;
 
     // The timer for the game loop
     private final Looper looper = new Looper(LOOP_MSECS, this::gameLoop);
@@ -83,17 +90,22 @@ public class App extends Application {
 //        region = getRegion("floobham");
         region = getRegion("overworld");
 
-        // Put the player(s) in the region
+        // Put George in the region
         Cell origin = region.point("origin").orElse(new Cell(10, 10));
         region.entities().add(george.cell(origin));
 
+        // NEXT, initialize the GUI
         viewer = new GameView(this);
         viewer.addEventHandler(UserInputEvent.USER_INPUT, this::onUserInput);
         viewer.setRegion(region);
 
+        logPane = new LogPane(this);
+
+        hull.getChildren().add(viewer);
+        hull.getChildren().add(logPane);
+
         // NEXT, configure the GUI
-        Scene scene = new Scene(viewer, 800, 600);
-        viewer.getStylesheets().add("/com/wjduquette/george/app.css");
+        Scene scene = new Scene(hull, 800, 600);
         stage.setMinWidth(800);
         stage.setMinHeight(600);
         stage.setTitle("George's Saga!");
@@ -328,7 +340,7 @@ public class App extends Application {
             viewer.repaint();
             looper.run();
         });
-        viewer.getChildren().add(panel.asNode());
+        viewer.getChildren().add(1, panel.asNode());
     }
 
 
@@ -379,6 +391,10 @@ public class App extends Application {
 
     //-------------------------------------------------------------------------
     // Global Utilities
+
+    public void log(String message) {
+        logPane.log(message);
+    }
 
     /**
      * Prints to the current destination.

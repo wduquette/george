@@ -170,14 +170,6 @@ public class GameView extends GamePane {
         // NEXT, render the controls.
         drawStatusBox(0, player);
         drawButtonBar();
-
-        // NEXT, render log messages
-        List<Entity> messages = region.query(LogMessage.class)
-            .sorted(Entity::newestFirst)
-            .toList();
-        for (int i = 0; i < messages.size(); i++) {
-            drawLogMessage(i, messages.get(i).logMessage().message());
-        }
     }
 
     //-------------------------------------------------------------------------

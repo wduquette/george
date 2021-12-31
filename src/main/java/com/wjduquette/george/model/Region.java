@@ -357,9 +357,8 @@ public abstract class Region {
      * @param text The text.
      */
     public void log(String text) {
-        entities.make().put(new LogMessage(0, text));
+        app.log(text);
     }
-
 
     /**
      * Return a string that describes the content of the cell.

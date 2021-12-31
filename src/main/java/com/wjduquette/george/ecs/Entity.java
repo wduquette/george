@@ -197,7 +197,6 @@ public class Entity {
     public Inventory  inventory()  { return components.get(Inventory.class); }
     public Label      label()      { return components.get(Label.class); }
     public Loc        loc()        { return components.get(Loc.class); }
-    public LogMessage logMessage() { return components.get(LogMessage.class); }
     public Mannikin   mannikin()   { return components.get(Mannikin.class); }
     public Mobile     mobile()     { return components.get(Mobile.class); }
     public Plan       plan()       { return components.get(Plan.class); }
