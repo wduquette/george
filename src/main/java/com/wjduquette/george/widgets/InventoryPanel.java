@@ -55,7 +55,6 @@ public class InventoryPanel extends GamePane implements Panel {
     }
 
     private void onSelectBackpackSlot(SlotBox box) {
-        App.println("Clicked backpack slot: " + box.slot());
         selectedSlot = box;
         repaint();
     }
