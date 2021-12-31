@@ -375,10 +375,14 @@ public abstract class Region {
         }
 
         // Item: TODO could be several
-        var item = findAt(cell, Item.class);
+        var itemStack = findAt(cell, ItemStack.class);
 
-        if (item.isPresent()) {
-            return "You see: " + item.get().label().text();
+        if (itemStack.isPresent()) {
+            if (itemStack.get().inventory().count() == 1) {
+                return "You see: an item";
+            } else {
+                return "You see: some items";
+            }
         }
 
         // Feature
@@ -520,6 +524,13 @@ public abstract class Region {
             throw new IllegalArgumentException("Invalid Exit name: \"" +
                 regionPoint + "\"");
         }
+    }
+
+    public Entity makeItemStack() {
+        return new Entity()
+            .tagAsItemStack()
+            .put(new Inventory(ItemStack.INVENTORY_SIZE))
+            .label("Stack of items");
     }
 
     /**

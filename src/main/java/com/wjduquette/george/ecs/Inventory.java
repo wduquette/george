@@ -136,6 +136,16 @@ public class Inventory implements Component {
     // Item Management
 
     /**
+     * Gets the number of items in the inventory.
+     * @return The number
+     */
+    public int count() {
+        return Arrays.stream(slots)
+            .map(slot -> slot.count)
+            .reduce(0, Integer::sum);
+    }
+
+    /**
      * Adds an Item entity, either stacking it with similar items or putting it
      * in the first open slot.  Returns the index of the slot the entity was
      * added to, or -1 if the entity couldn't be added

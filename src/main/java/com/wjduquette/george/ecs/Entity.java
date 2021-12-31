@@ -188,12 +188,12 @@ public class Entity {
     // There is one for each defined component class. Each returns the
     // component, throwing an error if it doesn't exist.
 
-
     public Chest      chest()      { return components.get(Chest.class); }
     public Door       door()       { return components.get(Door.class); }
     public Exit       exit()       { return components.get(Exit.class); }
     public Feature    feature()    { return components.get(Feature.class); }
     public Item       item()       { return components.get(Item.class); }
+    public ItemStack  itemStack()  { return components.get(ItemStack.class); }
     public Inventory  inventory()  { return components.get(Inventory.class); }
     public Label      label()      { return components.get(Label.class); }
     public Loc        loc()        { return components.get(Loc.class); }
@@ -256,6 +256,7 @@ public class Entity {
     // Others just add the component given the arguments.
 
     public Entity tagAsFeature() { return put(new Feature()); }
+    public Entity tagAsItemStack() { return put(new ItemStack()); }
     public Entity player(Player player) { return put(player).label(player.name()); }
     public Entity exit(String region, String point) { return put(new Exit(region, point)); }
     public Entity item(String key, Items.Type type) { return put(new Item(key, type)); }

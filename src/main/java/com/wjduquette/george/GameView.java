@@ -147,8 +147,14 @@ public class GameView extends GamePane {
         }
 
         // NEXT, render the items
-        for (Entity item : region.query(Item.class).toList()) {
-            drawImage(toImage(item), entity2xy(item));
+        for (Entity stack : region.query(ItemStack.class).toList()) {
+            var inv = stack.inventory();
+            for (int i = 0; i < inv.size(); i++) {
+                var item = inv.get(i).entity();
+                if (item != null) {
+                    drawImage(toImage(item), entity2xy(stack));
+                }
+            }
         }
 
         // NEXT, render the mobiles on top
