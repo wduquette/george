@@ -120,15 +120,13 @@ public class Executor {
                 chest.openChest();
                 var invent = chest.inventory();
 
-                // TODO: pop up chest panel
-                // For now, just give them everything.
+                // For now, just give them everything that fits.
+                // TODO: use a panel
                 if (invent.isEmpty()) {
                     region.log("The chest is empty.");
                 } else {
                     // Give the contents to the owner, as much as will fit.
                     mob.inventory().addAll(invent);
-                    App.println("Player " + mob.player().name() + " has:");
-                    App.println(mob.inventory().toString());
                 }
                 return Result.DO_NEXT;
             }
