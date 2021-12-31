@@ -1,9 +1,9 @@
 package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.App;
+import com.wjduquette.george.Stevedore;
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.Inventory;
-import com.wjduquette.george.ecs.ItemStack;
 import com.wjduquette.george.model.ItemSlot;
 import com.wjduquette.george.model.Region;
 import javafx.geometry.BoundingBox;
@@ -59,27 +59,12 @@ public class InventoryPanel extends GamePane implements Panel {
         repaint();
     }
 
+    // Drops the select item (or 1 item, if they are stacked) onto the ground
+    // near the player.
     private void onDropBackpackItem(SlotBox box) {
-        // TODO Move details to the Stevedore.
         if (box.slot() instanceof ItemSlot.Inventory slot) {
             var owner = region.get(slot.id());
-            var item = owner.inventory().take(slot.index()).orElseThrow();
-
-            var stack = region.findAt(owner.cell(), ItemStack.class);
-
-            if (stack.isPresent()) {
-                // TODO: Need to check for overflow, find adjacent cell.
-                // TODO: Need method to find adjacent cells in order of distance
-                stack.get().inventory().add(item);
-            } else {
-                // TODO: Need to find an adjacent cell with no stacks
-                var newStack = region.makeItemStack().cell(owner.cell());
-                newStack.inventory().add(item);
-                region.entities().add(newStack);
-            }
-
-            // TODO Need to log this where the player can see it.
-            App.println("Dropped " + item);
+            Stevedore.dropItem(region, owner, slot.index());
         }
         repaint();
     }
