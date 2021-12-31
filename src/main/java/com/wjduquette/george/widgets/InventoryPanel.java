@@ -60,7 +60,7 @@ public class InventoryPanel extends GamePane implements Panel {
     }
 
     private void onDropBackpackItem(SlotBox box) {
-        // TODO The drop action should probably be defined somewhere else.
+        // TODO Move details to the Stevedore.
         if (box.slot() instanceof ItemSlot.Inventory slot) {
             var owner = region.get(slot.id());
             var item = owner.inventory().take(slot.index()).orElseThrow();
