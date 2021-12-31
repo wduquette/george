@@ -136,6 +136,20 @@ public class Executor {
                 return Result.DO_NEXT;
             }
 
+            case Step.PickUp pickup: {
+                var stack = region.get(pickup.id());
+                var invent = stack.inventory();
+
+                // For now, just give them everything that fits.
+                // TODO: Use a panel
+                mob.inventory().addAll(invent);
+
+                if (invent.isEmpty()) {
+                    region.entities().remove(stack.id());
+                }
+                return Result.DO_NEXT;
+            }
+
             case Step.OpenDoor door: {
                 region.get(door.id()).openDoor();
                 return Result.DO_NEXT;

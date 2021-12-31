@@ -58,6 +58,14 @@ public sealed interface Step {
     }
 
     /**
+     * The mobile picks up the items in the ItemStack with the given ID.
+     * @param id The ID of the ItemStack entity
+     */
+    record PickUp(long id) implements Step {
+        @Override public String toString() { return "(Step.Pickup " + id + ")";}
+    }
+
+    /**
      * The mobile interacts with the entity with the given ID, i.e., reads
      * a sign, talks to an NPC.
      * @param id The ID of the entity to interact with

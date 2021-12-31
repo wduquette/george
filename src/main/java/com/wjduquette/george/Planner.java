@@ -104,6 +104,16 @@ public class Planner {
             return;
         }
 
+        if ((result = region.findAt(targetCell, ItemStack.class)).isPresent()) {
+            Entity stack = result.get();
+            var distance = region.passableDistance(player, stack.cell());
+            if (distance > MAX_PHYSICAL_RANGE) {
+                region.log("That's too far.");
+            } else {
+                plan.add(new Step.PickUp(stack.id()));
+            }
+        }
+
         if ((result = region.findAt(targetCell, Feature.class)).isPresent()) {
             Entity entity = result.get();
 
