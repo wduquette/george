@@ -67,7 +67,7 @@ public class LogPane extends GamePane {
         for (int i = 0; i < count; i++) {
             gc().setStroke(Color.BLACK);
             gc().setLineWidth(2);
-            gc().setFill(Color.WHITE);
+            gc().setFill(Color.CYAN);
             gc().setFont(MESSAGE_FONT);
             gc().strokeText(messages.get(i).text, MARGIN, ty);
             gc().fillText(messages.get(i).text, MARGIN, ty);
