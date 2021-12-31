@@ -65,8 +65,10 @@ public class InventoryPanel extends GamePane implements Panel {
             var owner = region.get(slot.id());
             var item = owner.inventory().take(slot.index()).orElseThrow()
                     .cell(owner.cell());
-            App.println("Dropping " + item);
             region.entities().add(item);
+
+            // TODO Need to log this where the player can see it.
+            App.println("Dropped " + item);
         }
         repaint();
     }
