@@ -247,7 +247,6 @@ public class Inventory implements Component {
     @Override public String toString() {
         var buff = new StringBuilder();
         for (var i = 0; i < slots.length; i++) {
-
             if (slots[i] != EMPTY) {
                 buff.append("[")
                     .append(String.format("%02d", i))
@@ -255,8 +254,8 @@ public class Inventory implements Component {
                     .append(Integer.toString(slots[i].count))
                     .append(" ")
                     .append(slots[i].entity.label().text());
+                buff.append("\n");
             }
-            buff.append("\n");
         }
         return buff.toString();
     }
