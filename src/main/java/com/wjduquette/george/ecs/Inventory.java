@@ -53,7 +53,7 @@ public class Inventory implements Component {
             }
 
             if (number < count) {
-                return new Slot(entity, count + number);
+                return new Slot(entity, count - number);
             } else {
                 return EMPTY;
             }

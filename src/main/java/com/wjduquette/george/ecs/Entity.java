@@ -94,7 +94,7 @@ public class Entity {
      * @param other The other entity
      */
     public Entity(Entity other) {
-        this.id = Entity.nextId;
+        this.id = Entity.nextId++;
         this.components = other.components;
     }
 
@@ -352,13 +352,13 @@ public class Entity {
 
     @Override
     public String toString() {
-        return "(Entity " + componentString() + ")";
+        return "(Entity " + id + " " + componentString() + ")";
     }
 
     public String componentString() {
         StringBuilder buff = new StringBuilder();
         for (Class<?> cls : components.keySet()) {
-            buff.append("\n ")
+            buff.append(" ")
                 .append(components.get(cls).toString());
         }
 

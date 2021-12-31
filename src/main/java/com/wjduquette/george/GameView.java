@@ -146,6 +146,11 @@ public class GameView extends GamePane {
             drawImage(toImage(feature), entity2xy(feature));
         }
 
+        // NEXT, render the items
+        for (Entity item : region.query(Item.class).toList()) {
+            drawImage(toImage(item), entity2xy(item));
+        }
+
         // NEXT, render the mobiles on top
         for (Entity mobile : region.query(Mobile.class).toList()) {
             drawImage(toImage(mobile), entity2xy(mobile));

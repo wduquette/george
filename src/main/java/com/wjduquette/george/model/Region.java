@@ -367,12 +367,21 @@ public abstract class Region {
      * @return The string
      */
     public String describe(Cell cell) {
+        // Mobile
         var mobile = findAt(cell, Mobile.class);
 
         if (mobile.isPresent()) {
             return "You see: " + mobile.get().label().text();
         }
 
+        // Item: TODO could be several
+        var item = findAt(cell, Item.class);
+
+        if (item.isPresent()) {
+            return "You see: " + item.get().label().text();
+        }
+
+        // Feature
         var feature = findAt(cell, Feature.class);
 
         if (feature.isPresent()) {

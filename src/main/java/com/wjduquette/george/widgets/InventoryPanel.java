@@ -59,6 +59,18 @@ public class InventoryPanel extends GamePane implements Panel {
         repaint();
     }
 
+    private void onDropBackpackItem(SlotBox box) {
+        // TODO The drop action should probably be defined somewhere else.
+        if (box.slot() instanceof ItemSlot.Inventory slot) {
+            var owner = region.get(slot.id());
+            var item = owner.inventory().take(slot.index()).orElseThrow()
+                    .cell(owner.cell());
+            App.println("Dropping " + item);
+            region.entities().add(item);
+        }
+        repaint();
+    }
+
     //-------------------------------------------------------------------------
     // GamePane Framework
 
@@ -92,22 +104,19 @@ public class InventoryPanel extends GamePane implements Panel {
         var pbox = new BoundingBox(px, py, pw, ph);
 
         // Area origins
-        var pcx = px;                        // X origin of PC box column
         var pcw = sprites().width() + 4;     // width of PC box column
-        var bpx = pcx + pcw + COLUMN_GAP;    // X origin of backpack array
+        var bpx = px + pcw + COLUMN_GAP;    // X origin of backpack array
         var bpy = py + NORMAL_LEADING;       // Y origin of backpack array
         var bpw = bpx +                      // Width of backpack array
             (4 + sprites().width())*BACKPACK_COLS;
-        var pcy = bpy;                       // Y origin of PC box column
         var iox = bpw + COLUMN_GAP;          // X origin of item options
-        var ioy = py;                        // Y origin of item options
         var bbx = px + pw;                   // X origin of back button
         var bby = py + ph;                   // Y origin of back button
 
         // Draw components
-        drawPCBox(pcx, pcy);
+        drawPCBox(px, py);
         drawBackpackArray(bpx, bpy);
-        drawItemOptions(iox, ioy);
+        drawItemOptions(iox, py);
         drawBackButton(bbx, bby);
     }
 
@@ -122,12 +131,11 @@ public class InventoryPanel extends GamePane implements Panel {
     // Draws the array of backpack slots at (x,y)
     private void drawBackpackArray(double x, double y) {
         // Draw title
-        var tx = x;
         var ty = y - NORMAL_LEADING;
         gc().setFont(NORMAL_FONT);
         gc().setFill(Color.WHITE);
         gc().setTextBaseline(VPos.TOP);
-        gc().fillText(player.label().text() + "'s Backpack", tx, ty);
+        gc().fillText(player.label().text() + "'s Backpack", x, ty);
 
         // Draw Backpack slots
         drawSlots(x, y, 4, getBackpackSlots(), selectedSlot,
@@ -144,14 +152,13 @@ public class InventoryPanel extends GamePane implements Panel {
         }
 
         // The item name
-        var tx = x;
         var ty = y;
 
-        drawText(selectedSlot.item().label().text(), tx, ty);
+        drawText(selectedSlot.item().label().text(), x, ty);
         ty += OPTION_LEADING;
 
         for (var action : selectedSlot.actions()) {
-            drawAction(action, tx, ty);
+            drawAction(action, x, ty);
             ty += OPTION_LEADING;
         }
     }
@@ -211,7 +218,7 @@ public class InventoryPanel extends GamePane implements Panel {
                 box = new SlotBox(itemSlot, slot.count(), slot.entity());
 
                 box.actions().add(new Action("Drop",
-                    () -> App.println("TODO: Drop!")));
+                    () -> onDropBackpackItem(box)));
             }
 
             list.add(box);
