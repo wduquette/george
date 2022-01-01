@@ -12,7 +12,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InventoryPanel extends GamePane implements Panel {
     private static final double MARGIN = 30;
@@ -27,7 +29,8 @@ public class InventoryPanel extends GamePane implements Panel {
     private final Region region;
     private final Entity player;
 
-    private SlotBox selectedSlot = null;
+    private ItemSlot selectedSlot = null;
+    private Map<ItemSlot,SlotBox> slot2box = new HashMap<>();
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -54,7 +57,7 @@ public class InventoryPanel extends GamePane implements Panel {
     }
 
     private void onSelectBackpackSlot(SlotBox box) {
-        selectedSlot = box;
+        selectedSlot = box.slot();
         repaint();
     }
 
@@ -90,6 +93,9 @@ public class InventoryPanel extends GamePane implements Panel {
     */
 
     protected void onRepaint() {
+        // Clear retained data
+        slot2box.clear();
+
         // Fill the background
         fill(Color.DARKBLUE, 0, 0, getWidth(), getHeight());
 
@@ -136,15 +142,7 @@ public class InventoryPanel extends GamePane implements Panel {
 
         // NEXT, Draw Backpack Slot array
         var boxes = getBackpackSlots();
-
-        // We have all new slot boxes; if the selected slot was from this
-        // array, update it.
-        if (selectedSlot != null) {
-            boxes.stream()
-                .filter(box -> box.slot().equals(selectedSlot.slot()))
-                .findFirst()
-                .ifPresent(box -> selectedSlot = box);
-        }
+        boxes.stream().forEach(b -> slot2box.put(b.slot(), b));
 
         // draw the slots.
         drawSlots(x, y, 4, boxes, selectedSlot,
@@ -154,7 +152,7 @@ public class InventoryPanel extends GamePane implements Panel {
     // Draws the item options for the selected item
     private void drawItemOptions(double x, double y) {
         if (selectedSlot == null ||
-            selectedSlot.item() == null)
+            slot2box.get(selectedSlot).item() == null)
         {
             drawText("Select an Item", x, y);
             return;
@@ -162,11 +160,12 @@ public class InventoryPanel extends GamePane implements Panel {
 
         // The item name
         var ty = y;
+        var box = slot2box.get(selectedSlot);
 
-        drawText(selectedSlot.item().label().text(), x, ty);
+        drawText(box.item().label().text(), x, ty);
         ty += OPTION_LEADING;
 
-        for (var action : selectedSlot.actions()) {
+        for (var action : box.actions()) {
             drawAction(action, x, ty);
             ty += OPTION_LEADING;
         }
@@ -184,7 +183,6 @@ public class InventoryPanel extends GamePane implements Panel {
         }
 
         place(text, x, y);
-
     }
 
     // Draws the back button with its lower right corner at (x,y)
@@ -215,7 +213,6 @@ public class InventoryPanel extends GamePane implements Panel {
     List<SlotBox> getBackpackSlots() {
         var list = new ArrayList<SlotBox>();
         var inv = player.inventory();
-        App.println("Slots for inventory:\n" + inv);
 
         for (int i = 0; i < inv.size(); i++) {
             var itemSlot = new ItemSlot.Inventory(player.id(), i);
@@ -225,7 +222,6 @@ public class InventoryPanel extends GamePane implements Panel {
                 box = new SlotBox(itemSlot, 0, null);
             } else {
                 box = new SlotBox(itemSlot, inv.count(i), inv.peek(i));
-                App.println("Saving actions for slot " + i);
 
                 box.actions().add(new Action("Drop",
                     () -> onDropBackpackItem(box)));

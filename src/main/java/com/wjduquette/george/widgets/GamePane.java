@@ -56,7 +56,7 @@ public abstract class GamePane extends StackPane {
     private final CanvasPane canvas;
 
     // The list of child widgets the subclass has defined.
-    private List<Node> widgets = new ArrayList<>();
+    private final List<Node> widgets = new ArrayList<>();
 
     // The list of things the user can click on.
     private final List<ClickTarget> targets = new ArrayList<>();
@@ -231,10 +231,10 @@ public abstract class GamePane extends StackPane {
      */
     protected void drawFramedEntity(Entity entity, double x, double y, int factor) {
         var terrain = entity.cell() != null
-            ? app().getCurrentRegion().getTerrain(entity.cell())
+            ? app().getCurrentRegion().getTerrain(entity.cell()).image()
             : null;
 
-        drawFramedSprites(toImage(entity), terrain.image(), x, y, factor);
+        drawFramedSprites(toImage(entity), terrain, x, y, factor);
     }
 
     /**
@@ -292,7 +292,7 @@ public abstract class GamePane extends StackPane {
      * @param x The left x coordinate of the array
      * @param y The top y coordinate of the array
      * @param cols The number of columns
-     * @param selectedBox The selected slot box
+     * @param selectedSlot The selected slot
      * @param boxes The slots to draw.
      * @param onSelect Handler to call when the box is selected.
      */
@@ -301,7 +301,7 @@ public abstract class GamePane extends StackPane {
         double y,
         int cols,
         List<SlotBox> boxes,
-        SlotBox selectedBox,
+        ItemSlot selectedSlot,
         Consumer<SlotBox> onSelect
     ) {
         var border = 2;
@@ -318,7 +318,6 @@ public abstract class GamePane extends StackPane {
                 var bounds = new BoundingBox(sx, sy, sw + border, sh + border);
 
                 // Draw frame
-                var selectedSlot = selectedBox != null ? selectedBox.slot() : null;
                 var bg = box.slot().equals(selectedSlot) ? Color.LIGHTGRAY : Color.DIMGRAY;
                 fill(Color.WHITE, bounds);
                 fill(bg, sx + border, sy + border, sw - border, sh - border);
