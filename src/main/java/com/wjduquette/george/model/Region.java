@@ -226,8 +226,20 @@ public abstract class Region {
      * Gets the region's entities table.
      * @return The table.
      */
-    public EntityTable getEntities() {
+    public EntityTable entities() {
         return entities;
+    }
+
+    /**
+     * Gets the cell associated with the point name
+     * @param name The point name
+     * @return The cell, if found.
+     */
+    public Optional<Cell> point(String name) {
+        return query(Point.class)
+            .filter(e -> e.point().name().equals(name))
+            .map(Entity::cell)
+            .findFirst();
     }
 
     /**
@@ -345,9 +357,8 @@ public abstract class Region {
      * @param text The text.
      */
     public void log(String text) {
-        entities.make().put(new LogMessage(0, text));
+        app.log(text);
     }
-
 
     /**
      * Return a string that describes the content of the cell.
@@ -355,12 +366,25 @@ public abstract class Region {
      * @return The string
      */
     public String describe(Cell cell) {
+        // Mobile
         var mobile = findAt(cell, Mobile.class);
 
         if (mobile.isPresent()) {
             return "You see: " + mobile.get().label().text();
         }
 
+        // Item: TODO could be several
+        var itemStack = findAt(cell, ItemStack.class);
+
+        if (itemStack.isPresent()) {
+            if (itemStack.get().inventory().count() == 1) {
+                return "You see: an item";
+            } else {
+                return "You see: some items";
+            }
+        }
+
+        // Feature
         var feature = findAt(cell, Feature.class);
 
         if (feature.isPresent()) {
@@ -470,11 +494,15 @@ public abstract class Region {
      * @return The entity
      */
     public Entity makeChest(String key) {
-        var chest = new Chest(key, Opening.CLOSED,
-            "feature.chest", "feature.open_chest");
+        var chest = new Chest(
+            key,
+            "feature.chest",
+            "feature.open_chest",
+            Opening.CLOSED);
         return new Entity()
             .tagAsFeature()
             .chest(chest)
+            .put(new Inventory(Chest.INVENTORY_SIZE))
             .terrain(TerrainType.FENCE);
     }
 
@@ -495,6 +523,13 @@ public abstract class Region {
             throw new IllegalArgumentException("Invalid Exit name: \"" +
                 regionPoint + "\"");
         }
+    }
+
+    public Entity makeItemStack() {
+        return new Entity()
+            .tagAsItemStack()
+            .put(new Inventory(ItemStack.INVENTORY_SIZE))
+            .label("Stack of items");
     }
 
     /**

@@ -11,6 +11,7 @@ import com.wjduquette.george.widgets.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.*;
@@ -31,8 +32,14 @@ public class App extends Application {
     //-------------------------------------------------------------------------
     // Instance Variables
 
-    // The GUI component
-    private final GameView viewer = new GameView();
+    // The hull widget
+    private StackPane hull = new StackPane();
+
+    // The main GUI pane
+    private GameView viewer;
+
+    // The log pane
+    private LogPane logPane;
 
     // The timer for the game loop
     private final Looper looper = new Looper(LOOP_MSECS, this::gameLoop);
@@ -62,40 +69,43 @@ public class App extends Application {
     // The game tick
     private long gameTick = 0;
 
+    // The Party!
+    private Entity george;
+
     //-------------------------------------------------------------------------
     // Main Program
 
     @Override
     public void start(Stage stage) {
-        // Set up global resources
+        // FIRST, Set up global resources
         populateRegionFactories();
         items = new Items(getClass(), "assets/items.keydata");
 
+        // NEXT, Create the player(s)
+        george = makeGeorge();
+
         // TEMP
+
 //        region = getRegion("test");
 //        region = getRegion("floobham");
         region = getRegion("overworld");
 
-        // TODO: add point-retrieval method
-        Cell origin = region.query(Point.class)
-            .filter(e -> e.point().name().equals("origin"))
-            .map(Entity::cell)
-            .findFirst()
-            .orElse(new Cell(10, 10));
+        // Put George in the region
+        Cell origin = region.point("origin").orElse(new Cell(10, 10));
+        region.entities().add(george.cell(origin));
 
-        Entity george = region.getEntities().make()
-            .mobile("george") // Key
-            .tagAsPlayer()
-            .label("George")
-            .cell(origin)
-            .sprite(Sprites.ALL.getInfo("mobile.george"));
-
-        viewer.setSprites(Sprites.ALL);
+        // NEXT, initialize the GUI
+        viewer = new GameView(this);
         viewer.addEventHandler(UserInputEvent.USER_INPUT, this::onUserInput);
         viewer.setRegion(region);
 
+        logPane = new LogPane(this);
+
+        hull.getChildren().add(viewer);
+        hull.getChildren().add(logPane);
+
         // NEXT, configure the GUI
-        Scene scene = new Scene(viewer, 800, 600);
+        Scene scene = new Scene(hull, 800, 600);
         stage.setMinWidth(800);
         stage.setMinHeight(600);
         stage.setTitle("George's Saga!");
@@ -106,8 +116,19 @@ public class App extends Application {
         Platform.runLater(looper::run);
     }
 
-    public static void main(String[] args) {
-        launch();
+    // Creates George as of the beginning of the game.
+    private Entity makeGeorge() {
+        Player player = new Player("George");
+        player.setHitPoints(10, 10);
+        var inv = new Inventory(Player.INVENTORY_SIZE);
+        inv.add(items().make("vial.healing"));
+        inv.add(items().make("vial.healing"));
+
+        return new Entity()
+            .player(player)
+            .mobile("george") // Key
+            .put(inv)
+            .sprite(Sprites.ALL.getInfo("mobile.george"));
     }
 
     //-------------------------------------------------------------------------
@@ -117,6 +138,7 @@ public class App extends Application {
     private void onUserInput(UserInputEvent event) {
         switch (event.getInput()) {
             case UserInput.ShowDebugger $ -> showDebugger();
+            case UserInput.ShowInventory $ -> showInventory();
             case UserInput.ShowMap $ -> showMap();
             default -> userInput = event.getInput();
         }
@@ -211,6 +233,20 @@ public class App extends Application {
         }
     }
 
+    //-------------------------------------------------------------------------
+    // Movers
+
+    /**
+     * Returns the party leader.
+     * @return The leader
+     */
+    public Entity leader() {
+        return george;
+    }
+
+    //-------------------------------------------------------------------------
+    // Interrupts and Panels
+
     private void handleInterrupts(UserInput input) {
         switch (interrupts.pop()) {
             case Interrupt.GoToRegion info -> gotoRegion(info.exit());
@@ -252,18 +288,8 @@ public class App extends Application {
         // This will require special logic to position the follower(s).
         Entity player = region.query(Player.class).findFirst().orElseThrow();
 
-        region.getEntities().remove(player.id());
-        newRegion.getEntities().add(player);
-
-        // Inventory
-        var inventory = region.query(Owner.class)
-            .filter(e -> e.owner().ownerId() == player.id())
-            .toList();
-
-        for (var item : inventory) {
-            region.getEntities().remove(item.id());
-            newRegion.getEntities().add(item);
-        }
+        region.entities().remove(player.id());
+        newRegion.entities().add(player);
 
         // Position the player.
         player.cell(point.get().cell());
@@ -292,19 +318,31 @@ public class App extends Application {
         }
     }
 
+    /**
+     * Shows the inventory panel for the current leader.
+     */
+    public void showInventory() {
+        showPanel(new InventoryPanel(this, leader()));
+    }
+
+    /**
+     * Displays the map panel, showing that part of the map the player has
+     * seen.
+     */
     public void showMap() {
-        viewer.repaint();
         showPanel(new MapPanel(this));
     }
 
     private void showPanel(Panel panel) {
         looper.stop();
         panel.setOnClose(() -> {
-            viewer.getChildren().remove(panel.asNode());
+            hull.getChildren().remove(panel.asNode());
+            viewer.repaint();
             looper.run();
         });
-        viewer.getChildren().add(panel.asNode());
+        hull.getChildren().add(1, panel.asNode());
     }
+
 
     //-------------------------------------------------------------------------
     // Region Definitions
@@ -354,6 +392,10 @@ public class App extends Application {
     //-------------------------------------------------------------------------
     // Global Utilities
 
+    public void log(String message) {
+        logPane.log(message);
+    }
+
     /**
      * Prints to the current destination.
      * @param text The output text.
@@ -364,5 +406,13 @@ public class App extends Application {
         }
 
         System.out.println(text);
+    }
+
+
+    //-------------------------------------------------------------------------
+    // Main
+
+    public static void main(String[] args) {
+        launch();
     }
 }

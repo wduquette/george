@@ -278,7 +278,7 @@ public class Debugger extends StackPane {
         var selectedEntity = entitiesView.getSelectionModel().getSelectedItem();
         entityList.clear();
 
-        for (long id : region.getEntities().ids()) {
+        for (long id : region.entities().ids()) {
             var entity = region.get(id);
             var newProxy = new EntityProxy(entity);
             entityList.add(newProxy);
@@ -302,7 +302,7 @@ public class Debugger extends StackPane {
     //-------------------------------------------------------------------------
     // Helper Classes
 
-    public class EntityProxy {
+    public static class EntityProxy {
         private final Entity entity;
 
         EntityProxy(Entity entity) {
@@ -326,10 +326,7 @@ public class Debugger extends StackPane {
         }
 
         public String getPlace() {
-            if (entity.owner() != null) {
-                var id = entity.owner().ownerId();
-                return id + " " + app.getCurrentRegion().get(id).label().text();
-            } else if (entity.loc() != null) {
+            if (entity.loc() != null) {
                 return entity.cell().displayString();
             } else {
                 return "--";

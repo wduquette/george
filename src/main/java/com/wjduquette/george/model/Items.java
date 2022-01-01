@@ -17,10 +17,27 @@ public class Items {
 
     /** The available item types. */
     public enum Type {
-        UNKNOWN,
-        KEY_ITEM,
-        VIAL_OF_HEALING,
-        SCROLL_OF_MAPPING
+        //               stacks? usable?
+        NONE             (false, false),   // No item here
+        KEY_ITEM         (false, false),
+        VIAL_OF_HEALING  (true,  true),
+        SCROLL_OF_MAPPING(true,  true);
+
+        // Whether or not items of this type can be stacked.  If they can,
+        // all items of this type must be effectively identical.
+        private final boolean stacks;
+
+        // Whether or not this is an item that can be "Used", e.g.,
+        // a potion that can be quaffed.
+        private final boolean usable;
+
+        Type(boolean stacks, boolean usable) {
+            this.stacks = stacks;
+            this.usable = usable;
+        }
+
+        public boolean stacks() { return stacks; }
+        public boolean isUsable() { return usable; }
     }
 
     //-------------------------------------------------------------------------

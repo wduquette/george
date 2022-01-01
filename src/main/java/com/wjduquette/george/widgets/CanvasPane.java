@@ -146,7 +146,7 @@ public class CanvasPane extends Pane {
      * @param evt The mouse event
      * @return The location
      */
-    public Point2D ofMouse(MouseEvent evt) {
+    public Point2D toPoint(MouseEvent evt) {
         return sceneToLocal(evt.getSceneX(), evt.getSceneY());
     }
 

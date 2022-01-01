@@ -1,7 +1,6 @@
 package com.wjduquette.george;
 
 import com.wjduquette.george.ecs.Entity;
-import com.wjduquette.george.ecs.LogMessage;
 import com.wjduquette.george.ecs.VisualEffect;
 import com.wjduquette.george.model.Animation;
 import com.wjduquette.george.model.Region;
@@ -30,9 +29,6 @@ public class Animator {
         for (Entity effect : region.query(VisualEffect.class).toList()) {
             doUpdate(region, effect);
         }
-
-        // Update all log messages.
-        doUpdateLogMessages(gameTick, region);
     }
 
     public static void doUpdate(Region region, Entity effect) {
@@ -49,31 +45,7 @@ public class Animator {
         }
 
         if (animation.isComplete()) {
-            region.getEntities().remove(effect.id());
-        }
-    }
-
-    private static void doUpdateLogMessages(long gameTick, Region region) {
-        // FIRST, get the current log messages, sorting them by ID; this
-        // puts them in order from oldest to newest.
-        List<Entity> messages = region.query(LogMessage.class)
-            .sorted(Entity::newestFirst).toList();
-
-        // NEXT, assign a last tick to messages that don't have one, and
-        // remove messages that are too old.
-        for (Entity e : messages) {
-            var msg = e.logMessage();
-
-            if (msg.lastTick() == 0) {
-                e.put(new LogMessage(gameTick + MESSAGE_DURATION, msg.message()));
-            } else if (msg.lastTick() <= gameTick) {
-                region.getEntities().remove(e.id());
-            }
-        }
-
-        // NEXT, get rid of excess messages.
-        for (int i = MAX_MESSAGES; i < messages.size(); i++) {
-            region.getEntities().remove(messages.get(i).id());
+            region.entities().remove(effect.id());
         }
     }
 }

@@ -63,7 +63,7 @@ public class Entity {
     private final long id;
 
     // The TypeMap containing the components
-    private final TypeMap components = new TypeMap();
+    private final TypeMap components;
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -85,6 +85,17 @@ public class Entity {
      */
     public Entity(long id) {
         this.id = id;
+        components = new TypeMap();
+    }
+
+    /**
+     * Creates a shallow copy of the given entity, assigning a new ID.
+     * This should only be used for entities that are effectively immutable.
+     * @param other The other entity
+     */
+    public Entity(Entity other) {
+        this.id = Entity.nextId++;
+        this.components = other.components;
     }
 
     //-------------------------------------------------------------------------
@@ -177,18 +188,17 @@ public class Entity {
     // There is one for each defined component class. Each returns the
     // component, throwing an error if it doesn't exist.
 
-
     public Chest      chest()      { return components.get(Chest.class); }
     public Door       door()       { return components.get(Door.class); }
     public Exit       exit()       { return components.get(Exit.class); }
     public Feature    feature()    { return components.get(Feature.class); }
     public Item       item()       { return components.get(Item.class); }
+    public ItemStack  itemStack()  { return components.get(ItemStack.class); }
+    public Inventory  inventory()  { return components.get(Inventory.class); }
     public Label      label()      { return components.get(Label.class); }
     public Loc        loc()        { return components.get(Loc.class); }
-    public LogMessage logMessage() { return components.get(LogMessage.class); }
     public Mannikin   mannikin()   { return components.get(Mannikin.class); }
     public Mobile     mobile()     { return components.get(Mobile.class); }
-    public Owner      owner()      { return components.get(Owner.class); }
     public Plan       plan()       { return components.get(Plan.class); }
     public Player     player()     { return components.get(Player.class); }
     public Point      point()      { return components.get(Point.class); }
@@ -230,10 +240,12 @@ public class Entity {
      * @return true or false
      */
     public boolean isTransitionInProgress() {
-        return
-            plan() != null &&
-            !plan().isEmpty() &&
-            plan().peekFirst().isTransition();
+        if (plan() == null) {
+            return false;
+        }
+        var step = plan().peekFirst();
+
+        return step != null && step.isTransition();
     }
 
     //-------------------------------------------------------------------------
@@ -243,14 +255,13 @@ public class Entity {
     // Others just add the component given the arguments.
 
     public Entity tagAsFeature() { return put(new Feature()); }
-    public Entity tagAsPlayer() { return put(new Player()); }
-
+    public Entity tagAsItemStack() { return put(new ItemStack()); }
+    public Entity player(Player player) { return put(player).label(player.name()); }
     public Entity exit(String region, String point) { return put(new Exit(region, point)); }
     public Entity item(String key, Items.Type type) { return put(new Item(key, type)); }
     public Entity label(String text) { return put(new Label(text)); }
     public Entity mannikin(String key) { return put(new Mannikin(key)); }
     public Entity mobile(String key) { return put(new Mobile(key)); }
-    public Entity owner(long ownerId) { return put(new Owner(ownerId)); }
     public Entity point(String name) { return put(new Point(name)); }
     public Entity sign(String text) { put(new Sign(text)); return this; }
     public Entity sprite(String name) { return put(new Sprite(name)); }
@@ -308,13 +319,19 @@ public class Entity {
      * components.
      * @return The entity.
      */
-    public Entity openChest() { return chest(chest().open()); }
+    public Entity openChest() {
+        chest().open();
+        return chest(chest());  // Resets label and sprite
+    }
 
     /**
      * Sets the entity's chest's state to DoorState.CLOSED, updating relevant
      * @return The entity.
      */
-    public Entity closeChest() { return chest(chest().close()); }
+    public Entity closeChest() {
+        chest().close();
+        return chest(chest());  // Resets label and sprite
+    }
 
     /**
      * Sets the entity's door's state to DoorState.OPEN, updating relevant
@@ -335,13 +352,13 @@ public class Entity {
 
     @Override
     public String toString() {
-        return "(Entity " + componentString() + ")";
+        return "(Entity " + id + " " + componentString() + ")";
     }
 
     public String componentString() {
         StringBuilder buff = new StringBuilder();
         for (Class<?> cls : components.keySet()) {
-            buff.append("\n ")
+            buff.append(" ")
                 .append(components.get(cls).toString());
         }
 

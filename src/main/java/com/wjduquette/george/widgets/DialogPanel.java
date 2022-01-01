@@ -1,46 +1,29 @@
 package com.wjduquette.george.widgets;
 
 import com.wjduquette.george.App;
-import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.model.Dialog;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A panel for talking to NPCs.
  */
-public class DialogPanel extends CanvasPane implements Panel {
+public class DialogPanel extends GamePane implements Panel {
     //-------------------------------------------------------------------------
     // Constants
 
     private final static double INSET = 50;
-    private final static double NAME_SIZE = 24;
-    private final static double NAME_SPACING = 30;
-    private final static double DESCRIPTION_SIZE = 12;
     private final static double DESCRIPTION_SPACING = 26;
-    private final static double MAIN_SIZE = 16;
-    private final static double MAIN_SPACING = 20;
-    private final static double RESPONSE_SIZE = 16;
-    private final static double RESPONSE_SPACING = 30;
+    private final static double RESPONSE_LEADING = NORMAL_LEADING + 10;
 
     //-------------------------------------------------------------------------
     // Instance Variables
 
-    // The application
-    private final App app;
-
     // The data model
     private final Dialog dialog;
-
-    // Interaction widgets
-    private final List<Node> widgets = new ArrayList<>();
 
     // The onClose handler
     private Runnable onClose = null;
@@ -54,10 +37,9 @@ public class DialogPanel extends CanvasPane implements Panel {
      * @param dialog The dialog
      */
     public DialogPanel(App app, Dialog dialog) {
-        this.app = app;
+        super(app);
         this.dialog = dialog;
         setPadding(new Insets(INSET));
-        setOnResize(this::repaint);
     }
 
     //-------------------------------------------------------------------------
@@ -70,11 +52,8 @@ public class DialogPanel extends CanvasPane implements Panel {
     // Implementation
 
     // Paint the current state of the dialog.
-    private void repaint() {
-        // FIRST, Clear any old responses.
-        getChildren().removeAll(widgets);
-
-        var region = app.getCurrentRegion();
+    protected void onRepaint() {
+        var region = app().getCurrentRegion();
         var w = getWidth() - 2*INSET;
         var h = getHeight() - 2*INSET;
 
@@ -85,24 +64,25 @@ public class DialogPanel extends CanvasPane implements Panel {
         // Draw the entity's image
         var ix = 30;
         var iy = 30;
-        var bgimage = app.sprites().get(dialog.backgroundSprite());
-        var fgimage = app.sprites().get(dialog.foregroundSprite());
-        gc().drawImage(ImageUtils.embiggen(bgimage, 2), ix, iy);
-        gc().drawImage(ImageUtils.embiggen(fgimage, 2), ix, iy);
+
+        drawFramedSprites(
+            toImage(dialog.foregroundSprite()),
+            toImage(dialog.backgroundSprite()),
+            ix, iy, 2);
 
         // Draw the text.  tx and ty are in canvas coordinates
-        var tx = 30 + 2*bgimage.getHeight() + 30;
+        var tx = 30 + 2*sprites().height() + 30;
         var ty = 30.0;
         gc().setTextBaseline(VPos.TOP);
         gc().setFill(Color.WHITE);
 
         // Name
-        gc().setFont(Font.font("Helvetica", NAME_SIZE));
+        gc().setFont(TITLE_FONT);
         gc().fillText(dialog.getName(), tx, ty);
-        ty += NAME_SPACING;
+        ty += TITLE_LEADING;
 
         // Description
-        gc().setFont(Font.font("Helvetica", DESCRIPTION_SIZE));
+        gc().setFont(SMALL_FONT);
         var description = dialog.getDescription();
 
         if (description.isPresent()) {
@@ -114,35 +94,30 @@ public class DialogPanel extends CanvasPane implements Panel {
         gc().setLineWidth(2);
         gc().strokeLine(tx, ty, w - 30, ty);
 
-        ty += MAIN_SPACING;
+        ty += NORMAL_LEADING;
 
-        gc().setFont(Font.font("Helvetica", MAIN_SIZE));
-        fillTextBlock(dialog.getDisplayText(), tx, ty, MAIN_SPACING);
+        gc().setFont(NORMAL_FONT);
+        fillTextBlock(dialog.getDisplayText(), tx, ty, NORMAL_LEADING);
 
         // Draw the responses
         var responses = dialog.getResponses();
         ty = h - 30 - 20*(1 + responses.size()) - 25;
 
         gc().setFill(Color.WHITE);
-        gc().setFont(Font.font("Helvetica", RESPONSE_SIZE));
+        gc().setFont(NORMAL_FONT);
         gc().fillText("You respond:", tx, ty);
-        ty += RESPONSE_SPACING;
+        ty += RESPONSE_LEADING;
 
-        widgets.clear();
         for (var response : responses) {
             Text text = new Text(response.text());
 
             text.setTextOrigin(VPos.TOP);
             text.setFill(Color.YELLOW);
-            text.setFont(Font.font("Helvetica", RESPONSE_SIZE));
-            text.setX(INSET + tx + 20); // widget coordinates
-            text.setY(INSET + ty);
-            text.setOnMouseClicked(evt -> onResponse(response));
+            text.setFont(NORMAL_FONT);
 
-            widgets.add(text);
-            getChildren().add(text);
+            place(text, tx + 20, ty, () -> onResponse(response));
 
-            ty += RESPONSE_SPACING;
+            ty += RESPONSE_LEADING;
         }
     }
 

@@ -114,26 +114,27 @@ public class Executor {
                 }
             }
 
-            case Step.OpenChest chest: {
-                region.get(chest.id()).openChest();
-                var contents = region.query(Item.class, Owner.class)
-                    .filter(e -> e.owner().ownerId() == chest.id())
-                    .toList();
+            case Step.OpenChest open: {
+                var chest = region.get(open.id());
+                chest.openChest();
 
-                if (contents.isEmpty()) {
-                    region.log("The chest is empty.");
-                } else {
-                    // Give the contents to the owner
-                    for (var e : contents) {
-                        e.owner(mob.id());
-                        region.log("You got: " + e.label().text());
-                    }
-                }
+                // For now, just give them everything that fits.
+                // Later, we'll define a panel.
+                Stevedore.takeAll(region, mob, chest);
                 return Result.DO_NEXT;
             }
 
             case Step.CloseChest chest: {
                 region.get(chest.id()).closeChest();
+                return Result.DO_NEXT;
+            }
+
+            case Step.PickUp pickup: {
+                var stack = region.get(pickup.id());
+
+                // For now, just give them everything that fits; later we
+                // might use a panel.
+                Stevedore.takeAll(region, mob, stack);
                 return Result.DO_NEXT;
             }
 
@@ -240,7 +241,7 @@ public class Executor {
     private static void slideTo(Region region, Entity mob, Cell cell) {
         var anim = new Animation.Slide(
             mob.id(), mob.cell(), cell, 1.0);
-        var effect = region.getEntities().make().put(new VisualEffect(anim));
+        var effect = region.entities().make().put(new VisualEffect(anim));
 
         // These will execute in reverse order: we complete
         // the slide, move the next cell, and repeat our initial

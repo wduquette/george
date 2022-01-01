@@ -7,6 +7,12 @@ import javafx.scene.Node;
  */
 public interface Panel {
     /**
+     * The styleclass for Panels that use JavaFX styling (i.e., that aren't
+     * MapCanvases).
+     */
+    static final String APP_PANEL_STYLECLASS = "app-panel";
+
+    /**
      * Specifies a function to call when the user closes the panel.
      * @param onClose The function
      */

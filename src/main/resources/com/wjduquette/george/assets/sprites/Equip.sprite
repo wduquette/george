@@ -1,0 +1,11 @@
+# Slots: equipment slot icons
+%prefix equip
+%size 40 40
+%file Equip.png
+%sprite weapon
+%sprite bow
+%sprite armor
+%sprite shield
+%sprite helmet
+%sprite footwear
+%sprite item_slot

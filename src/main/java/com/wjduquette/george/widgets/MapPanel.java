@@ -11,31 +11,28 @@ import javafx.scene.paint.Color;
 /**
  * MapPanel displays the known portions of the current region's map.
  */
-public class MapPanel extends CanvasPane implements Panel {
+public class MapPanel extends GamePane implements Panel {
     private final static double INSET = 50;
     private final static double FRAME = 5;
 
-    private final App app;
     private Runnable onClose = null;
 
     public MapPanel(App app) {
-        this.app = app;
+        super(app);
         setPadding(new Insets(INSET));
-        setOnResize(this::repaint);
-        setOnMouseClicked(this::onMouseClick);
     }
 
     @Override public Node asNode() { return this; }
     @Override public void setOnClose(Runnable func) { this.onClose = func; }
 
-    private void onMouseClick(MouseEvent evt) {
+    protected void onMouseClick(MouseEvent evt) {
         if (onClose != null) {
             onClose.run();
         }
     }
 
-    private void repaint() {
-        var region = app.getCurrentRegion();
+    protected void onRepaint() {
+        var region = app().getCurrentRegion();
         var w = getWidth() - 2*INSET;
         var h = getHeight() - 2*INSET;
 
@@ -50,8 +47,8 @@ public class MapPanel extends CanvasPane implements Panel {
         var yTop = FRAME + (h - mapHeight)/2.0;
 
         // Fill the background
-        gc().setFill(Color.BLACK);
-        gc().fillRect(xLeft - FRAME, yTop - FRAME,
+        fill(Color.BLACK,
+            xLeft - FRAME, yTop - FRAME,
             mapWidth + 2*FRAME, mapHeight + 2*FRAME);
 
         for (int r = 0; r < region.getHeight(); r++) {
@@ -72,8 +69,7 @@ public class MapPanel extends CanvasPane implements Panel {
                     };
                 }
 
-                gc().setFill(color);
-                gc().fillRect(x, y, cellSize, cellSize);
+                fill(color, x, y, cellSize, cellSize);
             }
         }
 
@@ -83,9 +79,7 @@ public class MapPanel extends CanvasPane implements Panel {
         var x = xLeft + player.cell().col() * cellSize;
         var y = yTop + player.cell().row() * cellSize;
 
-        gc().setFill(Color.CYAN);
-        gc().fillRect(x - 1, y - 1, cellSize + 2, cellSize + 2);
-
+        fill(Color.CYAN, x - 1, y - 1, cellSize + 2, cellSize + 2);
     }
 
     private double mapCellSize(double numPixels, double numCells) {
