@@ -336,11 +336,11 @@ public class App extends Application {
     private void showPanel(Panel panel) {
         looper.stop();
         panel.setOnClose(() -> {
-            viewer.getChildren().remove(panel.asNode());
+            hull.getChildren().remove(panel.asNode());
             viewer.repaint();
             looper.run();
         });
-        viewer.getChildren().add(1, panel.asNode());
+        hull.getChildren().add(1, panel.asNode());
     }
 
 
