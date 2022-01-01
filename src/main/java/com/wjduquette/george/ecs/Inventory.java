@@ -15,14 +15,14 @@ public class Inventory implements Component {
     // Types and Constants
 
     /** Content of any empty slot. */
-    public static final Slot EMPTY = new Slot(null, 0);
+    private static final Slot EMPTY = new Slot(null, 0);
 
     /**
      * A slot in the inventory.
      * @param entity The Item entity
      * @param count The number of items
      */
-    public record Slot(Entity entity, int count) {
+    private record Slot(Entity entity, int count) {
         /** Returns the type of the item in the slot. */
         public Type type() {
             return entity != null ? entity.item().type() : Type.NONE;
@@ -97,7 +97,7 @@ public class Inventory implements Component {
      * @param index The index
      * @return The item
      */
-    public Slot get(int index) { return slots[index]; }
+    protected Slot get(int index) { return slots[index]; }
 
     /**
      * Finds the index of a slot containing the type.
@@ -116,7 +116,7 @@ public class Inventory implements Component {
      * @param index The index
      * @param slot The slot
      */
-    public void put(int index, Slot slot) {
+    protected void put(int index, Slot slot) {
         slots[index] = slot;
     }
 
@@ -131,6 +131,24 @@ public class Inventory implements Component {
         return Arrays.stream(slots)
             .map(slot -> slot.count)
             .reduce(0, Integer::sum);
+    }
+
+    /**
+     * Gets the number of items in slot index.
+     * @param index The index
+     * @return The count.
+     */
+    public int count(int index) {
+        return get(index).count();
+    }
+
+    /**
+     * Peeks at the entity in the slot.
+     * @param index The index
+     * @return The entity, or null.
+     */
+    public Entity peek(int index) {
+        return get(index).entity();
     }
 
     /**
@@ -210,6 +228,15 @@ public class Inventory implements Component {
         }
 
         return true;
+    }
+
+    /**
+     * Is slot index empty?
+     * @param index The index
+     * @return true or false
+     */
+    public boolean isEmpty(int index) {
+        return get(index).count == 0;
     }
 
     @Override public String toString() {

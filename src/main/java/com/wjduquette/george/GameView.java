@@ -150,7 +150,7 @@ public class GameView extends GamePane {
         for (Entity stack : region.query(ItemStack.class).toList()) {
             var inv = stack.inventory();
             for (int i = 0; i < inv.size(); i++) {
-                var item = inv.get(i).entity();
+                var item = inv.peek(i);
                 if (item != null) {
                     drawImage(toImage(item), entity2xy(stack));
                 }

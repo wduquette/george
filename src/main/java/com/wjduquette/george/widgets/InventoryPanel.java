@@ -3,7 +3,6 @@ package com.wjduquette.george.widgets;
 import com.wjduquette.george.App;
 import com.wjduquette.george.Stevedore;
 import com.wjduquette.george.ecs.Entity;
-import com.wjduquette.george.ecs.Inventory;
 import com.wjduquette.george.model.ItemSlot;
 import com.wjduquette.george.model.Region;
 import javafx.geometry.BoundingBox;
@@ -128,15 +127,27 @@ public class InventoryPanel extends GamePane implements Panel {
 
     // Draws the array of backpack slots at (x,y)
     private void drawBackpackArray(double x, double y) {
-        // Draw title
+        // FIRST, Draw title
         var ty = y - NORMAL_LEADING;
         gc().setFont(NORMAL_FONT);
         gc().setFill(Color.WHITE);
         gc().setTextBaseline(VPos.TOP);
         gc().fillText(player.label().text() + "'s Backpack", x, ty);
 
-        // Draw Backpack slots
-        drawSlots(x, y, 4, getBackpackSlots(), selectedSlot,
+        // NEXT, Draw Backpack Slot array
+        var boxes = getBackpackSlots();
+
+        // We have all new slot boxes; if the selected slot was from this
+        // array, update it.
+        if (selectedSlot != null) {
+            boxes.stream()
+                .filter(box -> box.slot().equals(selectedSlot.slot()))
+                .findFirst()
+                .ifPresent(box -> selectedSlot = box);
+        }
+
+        // draw the slots.
+        drawSlots(x, y, 4, boxes, selectedSlot,
             this::onSelectBackpackSlot);
     }
 
@@ -204,16 +215,17 @@ public class InventoryPanel extends GamePane implements Panel {
     List<SlotBox> getBackpackSlots() {
         var list = new ArrayList<SlotBox>();
         var inv = player.inventory();
+        App.println("Slots for inventory:\n" + inv);
 
         for (int i = 0; i < inv.size(); i++) {
-            var slot = inv.get(i);
             var itemSlot = new ItemSlot.Inventory(player.id(), i);
 
             SlotBox box;
-            if (slot == Inventory.EMPTY) {
+            if (inv.isEmpty(i)) {
                 box = new SlotBox(itemSlot, 0, null);
             } else {
-                box = new SlotBox(itemSlot, slot.count(), slot.entity());
+                box = new SlotBox(itemSlot, inv.count(i), inv.peek(i));
+                App.println("Saving actions for slot " + i);
 
                 box.actions().add(new Action("Drop",
                     () -> onDropBackpackItem(box)));
