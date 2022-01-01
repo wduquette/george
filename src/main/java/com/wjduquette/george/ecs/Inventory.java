@@ -120,18 +120,6 @@ public class Inventory implements Component {
         slots[index] = slot;
     }
 
-
-    // Adds the contents of the slot to this inventory, returning true
-    // on success, and false if there was no capacity.
-    private boolean add(Slot slot) {
-        var index = add(slot.entity);
-        if (index != -1) {
-            slots[index].increment(slot.count - 1);
-            return true;
-        }
-        return false;
-    }
-
     //-------------------------------------------------------------------------
     // Item Management
 
@@ -224,26 +212,6 @@ public class Inventory implements Component {
         return true;
     }
 
-    /**
-     * Takes everything from the other inventory and adds it to this one,
-     * until this one is full.
-     * @param other The other inventory.
-     * @return true if everything could be taken.
-     */
-    public boolean addAll(Inventory other) {
-        for (int i = 0; i < other.slots.length; i++) {
-            if (other.slots[i] == EMPTY) {
-                continue;
-            }
-
-            if (add(other.slots[i])) {
-                other.slots[i] = EMPTY;
-            }
-        }
-
-        return other.isEmpty();
-    }
-
     @Override public String toString() {
         var buff = new StringBuilder();
         for (var i = 0; i < slots.length; i++) {
@@ -251,7 +219,7 @@ public class Inventory implements Component {
                 buff.append("[")
                     .append(String.format("%02d", i))
                     .append("] - ")
-                    .append(Integer.toString(slots[i].count))
+                    .append(slots[i].count)
                     .append(" ")
                     .append(slots[i].entity.label().text());
                 buff.append("\n");

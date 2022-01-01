@@ -115,19 +115,12 @@ public class Executor {
             }
 
             case Step.OpenChest open: {
-                region.get(open.id()).openChest();
                 var chest = region.get(open.id());
                 chest.openChest();
-                var invent = chest.inventory();
 
                 // For now, just give them everything that fits.
-                // TODO: use a panel
-                if (invent.isEmpty()) {
-                    region.log("The chest is empty.");
-                } else {
-                    // Give the contents to the owner, as much as will fit.
-                    mob.inventory().addAll(invent);
-                }
+                // Later, we'll define a panel.
+                Stevedore.takeAll(region, mob, chest);
                 return Result.DO_NEXT;
             }
 
@@ -138,15 +131,10 @@ public class Executor {
 
             case Step.PickUp pickup: {
                 var stack = region.get(pickup.id());
-                var invent = stack.inventory();
 
-                // For now, just give them everything that fits.
-                // TODO: Use a panel
-                mob.inventory().addAll(invent);
-
-                if (invent.isEmpty()) {
-                    region.entities().remove(stack.id());
-                }
+                // For now, just give them everything that fits; later we
+                // might use a panel.
+                Stevedore.takeAll(region, mob, stack);
                 return Result.DO_NEXT;
             }
 

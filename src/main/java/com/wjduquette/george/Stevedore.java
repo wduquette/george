@@ -4,6 +4,8 @@ import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.ItemStack;
 import com.wjduquette.george.model.Region;
 
+import java.util.Optional;
+
 /**
  * The Stevedore system is responsible for moving items between inventories.
  */
@@ -36,5 +38,42 @@ public class Stevedore {
 
         region.log("Dropped " + item.label().text());
         return true;
+    }
+
+    /**
+     * The mobile attempts to pick up everything in the stack entity, which
+     * may be any entity with an Inventory.
+     * @param region The region
+     * @param mobile The mobile
+     * @param stack An entity with an Inventory.
+     */
+    public static void takeAll(Region region, Entity mobile, Entity stack) {
+        var inv = stack.inventory();
+
+        for (int i = 0; i < inv.size(); i++) {
+            Optional<Entity> oitem;
+            while ((oitem = inv.take(i)).isPresent()) {
+                var item = oitem.get();
+
+                if (mobile.inventory().add(item) != -1) {
+                    // If it fits, notify the player
+                    region.log("Picked up: " + item.label().text());
+                } else {
+                    // Otherwise, put it back in the inventory, and go on
+                    // to the next item.
+                    inv.add(item);
+                    continue;
+                }
+            }
+        }
+
+        if (inv.isEmpty()) {
+            // Remove the stack if it's an ItemStack.
+            if (stack.itemStack() != null) {
+                region.entities().remove(stack.id());
+            }
+        } else {
+            region.log("You didn't have room for everything.");
+        }
     }
 }
