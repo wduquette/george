@@ -191,6 +191,7 @@ public class Entity {
     public Armor      armor()      { return components.get(Armor.class); }
     public Chest      chest()      { return components.get(Chest.class); }
     public Door       door()       { return components.get(Door.class); }
+    public Equipment  equipment()  { return components.get(Equipment.class); }
     public Exit       exit()       { return components.get(Exit.class); }
     public Feature    feature()    { return components.get(Feature.class); }
     public Item       item()       { return components.get(Item.class); }

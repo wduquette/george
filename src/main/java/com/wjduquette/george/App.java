@@ -124,15 +124,18 @@ public class App extends Application {
         inv.add(items().make("vial.healing"));
         inv.add(items().make("vial.healing"));
         inv.add(items().make("scroll.mapping"));
-        inv.add(items().make("weapon.small_wrench"));
-        inv.add(items().make("body.overalls"));
-        inv.add(items().make("head.hat"));
-        inv.add(items().make("foot.shoes"));
+
+        var equip = new Equipment();
+        equip.wear(Equip.HAND, items().make("weapon.small_wrench"));
+        equip.wear(Equip.BODY, items().make("body.overalls"));
+        equip.wear(Equip.HEAD, items().make("head.hat"));
+        equip.wear(Equip.FEET, items().make("foot.shoes"));
 
         return new Entity()
             .player(player)
             .mobile("george") // Key
             .put(inv)
+            .put(equip)
             .sprite(Sprites.ALL.getInfo("mobile.george"));
     }
 

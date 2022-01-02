@@ -5,20 +5,34 @@ package com.wjduquette.george.model;
  */
 public enum Equip {
     /** Armor worn on the PC's body. */
-    BODY,
+    BODY(Items.Type.BODY_ARMOR),
 
     /** Armor worn on the PC's head. */
-    HEAD,
+    HEAD(Items.Type.HEAD_GEAR),
 
     /** Armor worn on the PC's feet. */
-    FEET,
+    FEET(Items.Type.FOOT_WEAR),
 
     /** Hand-to-hand weapon wielded by the PC. */
-    HAND,
+    HAND(Items.Type.HAND_WEAPON),
 
     /** Ranged-weapon wielded by the PC. */
-    RANGED,
+    RANGED(Items.Type.RANGED),
 
     /** Shield wielded by the PC. */
-    SHIELD,
+    SHIELD(Items.Type.SHIELD);
+
+    private final Items.Type itemType;
+
+    Equip(Items.Type type) {
+        this.itemType = type;
+    }
+
+    /**
+     * The type of item that can go in this slot.
+     * @return The type
+     */
+    public Items.Type itemType() {
+        return itemType;
+    }
 }
