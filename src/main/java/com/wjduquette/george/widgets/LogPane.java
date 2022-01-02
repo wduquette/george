@@ -4,6 +4,8 @@ import com.wjduquette.george.App;
 import com.wjduquette.george.util.Looper;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -13,8 +15,9 @@ import java.util.List;
 public class LogPane extends GamePane {
     private static final int MAX_VISIBLE = 3;
     private static final double MARGIN = 30;
-    private static final Font MESSAGE_FONT = Font.font("Helvetica", 25);
-    private static final double MESSAGE_LEADING = 30;
+    private static final Font MESSAGE_FONT =
+        Font.font("Helvetica", 20);
+    private static final double MESSAGE_LEADING = 24;
     private static final long MESSAGE_DURATION = 2000;
 
     //-------------------------------------------------------------------------
@@ -67,7 +70,7 @@ public class LogPane extends GamePane {
         for (int i = 0; i < count; i++) {
             gc().setStroke(Color.BLACK);
             gc().setLineWidth(2);
-            gc().setFill(Color.CYAN);
+            gc().setFill(Color.YELLOW);
             gc().setFont(MESSAGE_FONT);
             gc().strokeText(messages.get(i).text, MARGIN, ty);
             gc().fillText(messages.get(i).text, MARGIN, ty);
