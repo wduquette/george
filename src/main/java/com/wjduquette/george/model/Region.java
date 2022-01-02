@@ -291,6 +291,21 @@ public abstract class Region {
     }
 
     /**
+     * Marks seen all cells within the radius of the given cell.
+     * @param here The cell
+     * @param radius the radius in cells
+     */
+    public void markSeen(Cell here, int radius) {
+        for (int r = here.row() - radius; r <= here.row() + radius; r++) {
+            for (int c = here.col() - radius; c <= here.col() + radius; c++) {
+                if (here.distance(new Cell(r,c)) <= radius + 1) {
+                    markSeen(r, c);
+                }
+            }
+        }
+    }
+
+    /**
      * Get the terrain tile for the given cell.
      * @param cell The cell
      * @return The terrain tile

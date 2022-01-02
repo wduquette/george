@@ -7,14 +7,14 @@ import com.wjduquette.george.model.Region;
 import com.wjduquette.george.widgets.Action;
 import com.wjduquette.george.widgets.SlotBox;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /**
  * The Stevedore system is responsible for moving items between inventories.
  */
 public class Stevedore {
+    public static final int MAPPING_RADIUS = 20;
+
     private Stevedore() {} // Not instantiable
 
     /**
@@ -111,16 +111,41 @@ public class Stevedore {
         }
     }
 
+    /**
+     * Use the given item, if possible in this context.  Returns false if the
+     * item could not currently be used.
+     * @param region The region
+     * @param owner The owner
+     * @param index The index of the inventory slot
+     * @return true or false
+     */
     public static boolean useItem(Region region, Entity owner, int index) {
         // FIRST, get the item to use
         var item = owner.inventory().take(index).orElseThrow();
+        var used = true;
 
-        region.log("Used: " + item.label().text());
+        // NEXT, attempt to use it.
+        switch (item.item().type()) {
+            case SCROLL_OF_MAPPING -> {
+                region.markSeen(owner.cell(), MAPPING_RADIUS);
+                region.log("You know more about the vicinity.");
+            }
+            case VIAL_OF_HEALING -> {
+                region.log(owner.label().text() + " is at full health.");
+                used = false;
+            }
+            default -> {
+                region.log("TODO: " + item.item().type());
+                used = false;
+            }
+        }
 
-        // TODO: switch on the item type to make stuff happen.
-        // TODO: Return false if the item can't be used in this context.
+        // NEXT, if we couldn't use it then put it back.
+        if (!used) {
+            owner.inventory().add(item);
+        }
 
-        return true;
+        return used;
     }
 
     /**
@@ -145,7 +170,6 @@ public class Stevedore {
                     // Otherwise, put it back in the inventory, and go on
                     // to the next item.
                     inv.add(item);
-                    continue;
                 }
             }
         }
