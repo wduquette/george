@@ -5,13 +5,13 @@ package com.wjduquette.george.model;
  */
 public enum Equip {
     /** Armor worn on the PC's body. */
-    ARMOR("equip.armor"),
+    BODY("equip.armor"),
 
     /** Armor worn on the PC's head. */
-    HELMET("equip.helmet"),
+    HEAD("equip.helmet"),
 
     /** Armor worn on the PC's feet. */
-    FOOTWEAR("equip.footwear"),
+    FEET("equip.footwear"),
 
     /** Hand-to-hand weapon wielded by the PC. */
     HAND("equip.weapon"),

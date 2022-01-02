@@ -188,11 +188,11 @@ public class Entity {
     // There is one for each defined component class. Each returns the
     // component, throwing an error if it doesn't exist.
 
+    public Armor      armor()      { return components.get(Armor.class); }
     public Chest      chest()      { return components.get(Chest.class); }
     public Door       door()       { return components.get(Door.class); }
     public Exit       exit()       { return components.get(Exit.class); }
     public Feature    feature()    { return components.get(Feature.class); }
-    public HandWeapon handWeapon() { return components.get(HandWeapon.class); }
     public Item       item()       { return components.get(Item.class); }
     public ItemStack  itemStack()  { return components.get(ItemStack.class); }
     public Inventory  inventory()  { return components.get(Inventory.class); }
@@ -207,6 +207,7 @@ public class Entity {
     public Sprite     sprite()     { return components.get(Sprite.class); }
     public Terrain    terrain()    { return components.get(Terrain.class); }
     public Tripwire   tripwire()   { return components.get(Tripwire.class); }
+    public Weapon     weapon()     { return components.get(Weapon.class); }
 
     // Other simple queries
 
@@ -255,9 +256,10 @@ public class Entity {
     // tagAs* methods add the tag component.
     // Others just add the component given the arguments.
 
+    public Entity tagAsArmor() { return put(new Armor()); }
     public Entity tagAsFeature() { return put(new Feature()); }
-    public Entity tagAsHandWeapon() { return put(new HandWeapon()); }
     public Entity tagAsItemStack() { return put(new ItemStack()); }
+    public Entity tagAsWeapon() { return put(new Weapon()); }
     public Entity player(Player player) { return put(player).label(player.name()); }
     public Entity exit(String region, String point) { return put(new Exit(region, point)); }
     public Entity item(String key, Items.Type type) { return put(new Item(key, type)); }

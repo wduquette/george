@@ -1,12 +1,36 @@
 # Items Definitions
 
 #------------------------------------------------------------------------------
+# Body Armor
+
+# body.overalls
+%string body.overalls.type body_armor
+%string body.overalls.label Grubby Overalls
+%string body.overalls.sprite item.overalls
+
+#------------------------------------------------------------------------------
 # Hand Weapons
 
 # weapon.small_wrench
-%string weapon.small_wrench.type small_wrench
+%string weapon.small_wrench.type hand_weapon
 %string weapon.small_wrench.label Small Wrench
 %string weapon.small_wrench.sprite item.small_wrench
+
+#------------------------------------------------------------------------------
+# Headgear
+
+# head.hat
+%string head.hat.type head_gear
+%string head.hat.label Farmer's Hat
+%string head.hat.sprite item.hat
+
+#------------------------------------------------------------------------------
+# Footgear
+
+# foot.shoes
+%string foot.shoes.type foot_wear
+%string foot.shoes.label Farmer's Shoes
+%string foot.shoes.sprite item.shoes
 
 #------------------------------------------------------------------------------
 # Usable Items

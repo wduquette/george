@@ -17,15 +17,15 @@ public class Items {
 
     /** The available item types. */
     public enum Type {
-        //               stacks? usable?
-        NONE             (false, false),   // No item here
-        KEY_ITEM         (false, false),
-        OVERALLS         (false, false),
-        HAT              (false, false),
-        SHOES            (false, false),
-        SMALL_WRENCH     (false, false),
-        VIAL_OF_HEALING  (true,  true),
-        SCROLL_OF_MAPPING(true,  true);
+        //               stacks? usable? equip
+        NONE             (false, false,  null),   // No item here
+        KEY_ITEM         (false, false,  null),
+        BODY_ARMOR       (false, false,  Equip.BODY),
+        HEAD_GEAR        (false, false,  Equip.HEAD),
+        FOOT_WEAR        (false, false,  Equip.FEET),
+        HAND_WEAPON      (false, false,  Equip.HAND),
+        VIAL_OF_HEALING  (true,  true,   null),
+        SCROLL_OF_MAPPING(true,  true,   null);
 
         // Whether or not items of this type can be stacked.  If they can,
         // all items of this type must be effectively identical.
@@ -35,9 +35,13 @@ public class Items {
         // a potion that can be quaffed.
         private final boolean usable;
 
-        Type(boolean stacks, boolean usable) {
+        // If this can be equipped, the Equip slot; otherwise null
+        private final Equip equip;
+
+        Type(boolean stacks, boolean usable, Equip equip) {
             this.stacks = stacks;
             this.usable = usable;
+            this.equip = equip;
         }
 
         public boolean stacks() { return stacks; }
@@ -65,7 +69,16 @@ public class Items {
         info = new KeyDataTable(cls, relPath);
 
         // Hand Weapons
-        define("weapon.small_wrench", this::makeHandWeapon);
+        define("weapon.small_wrench", this::makeWeapon);
+
+        // Body Armor
+        define("body.overalls", this::makeArmor);
+
+        // Headgear
+        define("head.hat", this::makeArmor);
+
+        // Footgear
+        define("foot.shoes", this::makeArmor);
 
         // Usable Items
         define("scroll.mapping", this::makeSimple);
@@ -91,18 +104,35 @@ public class Items {
     }
 
     /**
-     * Makes a hand-weapon Item entity, reading the item's data from the game
+     * Makes an armor Item entity, reading the item's data from the game
      * info file.
      * @param key The item's key
      * @return The entity
      */
-    private Entity makeHandWeapon(String key) {
+    private Entity makeArmor(String key) {
         var type = Type.valueOf(info.get(key, "type").orElseThrow().toUpperCase());
         var sprite = info.get(key, "sprite").orElseThrow();
         var label = info.get(key, "label").orElseThrow();
         return new Entity()
             .item(key, type)
-            .tagAsHandWeapon()
+            .tagAsArmor()
+            .label(label)
+            .sprite(sprite);
+    }
+
+    /**
+     * Makes a weapon Item entity, reading the item's data from the game
+     * info file.
+     * @param key The item's key
+     * @return The entity
+     */
+    private Entity makeWeapon(String key) {
+        var type = Type.valueOf(info.get(key, "type").orElseThrow().toUpperCase());
+        var sprite = info.get(key, "sprite").orElseThrow();
+        var label = info.get(key, "label").orElseThrow();
+        return new Entity()
+            .item(key, type)
+            .tagAsWeapon()
             .label(label)
             .sprite(sprite);
     }
