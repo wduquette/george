@@ -19,11 +19,6 @@ public class Stevedore {
 
     /**
      * Gets the SlotBox for the given item slot.
-     * TODO: This doesn't work.
-     * - The panel from which the actions are called needs to repaint after
-     *   each action.
-     * - The SlotBox doesn't need to have the actions; we can produce the
-     *   actions just for the selected slot on repaint.
      * @param region The region
      * @param owner The owner
      * @param itemSlot The slot
