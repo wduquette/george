@@ -20,6 +20,8 @@ import javafx.stage.Stage;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.wjduquette.george.util.Combinator.with;
+
 public class Debugger extends StackPane {
     //-------------------------------------------------------------------------
     // Instance Variables
@@ -236,10 +238,6 @@ public class Debugger extends StackPane {
 
     private MenuItem separator() {
         return new SeparatorMenuItem();
-    }
-
-    private <T> T with(Object o, T value) {
-        return o != null ? value : null;
     }
 
     //-------------------------------------------------------------------------

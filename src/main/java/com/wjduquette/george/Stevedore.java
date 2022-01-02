@@ -9,6 +9,8 @@ import com.wjduquette.george.widgets.SlotBox;
 
 import java.util.Optional;
 
+import static com.wjduquette.george.util.Combinator.*;
+
 /**
  * The Stevedore system is responsible for moving items between inventories.
  */
@@ -46,12 +48,11 @@ public class Stevedore {
         var box = new SlotBox(slot, count, item);
 
         if (count > 0) {
-            if (item.item().type().isUsable()) {
-                box.actions().add(new Action("Use",
-                    () -> useItem(region, owner, slot.index())));
-            }
-            box.actions().add(new Action("Drop",
-                () -> dropItem(region, owner, slot.index())));
+            box.actions().addAll(listOf(
+                when(item.item().type().isUsable(),
+                    new Action("Use", () -> useItem(region, owner, slot.index()))),
+                new Action("Drop", () -> dropItem(region, owner, slot.index()))
+            ));
         }
 
         return box;
