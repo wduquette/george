@@ -33,7 +33,7 @@ public class App extends Application {
     // Instance Variables
 
     // The hull widget
-    private StackPane hull = new StackPane();
+    private final StackPane hull = new StackPane();
 
     // The main GUI pane
     private GameView viewer;
@@ -123,6 +123,7 @@ public class App extends Application {
         var inv = new Inventory(Player.INVENTORY_SIZE);
         inv.add(items().make("vial.healing"));
         inv.add(items().make("vial.healing"));
+        inv.add(items().make("scroll.mapping"));
 
         return new Entity()
             .player(player)

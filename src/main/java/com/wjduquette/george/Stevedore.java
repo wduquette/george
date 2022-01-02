@@ -2,7 +2,10 @@ package com.wjduquette.george;
 
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.ItemStack;
+import com.wjduquette.george.model.ItemSlot;
 import com.wjduquette.george.model.Region;
+import com.wjduquette.george.widgets.Action;
+import com.wjduquette.george.widgets.SlotBox;
 
 import java.util.Optional;
 
@@ -10,7 +13,67 @@ import java.util.Optional;
  * The Stevedore system is responsible for moving items between inventories.
  */
 public class Stevedore {
+    public static final int MAPPING_RADIUS = 20;
+
     private Stevedore() {} // Not instantiable
+
+    /**
+     * Gets the SlotBox for the given item slot.
+     * @param region The region
+     * @param owner The owner
+     * @param itemSlot The slot
+     * @return The SlotBox
+     */
+    public static SlotBox getSlotBox(
+        Region region,
+        Entity owner,
+        ItemSlot itemSlot)
+    {
+        return switch (itemSlot) {
+            case ItemSlot.Inventory slot -> invSlotBox(region, owner, slot);
+            case ItemSlot.Party slot -> partySlotBox(region, owner, slot);
+            case ItemSlot.Equipment slot -> equipSlotBox(region, owner, slot);
+        };
+    }
+
+    private static SlotBox invSlotBox(
+        Region region,
+        Entity owner,
+        ItemSlot.Inventory slot
+    ) {
+        var count = owner.inventory().count(slot.index());
+        var item = owner.inventory().peek(slot.index());
+        var box = new SlotBox(slot, count, item);
+
+        if (count > 0) {
+            if (item.item().type().isUsable()) {
+                box.actions().add(new Action("Use",
+                    () -> useItem(region, owner, slot.index())));
+            }
+            box.actions().add(new Action("Drop",
+                () -> dropItem(region, owner, slot.index())));
+        }
+
+        return box;
+    }
+
+    private static SlotBox partySlotBox(
+        Region region,
+        Entity owner,
+        ItemSlot.Party slot)
+    {
+        // TODO
+        return null;
+    }
+
+    private static SlotBox equipSlotBox(
+        Region region,
+        Entity owner,
+        ItemSlot.Equipment slot)
+    {
+        // TODO
+        return null;
+    }
 
     /**
      * Attempts to drop one of the owner's items item on the ground.
@@ -29,15 +92,55 @@ public class Stevedore {
 
         // TODO: Need to check for overflow, find adjacent cell.
         if (stack == null) {
-            // TODO: Need to find an adjacent cell with no stack
             stack = region.makeItemStack().cell(owner.cell());
             region.entities().add(stack);
         }
 
-        stack.inventory().add(item);
+        if (stack.inventory().add(item) != -1) {
+            region.log("Dropped " + item.label().text());
+            return true;
+        } else {
+            owner.inventory().add(item);
+            region.log("There's no room here.");
+            return false;
+        }
+    }
 
-        region.log("Dropped " + item.label().text());
-        return true;
+    /**
+     * Use the given item, if possible in this context.  Returns false if the
+     * item could not currently be used.
+     * @param region The region
+     * @param owner The owner
+     * @param index The index of the inventory slot
+     * @return true or false
+     */
+    public static boolean useItem(Region region, Entity owner, int index) {
+        // FIRST, get the item to use
+        var item = owner.inventory().take(index).orElseThrow();
+        var used = true;
+
+        // NEXT, attempt to use it.
+        switch (item.item().type()) {
+            case SCROLL_OF_MAPPING -> {
+                region.markSeen(owner.cell(), MAPPING_RADIUS);
+                region.log("You know more about the vicinity.");
+            }
+            case VIAL_OF_HEALING -> {
+                region.log(owner.label().text() + " is at full health.");
+                used = false;
+            }
+            default -> {
+                region.log("TODO: " + item.item().type());
+                used = false;
+            }
+        }
+
+        // NEXT, if we couldn't use it then put it back.
+        if (!used) {
+            owner.inventory().add(item);
+        }
+
+        return used;
     }
 
     /**
@@ -62,7 +165,6 @@ public class Stevedore {
                     // Otherwise, put it back in the inventory, and go on
                     // to the next item.
                     inv.add(item);
-                    continue;
                 }
             }
         }

@@ -179,7 +179,10 @@ public class InventoryPanel extends GamePane implements Panel {
         text.setFont(NORMAL_FONT);
 
         if (!action.isDisabled()) {
-            text.setOnMouseClicked(evt -> action.perform());
+            text.setOnMouseClicked(evt -> {
+                action.perform();
+                repaint();
+            });
         }
 
         place(text, x, y);
@@ -212,22 +215,10 @@ public class InventoryPanel extends GamePane implements Panel {
 
     List<SlotBox> getBackpackSlots() {
         var list = new ArrayList<SlotBox>();
-        var inv = player.inventory();
 
-        for (int i = 0; i < inv.size(); i++) {
+        for (int i = 0; i < player.inventory().size(); i++) {
             var itemSlot = new ItemSlot.Inventory(player.id(), i);
-
-            SlotBox box;
-            if (inv.isEmpty(i)) {
-                box = new SlotBox(itemSlot, 0, null);
-            } else {
-                box = new SlotBox(itemSlot, inv.count(i), inv.peek(i));
-
-                box.actions().add(new Action("Drop",
-                    () -> onDropBackpackItem(box)));
-            }
-
-            list.add(box);
+            list.add(Stevedore.getSlotBox(region, player, itemSlot));
         }
 
         return list;
