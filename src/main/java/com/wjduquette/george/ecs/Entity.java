@@ -192,6 +192,7 @@ public class Entity {
     public Door       door()       { return components.get(Door.class); }
     public Exit       exit()       { return components.get(Exit.class); }
     public Feature    feature()    { return components.get(Feature.class); }
+    public HandWeapon handWeapon() { return components.get(HandWeapon.class); }
     public Item       item()       { return components.get(Item.class); }
     public ItemStack  itemStack()  { return components.get(ItemStack.class); }
     public Inventory  inventory()  { return components.get(Inventory.class); }
@@ -205,7 +206,7 @@ public class Entity {
     public Sign       sign()       { return components.get(Sign.class); }
     public Sprite     sprite()     { return components.get(Sprite.class); }
     public Terrain    terrain()    { return components.get(Terrain.class); }
-    public Tripwire tripwire()   { return components.get(Tripwire.class); }
+    public Tripwire   tripwire()   { return components.get(Tripwire.class); }
 
     // Other simple queries
 
@@ -255,6 +256,7 @@ public class Entity {
     // Others just add the component given the arguments.
 
     public Entity tagAsFeature() { return put(new Feature()); }
+    public Entity tagAsHandWeapon() { return put(new HandWeapon()); }
     public Entity tagAsItemStack() { return put(new ItemStack()); }
     public Entity player(Player player) { return put(player).label(player.name()); }
     public Entity exit(String region, String point) { return put(new Exit(region, point)); }

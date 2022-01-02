@@ -124,6 +124,7 @@ public class App extends Application {
         inv.add(items().make("vial.healing"));
         inv.add(items().make("vial.healing"));
         inv.add(items().make("scroll.mapping"));
+        inv.add(items().make("weapon.small_wrench"));
 
         return new Entity()
             .player(player)

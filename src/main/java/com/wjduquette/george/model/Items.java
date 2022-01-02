@@ -20,6 +20,10 @@ public class Items {
         //               stacks? usable?
         NONE             (false, false),   // No item here
         KEY_ITEM         (false, false),
+        OVERALLS         (false, false),
+        HAT              (false, false),
+        SHOES            (false, false),
+        SMALL_WRENCH     (false, false),
         VIAL_OF_HEALING  (true,  true),
         SCROLL_OF_MAPPING(true,  true);
 
@@ -60,6 +64,10 @@ public class Items {
     public Items(Class<?> cls, String relPath) {
         info = new KeyDataTable(cls, relPath);
 
+        // Hand Weapons
+        define("weapon.small_wrench", this::makeHandWeapon);
+
+        // Usable Items
         define("scroll.mapping", this::makeSimple);
         define("vial.healing", this::makeSimple);
     }
@@ -78,6 +86,23 @@ public class Items {
         var label = info.get(key, "label").orElseThrow();
         return new Entity()
             .item(key, type)
+            .label(label)
+            .sprite(sprite);
+    }
+
+    /**
+     * Makes a hand-weapon Item entity, reading the item's data from the game
+     * info file.
+     * @param key The item's key
+     * @return The entity
+     */
+    private Entity makeHandWeapon(String key) {
+        var type = Type.valueOf(info.get(key, "type").orElseThrow().toUpperCase());
+        var sprite = info.get(key, "sprite").orElseThrow();
+        var label = info.get(key, "label").orElseThrow();
+        return new Entity()
+            .item(key, type)
+            .tagAsHandWeapon()
             .label(label)
             .sprite(sprite);
     }

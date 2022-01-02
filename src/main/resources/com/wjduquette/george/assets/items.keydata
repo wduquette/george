@@ -1,5 +1,16 @@
 # Items Definitions
 
+#------------------------------------------------------------------------------
+# Hand Weapons
+
+# weapon.small_wrench
+%string weapon.small_wrench.type small_wrench
+%string weapon.small_wrench.label Small Wrench
+%string weapon.small_wrench.sprite item.small_wrench
+
+#------------------------------------------------------------------------------
+# Usable Items
+
 # scroll.mapping
 %string scroll.mapping.type scroll_of_mapping
 %string scroll.mapping.label Scroll of Magic Mapping
