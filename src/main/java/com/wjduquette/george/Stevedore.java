@@ -97,15 +97,18 @@ public class Stevedore {
 
         // TODO: Need to check for overflow, find adjacent cell.
         if (stack == null) {
-            // TODO: Need to find an adjacent cell with no stack
             stack = region.makeItemStack().cell(owner.cell());
             region.entities().add(stack);
         }
 
-        stack.inventory().add(item);
-
-        region.log("Dropped " + item.label().text());
-        return true;
+        if (stack.inventory().add(item) != -1) {
+            region.log("Dropped " + item.label().text());
+            return true;
+        } else {
+            owner.inventory().add(item);
+            region.log("There's no room here.");
+            return false;
+        }
     }
 
     public static boolean useItem(Region region, Entity owner, int index) {
