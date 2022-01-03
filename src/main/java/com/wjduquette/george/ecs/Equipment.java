@@ -1,6 +1,6 @@
 package com.wjduquette.george.ecs;
 
-import com.wjduquette.george.model.Equip;
+import com.wjduquette.george.model.Role;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +12,7 @@ public class Equipment implements Component {
 
     // The map from equipment place to Item entity.  Items added must have
     // item().type() == equip.itemType()
-    private final Map<Equip,Entity> map = new HashMap<>();
+    private final Map<Role,Entity> map = new HashMap<>();
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -30,7 +30,7 @@ public class Equipment implements Component {
      * @param place The place
      * @param item The item
      */
-    public void wear(Equip place, Entity item) {
+    public void wear(Role place, Entity item) {
         if (item.item().type() != place.itemType()) {
             throw new IllegalArgumentException(
                 "Item cannot go in this equipment slot!");
@@ -43,7 +43,7 @@ public class Equipment implements Component {
      * @param place The place
      * @return The item
      */
-    public Optional<Entity> remove(Equip place) {
+    public Optional<Entity> remove(Role place) {
         var item = map.get(place);
         map.put(place, null);
         return Optional.ofNullable(item);
@@ -54,7 +54,7 @@ public class Equipment implements Component {
      * @param place The place
      * @return The item
      */
-    public Optional<Entity> get(Equip place) {
+    public Optional<Entity> get(Role place) {
         return Optional.ofNullable(map.get(place));
     }
 }

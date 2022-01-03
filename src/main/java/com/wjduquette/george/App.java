@@ -126,10 +126,10 @@ public class App extends Application {
         inv.add(items().make("scroll.mapping"));
 
         var equip = new Equipment();
-        equip.wear(Equip.HAND, items().make("weapon.small_wrench"));
-        equip.wear(Equip.BODY, items().make("body.overalls"));
-        equip.wear(Equip.HEAD, items().make("head.hat"));
-        equip.wear(Equip.FEET, items().make("foot.shoes"));
+        equip.wear(Role.HAND, items().make("weapon.small_wrench"));
+        equip.wear(Role.BODY, items().make("body.overalls"));
+        equip.wear(Role.HEAD, items().make("head.hat"));
+        equip.wear(Role.FEET, items().make("foot.shoes"));
 
         return new Entity()
             .player(player)

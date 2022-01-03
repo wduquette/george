@@ -1,9 +1,9 @@
 package com.wjduquette.george.model;
 
 /**
- * Equipment slot types
+ * Equipment roles.  The player has an equipment slot for each role.
  */
-public enum Equip {
+public enum Role {
     /** Armor worn on the PC's body. */
     BODY(Items.Type.BODY_ARMOR),
 
@@ -24,7 +24,7 @@ public enum Equip {
 
     private final Items.Type itemType;
 
-    Equip(Items.Type type) {
+    Role(Items.Type type) {
         this.itemType = type;
     }
 

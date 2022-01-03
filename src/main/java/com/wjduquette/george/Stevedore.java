@@ -2,6 +2,7 @@ package com.wjduquette.george;
 
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.ItemStack;
+import com.wjduquette.george.model.Role;
 import com.wjduquette.george.model.ItemSlot;
 import com.wjduquette.george.model.Region;
 import com.wjduquette.george.widgets.Action;
@@ -72,8 +73,18 @@ public class Stevedore {
         Entity owner,
         ItemSlot.Equipment slot)
     {
-        // TODO
-        return null;
+        var role = slot.role();
+        var item = owner.equipment().get(role).orElse(null);
+        var count = item != null ? 1 : 0;
+        var box = new SlotBox(slot, count, item);
+
+        if (count > 0) {
+            box.actions().addAll(listOf(
+                new Action("Remove", () -> takeOff(region, owner, role))
+            ));
+        }
+
+        return box;
     }
 
     /**
@@ -105,6 +116,11 @@ public class Stevedore {
             region.log("There's no room here.");
             return false;
         }
+    }
+
+    public static boolean takeOff(Region region, Entity owner, Role role) {
+        App.println("Take off: " + role);
+        return false;
     }
 
     /**
