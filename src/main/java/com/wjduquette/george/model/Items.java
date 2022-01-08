@@ -17,17 +17,17 @@ public class Items {
 
     /** The available item types. */
     public enum Type {
-        //               stacks? usable?
-        NONE             (false, false),   // No item here
-        KEY_ITEM         (false, false),
-        BODY_ARMOR       (false, false),
-        HEAD_GEAR        (false, false),
-        FOOT_WEAR        (false, false),
-        HAND_WEAPON      (false, false),
-        RANGED           (false, false),
-        SHIELD           (false, false),
-        VIAL_OF_HEALING  (true,  true),
-        SCROLL_OF_MAPPING(true,  true);
+        //               stacks? usable? equip?
+        NONE             (false, false,  false),   // No item here
+        KEY_ITEM         (false, false,  false),
+        BODY_ARMOR       (false, false,  true),
+        HEAD_GEAR        (false, false,  true),
+        FOOT_WEAR        (false, false,  true),
+        HAND_WEAPON      (false, false,  true),
+        RANGED           (false, false,  true),
+        SHIELD           (false, false,  true),
+        VIAL_OF_HEALING  (true,  true,   false),
+        SCROLL_OF_MAPPING(true,  true,   false);
 
         // Whether or not items of this type can be stacked.  If they can,
         // all items of this type must be effectively identical.
@@ -37,13 +37,18 @@ public class Items {
         // a potion that can be quaffed.
         private final boolean usable;
 
-        Type(boolean stacks, boolean usable) {
+        // Whether or not this is an item that can be equipped.
+        private final boolean equip;
+
+        Type(boolean stacks, boolean usable, boolean equip) {
             this.stacks = stacks;
             this.usable = usable;
+            this.equip = equip;
         }
 
         public boolean stacks() { return stacks; }
         public boolean isUsable() { return usable; }
+        public boolean isEquippable() { return equip; }
     }
 
     //-------------------------------------------------------------------------

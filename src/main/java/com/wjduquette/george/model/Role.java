@@ -1,5 +1,7 @@
 package com.wjduquette.george.model;
 
+import java.util.Optional;
+
 /**
  * Equipment roles.  The player has an equipment slot for each role.
  */
@@ -34,5 +36,20 @@ public enum Role {
      */
     public Items.Type itemType() {
         return itemType;
+    }
+
+    /**
+     * Returns the role for this item type.
+     * @param type The type
+     * @return The role
+     */
+    public static Optional<Role> ofItemType(Items.Type type) {
+        for (var role : values()) {
+            if (role.itemType == type) {
+                return Optional.of(role);
+            }
+        }
+
+        return Optional.empty();
     }
 }

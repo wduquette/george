@@ -52,6 +52,8 @@ public class Stevedore {
             box.actions().addAll(listOf(
                 when(item.item().type().isUsable(),
                     new Action("Use", () -> useItem(region, owner, slot.index()))),
+                when(item.item().type().isEquippable(),
+                    new Action("Equip", () -> equipItem(region, owner, slot.index()))),
                 new Action("Drop", () -> dropItem(region, owner, slot.index()))
             ));
         }
@@ -80,7 +82,7 @@ public class Stevedore {
 
         if (count > 0) {
             box.actions().addAll(listOf(
-                new Action("Remove", () -> takeOff(region, owner, role))
+                new Action("Unequip", () -> takeOff(region, owner, role))
             ));
         }
 
@@ -119,8 +121,16 @@ public class Stevedore {
     }
 
     public static boolean takeOff(Region region, Entity owner, Role role) {
-        App.println("Take off: " + role);
-        return false;
+        var item = owner.equipment().remove(role).orElseThrow();
+
+        if (owner.inventory().add(item) != -1) {
+            region.log("Unequipped " + item.label().text());
+            return true;
+        } else {
+            region.log("Inventory is full.");
+            owner.equipment().wear(role, item);
+            return false;
+        }
     }
 
     /**
@@ -158,6 +168,33 @@ public class Stevedore {
         }
 
         return used;
+    }
+
+    /**
+     * Equips the given item, if possible in this context.  Returns false if the
+     * item could not currently be equipped.
+     * @param region The region
+     * @param owner The owner
+     * @param index The index of the inventory slot
+     * @return true or false
+     */
+    public static boolean equipItem(Region region, Entity owner, int index) {
+        // FIRST, get the item to equip
+        var item = owner.inventory().take(index).orElseThrow();
+
+        // NEXT, get the equipment slot it should go in.
+        var role = Role.ofItemType(item.item().type()).orElseThrow();
+
+        // NEXT, get whatever is in the slot now.
+        var oldItem = owner.equipment().remove(role);
+        owner.equipment().wear(role, item);
+        oldItem.ifPresent(i -> {
+            owner.inventory().add(i);
+            region.log("Unequipped " + i.label().text());
+        });
+        region.log("Equipped " + item.label().text());
+
+        return true;
     }
 
     /**
