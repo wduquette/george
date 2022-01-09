@@ -376,6 +376,14 @@ public abstract class Region {
     }
 
     /**
+     * Gets the game's conditions table
+     * @return The table
+     */
+    public Conditions conditions() {
+        return app.conditions();
+    }
+
+    /**
      * Return a string that describes the content of the cell.
      * @param cell The cell
      * @return The string

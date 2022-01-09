@@ -29,7 +29,6 @@ public class App extends Application {
     private static final int LOOP_MSECS = 50;
     private static final int DEBUGGER_REFRESH_TICKS = 10;
 
-
     //-------------------------------------------------------------------------
     // Instance Variables
 
@@ -58,6 +57,12 @@ public class App extends Application {
     // The map we're currently wandering about on.
     private Region region = null;
 
+    // The Party!
+    private Entity george;
+
+    // Condition flags
+    private Conditions conditions = new Conditions();
+
     // The most recent user input.
     private UserInput userInput = null;
 
@@ -69,9 +74,6 @@ public class App extends Application {
 
     // The game tick
     private long gameTick = 0;
-
-    // The Party!
-    private Entity george;
 
     //-------------------------------------------------------------------------
     // Main Program
@@ -375,6 +377,8 @@ public class App extends Application {
         );
     }
 
+    // Gets the region with the given name, creating it if necessary and
+    // adding its sprites to the sprites table.
     private Region getRegion(String name) {
         Region region = regions.get(name);
 
@@ -405,6 +409,20 @@ public class App extends Application {
     //-------------------------------------------------------------------------
     // Global Utilities
 
+    /**
+     * Returns the game's conditions table.
+     *
+     * @return The table
+     */
+    public Conditions conditions() {
+        return conditions;
+    }
+
+    /**
+     * Logs a message to the user.  Log messages appear momentarily in the
+     * lower-left part of the game window.
+     * @param message The message
+     */
     public void log(String message) {
         logPane.log(message);
     }
