@@ -25,12 +25,17 @@ public class Monitor {
         }
     }
 
-    // See whether the tripwire fires, based on what it is.
+    // See whether the tripwire fires, based on its content and the
+    // circumstances.
     private static void doTripwire(Region region, Entity player, Entity wire) {
         var step = wire.tripwire().step();
 
         switch (wire.tripwire().trigger()) {
             case Trigger.RadiusOnce trigger -> {
+                if (region.conditions().isSet(trigger.flag())) {
+                    return;
+                }
+
                 // If the player character is within the radius, make it
                 // execute the step; and forget the tripwire.
                 var dist = region.passableDistance(player, wire.cell());
@@ -39,9 +44,8 @@ public class Monitor {
                     player.put(new Plan());
                     player.plan().add(step);
 
-                    // Remove the trigger.
-                    // TODO: In some cases, the entire entity should be removed.
-                    wire.remove(wire.tripwire());
+                    // Mark the trigger triggered.
+                    region.conditions().set(trigger.flag());
                 }
             }
         }
