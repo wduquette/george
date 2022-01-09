@@ -262,10 +262,9 @@ public class App extends Application {
         switch (interrupts.pop()) {
             case Interrupt.GoToRegion info -> gotoRegion(info.exit());
 
-            case Interrupt.Interact feature ->
-                // At present, the only kind of interaction we support is
-                // describing a feature.  So do that.
-                showFeature(feature.id());
+            case Interrupt.Interact interrupt ->
+                interactWith(interrupt.id());
+//                showFeature(entity.id());
         }
     }
 
@@ -311,11 +310,11 @@ public class App extends Application {
     }
 
     /**
-     * Describes a feature, based on what it is.  Supported features include
-     * Signs and Mannikins.
-     * @param id The feature entity's ID
+     * Interacts with the entity ID, based on its type. Support types include
+     * Signs, Mannikins, and Narratives.
+     * @param id The entity ID
      */
-    public void showFeature(long id) {
+    public void interactWith(long id) {
         var entity = region.get(id);
 
         if (entity.sign() != null) {
@@ -326,6 +325,10 @@ public class App extends Application {
         } else if (entity.mannikin() != null) {
             region.findDialog(entity.id()).ifPresent(dlg ->
                 showPanel(new DialogPanel(this, dlg)));
+        } else if (entity.narrative() != null) {
+            var key = entity.narrative().key();
+            var text = region.getInfo(key, "text");
+            showPanel(new FeaturePanel(this, leader(), text));
         }
     }
 

@@ -571,6 +571,21 @@ public abstract class Region {
     }
 
     /**
+     * Makes a standard narrative entity with a radius of 2 cells, getting its
+     * details from the info table. The entity has no Loc.
+     * @param key The narrative's info key
+     * @return The entity
+     */
+    public Entity makeNarrative(String key) {
+        var narrative = new Entity()
+            .narrative(key);
+        narrative.tripwire(
+            new Trigger.RadiusOnce(2, key + ".triggered"),
+            new Step.Interact(narrative.id()));
+        return narrative;
+    }
+
+    /**
      * Makes a standard Point entity. The entity has no Loc.
      * @param name The Point's name.
      * @return The entity

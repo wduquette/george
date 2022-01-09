@@ -40,6 +40,7 @@ public class DataDrivenRegion extends Region {
     public static final String CHEST = "Chest";
     public static final String EXIT = "Exit";
     public static final String MANNIKIN = "Mannikin";
+    public static final String NARRATIVE = "Narrative";
     public static final String POINT = "Point";
     public static final String SIGN = "Sign";
 
@@ -201,6 +202,7 @@ public class DataDrivenRegion extends Region {
                     case CHEST    -> makeChest(key).cell(cell);
                     case EXIT     -> makeExit(obj.name).cell(cell);
                     case MANNIKIN -> makeMannikin(key).cell(cell);
+                    case NARRATIVE -> makeNarrative(key).cell(cell);
                     case POINT    -> makePoint(obj.name).cell(cell);
                     case SIGN     -> makeSign(key).cell(cell);
                     default -> null;
