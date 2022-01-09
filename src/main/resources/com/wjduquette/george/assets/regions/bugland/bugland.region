@@ -1,0 +1,7 @@
+# Bugland Region Definition File
+
+# The %tilemap must go last.
+%prefix bugland
+%terrain bugland.terrain
+%info bugland.keydata
+%tilemap bugland.json

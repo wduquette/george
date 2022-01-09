@@ -1,0 +1,24 @@
+# Terrain Tile Set for bugland
+
+%prefix bugland
+%size 40 40
+%file bugland.png
+
+# Terrain Tiles
+%tile tile_floor       Tile_floor         floor
+%tile block_wall       Block_wall         wall
+%tile cobble_floor     Cobblestone        floor
+%tile stone_wall       Stone_wall         wall
+%tile water            Water              water
+%tile earth            Earth              floor
+%tile grass            Grass              floor
+%tile sand             Sand               floor
+%tile gravel           Gravel             floor
+%tile mountain         Mountain           wall
+%tile bridge_ew        Bridge             floor
+%tile bridge_ns        Bridge             floor
+%tile brick_center     Brick              floor
+%tile brick_ns         Brick              floor
+%tile brick_ew         Brick              floor
+%tile tunnel_entrance  Tunnel_entrance    none
+

@@ -1,0 +1,51 @@
+# Bugland Game Info
+
+%prefix bugland
+
+#------------------------------------------------------------------------------
+# Signs
+
+%string sign.toolate.sprite feature.sign
+%block sign.toolate.text
+Kilroy was here.
+
+The treasure isn't.
+
+Life's like that sometimes.
+%end
+
+%string sign.notroll.sprite feature.sign
+%block sign.notroll.text
+Warning: This Troll Bridge is no longer manned
+due to insufficient business.  Please drop the
+toll in the water, and the Troll will come 
+pick it up whenever he darn well pleases.
+%end
+
+%string sign.overlook.sprite feature.sign
+%block sign.overlook.text
+Scenic Overlook
+
+No Littering.
+%end
+
+#------------------------------------------------------------------------------
+# Notices
+
+%block notice.noises.text
+There's an odd smell in the air, and rustling--lots 
+of rustling.  You resolve to move carefully.
+%end 
+
+%block notice.ruin.text
+There's a house ahead...or what remains of one.
+Apparently these bugs are nasty.  Better leave them
+alone!
+%end
+
+%block notice.valley.text
+From here you can begin to see more of the valley,
+and you can see why they called it Paradise.  Sunshine,
+water, fertile soil...it must really have been 
+paradise before all these lousy bugs came in.
+%end

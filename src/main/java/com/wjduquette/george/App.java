@@ -3,6 +3,7 @@ package com.wjduquette.george;
 import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.ecs.*;
+import com.wjduquette.george.regions.BuglandRegion;
 import com.wjduquette.george.regions.FloobhamRegion;
 import com.wjduquette.george.regions.OverworldRegion;
 import com.wjduquette.george.util.Looper;
@@ -367,6 +368,10 @@ public class App extends Application {
         regionFactories.put("floobham",
             () -> new FloobhamRegion(this, getClass(),
                 "assets/regions/floobham/floobham.region")
+        );
+        regionFactories.put("bugland",
+            () -> new BuglandRegion(this, getClass(),
+                "assets/regions/bugland/bugland.region")
         );
     }
 
