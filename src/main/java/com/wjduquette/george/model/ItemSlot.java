@@ -23,5 +23,5 @@ public sealed interface ItemSlot {
      * @param id The entity ID
      * @param role The kind of equipment.
      */
-    record Equipment(long id, Equip role) implements ItemSlot {}
+    record Equipment(long id, Role role) implements ItemSlot {}
 }

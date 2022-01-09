@@ -3,6 +3,7 @@ package com.wjduquette.george;
 import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.ecs.*;
+import com.wjduquette.george.regions.BuglandRegion;
 import com.wjduquette.george.regions.FloobhamRegion;
 import com.wjduquette.george.regions.OverworldRegion;
 import com.wjduquette.george.util.Looper;
@@ -125,10 +126,17 @@ public class App extends Application {
         inv.add(items().make("vial.healing"));
         inv.add(items().make("scroll.mapping"));
 
+        var equip = new Equipment();
+        equip.wear(Role.HAND, items().make("weapon.small_wrench"));
+        equip.wear(Role.BODY, items().make("body.overalls"));
+        equip.wear(Role.HEAD, items().make("head.hat"));
+        equip.wear(Role.FEET, items().make("foot.shoes"));
+
         return new Entity()
             .player(player)
             .mobile("george") // Key
             .put(inv)
+            .put(equip)
             .sprite(Sprites.ALL.getInfo("mobile.george"));
     }
 
@@ -360,6 +368,10 @@ public class App extends Application {
         regionFactories.put("floobham",
             () -> new FloobhamRegion(this, getClass(),
                 "assets/regions/floobham/floobham.region")
+        );
+        regionFactories.put("bugland",
+            () -> new BuglandRegion(this, getClass(),
+                "assets/regions/bugland/bugland.region")
         );
     }
 

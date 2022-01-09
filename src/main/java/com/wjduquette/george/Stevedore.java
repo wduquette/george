@@ -2,6 +2,7 @@ package com.wjduquette.george;
 
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.ItemStack;
+import com.wjduquette.george.model.Role;
 import com.wjduquette.george.model.ItemSlot;
 import com.wjduquette.george.model.Region;
 import com.wjduquette.george.widgets.Action;
@@ -51,6 +52,8 @@ public class Stevedore {
             box.actions().addAll(listOf(
                 when(item.item().type().isUsable(),
                     new Action("Use", () -> useItem(region, owner, slot.index()))),
+                when(item.item().type().isEquippable(),
+                    new Action("Equip", () -> equipItem(region, owner, slot.index()))),
                 new Action("Drop", () -> dropItem(region, owner, slot.index()))
             ));
         }
@@ -72,8 +75,18 @@ public class Stevedore {
         Entity owner,
         ItemSlot.Equipment slot)
     {
-        // TODO
-        return null;
+        var role = slot.role();
+        var item = owner.equipment().get(role).orElse(null);
+        var count = item != null ? 1 : 0;
+        var box = new SlotBox(slot, count, item);
+
+        if (count > 0) {
+            box.actions().addAll(listOf(
+                new Action("Unequip", () -> takeOff(region, owner, role))
+            ));
+        }
+
+        return box;
     }
 
     /**
@@ -103,6 +116,19 @@ public class Stevedore {
         } else {
             owner.inventory().add(item);
             region.log("There's no room here.");
+            return false;
+        }
+    }
+
+    public static boolean takeOff(Region region, Entity owner, Role role) {
+        var item = owner.equipment().remove(role).orElseThrow();
+
+        if (owner.inventory().add(item) != -1) {
+            region.log("Unequipped " + item.label().text());
+            return true;
+        } else {
+            region.log("Inventory is full.");
+            owner.equipment().wear(role, item);
             return false;
         }
     }
@@ -142,6 +168,33 @@ public class Stevedore {
         }
 
         return used;
+    }
+
+    /**
+     * Equips the given item, if possible in this context.  Returns false if the
+     * item could not currently be equipped.
+     * @param region The region
+     * @param owner The owner
+     * @param index The index of the inventory slot
+     * @return true or false
+     */
+    public static boolean equipItem(Region region, Entity owner, int index) {
+        // FIRST, get the item to equip
+        var item = owner.inventory().take(index).orElseThrow();
+
+        // NEXT, get the equipment slot it should go in.
+        var role = Role.ofItemType(item.item().type()).orElseThrow();
+
+        // NEXT, get whatever is in the slot now.
+        var oldItem = owner.equipment().remove(role);
+        owner.equipment().wear(role, item);
+        oldItem.ifPresent(i -> {
+            owner.inventory().add(i);
+            region.log("Unequipped " + i.label().text());
+        });
+        region.log("Equipped " + item.label().text());
+
+        return true;
     }
 
     /**

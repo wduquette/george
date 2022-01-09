@@ -5,6 +5,7 @@ import com.wjduquette.george.Stevedore;
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.model.ItemSlot;
 import com.wjduquette.george.model.Region;
+import com.wjduquette.george.model.Role;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
@@ -30,7 +31,7 @@ public class InventoryPanel extends GamePane implements Panel {
     private final Entity player;
 
     private ItemSlot selectedSlot = null;
-    private Map<ItemSlot,SlotBox> slot2box = new HashMap<>();
+    private final Map<ItemSlot,SlotBox> slot2box = new HashMap<>();
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -56,7 +57,7 @@ public class InventoryPanel extends GamePane implements Panel {
         App.println("Clicked PC: " + pc);
     }
 
-    private void onSelectBackpackSlot(SlotBox box) {
+    private void onSelectSlot(SlotBox box) {
         selectedSlot = box.slot();
         repaint();
     }
@@ -119,6 +120,7 @@ public class InventoryPanel extends GamePane implements Panel {
         // Draw components
         drawPCBox(px, py);
         drawBackpackArray(bpx, bpy);
+        drawEquipmentSlots(iox + 200, bpy);
         drawItemOptions(iox, py);
         drawBackButton(bbx, bby);
     }
@@ -142,11 +144,60 @@ public class InventoryPanel extends GamePane implements Panel {
 
         // NEXT, Draw Backpack Slot array
         var boxes = getBackpackSlots();
-        boxes.stream().forEach(b -> slot2box.put(b.slot(), b));
+        boxes.forEach(b -> slot2box.put(b.slot(), b));
 
         // draw the slots.
         drawSlots(x, y, 4, boxes, selectedSlot,
-            this::onSelectBackpackSlot);
+            this::onSelectSlot);
+    }
+
+    private void drawEquipmentSlots(double x, double y) {
+        var ty = y - NORMAL_LEADING;
+        gc().setFont(NORMAL_FONT);
+        gc().setFill(Color.WHITE);
+        gc().setTextBaseline(VPos.TOP);
+        gc().fillText("Equipment", x, ty);
+
+        var boxMap = getEquipmentSlots();
+        boxMap.values().forEach(b -> slot2box.put(b.slot(), b));
+
+        var gap = 5;
+        var bw = sprites().width() + 4 + gap;
+        var bh = sprites().height() + 4 + gap;
+
+        drawEquipSlot(boxMap.get(Role.HEAD), x + bw, y);
+        drawEquipSlot(boxMap.get(Role.BODY), x + bw, y + bh);
+        drawEquipSlot(boxMap.get(Role.FEET), x + bw, y + 2*bh);
+        drawEquipSlot(boxMap.get(Role.HAND), x, y + 0.5*bh);
+        drawEquipSlot(boxMap.get(Role.RANGED), x, y + 1.5*bh);
+        drawEquipSlot(boxMap.get(Role.SHIELD), x + 2*bw, y + bh);
+    }
+
+    private void drawEquipSlot(SlotBox box, double x, double y) {
+        if (box.slot() instanceof ItemSlot.Equipment slot) {
+            String sprite;
+            if (box.item() != null) {
+                sprite = box.item().sprite().name();
+            } else {
+                sprite = switch (slot.role()) {
+                    case HEAD -> "equip.helmet";
+                    case BODY -> "equip.armor";
+                    case FEET -> "equip.footwear";
+                    case HAND -> "equip.weapon";
+                    case RANGED -> "equip.bow";
+                    case SHIELD -> "equip.shield";
+                };
+            }
+            var bg = box.slot().equals(selectedSlot) ? Color.LIGHTGRAY : Color.DIMGRAY;
+            var bounds = new BoundingBox(x, y,
+                4 + sprites().width(), 4 + sprites().height());
+            fill(Color.WHITE, bounds);
+            fill(bg, x + 2, y + 2, sprites().width(), sprites().height());
+
+            drawImage(sprites().get(sprite), x + 2, y + 2);
+
+            target(bounds, () -> onSelectSlot(box));
+        }
     }
 
     // Draws the item options for the selected item
@@ -213,7 +264,8 @@ public class InventoryPanel extends GamePane implements Panel {
     //-------------------------------------------------------------------------
     // Slot Management
 
-    List<SlotBox> getBackpackSlots() {
+    // Gets a list of the player's backpack slot boxes
+    private List<SlotBox> getBackpackSlots() {
         var list = new ArrayList<SlotBox>();
 
         for (int i = 0; i < player.inventory().size(); i++) {
@@ -222,5 +274,17 @@ public class InventoryPanel extends GamePane implements Panel {
         }
 
         return list;
+    }
+
+    // Gets a list of the player's equipment slot boxes
+    private Map<Role,SlotBox> getEquipmentSlots() {
+        var map = new HashMap<Role,SlotBox>();
+
+        for (var role : Role.values()) {
+            var itemSlot = new ItemSlot.Equipment(player.id(), role);
+            map.put(role, Stevedore.getSlotBox(region, player, itemSlot));
+        }
+
+        return map;
     }
 }
