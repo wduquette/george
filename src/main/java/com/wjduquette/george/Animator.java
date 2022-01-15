@@ -1,9 +1,11 @@
 package com.wjduquette.george;
 
 import com.wjduquette.george.ecs.Entity;
+import com.wjduquette.george.ecs.LiveImage;
 import com.wjduquette.george.ecs.VisualEffect;
 import com.wjduquette.george.model.Animation;
 import com.wjduquette.george.model.Region;
+import javafx.scene.image.Image;
 
 import java.util.List;
 
@@ -41,6 +43,8 @@ public class Animator {
                 if (target != null) {
                     var offset = anim.update();
                     target.put(target.loc().offset(offset));
+                } else {
+                    region.entities().remove(effect.id());
                 }
             }
         }

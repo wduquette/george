@@ -8,6 +8,8 @@ import com.wjduquette.george.ecs.Loc;
  * at a given speed.
  */
 public class Slider {
+    private final Cell start;
+    private final Cell end;
     private final double baseRate = 0.2;
     private final int numSteps;
     private final double deltaR;
@@ -21,6 +23,9 @@ public class Slider {
      * @param speed The speed, nominally 1.0.
      */
     public Slider(Cell start, Cell end, double speed) {
+        this.start = start;
+        this.end = end;
+
         double totalR = end.row() - start.row();
         double totalC = end.col() - start.col();
         var rate = baseRate * speed;
@@ -28,6 +33,22 @@ public class Slider {
             Math.abs(totalR/rate), Math.abs(totalC/rate)));
         deltaR = totalR/numSteps;
         deltaC = totalC/numSteps;
+    }
+
+    /**
+     * The starting cell of the animation
+     * @return The start
+     */
+    public Cell start() {
+        return start;
+    }
+
+    /**
+     * The ending cell of the animation.
+     * @return The end.
+     */
+    public Cell end() {
+        return end();
     }
 
     /**

@@ -8,6 +8,9 @@ import com.wjduquette.george.ecs.Loc;
  * animations that can be handled by the Animation system.
  */
 public sealed interface Animation {
+    /** Gets the starting cell of the animation. */
+    Cell start();
+
     /**
      * Gets whether the animation is complete or not.
      * @return true or false
@@ -20,7 +23,11 @@ public sealed interface Animation {
      */
     final record Slide(long targetID, Slider slider) implements Animation {
         public Offset update() { return slider.next(); }
+        public Cell   end()    { return slider.start(); }
+
+        @Override public Cell start() { return slider.start(); }
         @Override public boolean isComplete() { return !slider.hasNext(); }
+
         @Override
         public String toString() {
             return "(Animation.Slide " + targetID + " " + slider + ")";
