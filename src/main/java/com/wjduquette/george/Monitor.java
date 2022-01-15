@@ -32,7 +32,7 @@ public class Monitor {
 
         switch (wire.tripwire().trigger()) {
             case Trigger.RadiusOnce trigger -> {
-                if (region.conditions().isSet(trigger.flag())) {
+                if (region.flags().isSet(trigger.flag())) {
                     return;
                 }
 
@@ -45,7 +45,7 @@ public class Monitor {
                     player.plan().add(step);
 
                     // Mark the trigger triggered.
-                    region.conditions().set(trigger.flag());
+                    region.flags().set(trigger.flag());
                 }
             }
         }

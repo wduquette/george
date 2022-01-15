@@ -60,8 +60,8 @@ public class App extends Application {
     // The Party!
     private Entity george;
 
-    // Condition flags
-    private Conditions conditions = new Conditions();
+    // Flags
+    private Flags flags = new Flags();
 
     // The most recent user input.
     private UserInput userInput = null;
@@ -413,12 +413,12 @@ public class App extends Application {
     // Global Utilities
 
     /**
-     * Returns the game's conditions table.
+     * Returns the game's flags table.
      *
      * @return The table
      */
-    public Conditions conditions() {
-        return conditions;
+    public Flags flags() {
+        return flags;
     }
 
     /**

@@ -3,7 +3,7 @@ package com.wjduquette.george.model;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Conditions {
+public class Flags {
     //-------------------------------------------------------------------------
     // Instance Variables
 
@@ -13,7 +13,7 @@ public class Conditions {
     //-------------------------------------------------------------------------
     // Constructor
 
-    public Conditions() {} // Nothing to do
+    public Flags() {} // Nothing to do
 
     //-------------------------------------------------------------------------
     // API

@@ -376,11 +376,11 @@ public abstract class Region {
     }
 
     /**
-     * Gets the game's conditions table
+     * Gets the game's flags table
      * @return The table
      */
-    public Conditions conditions() {
-        return app.conditions();
+    public Flags flags() {
+        return app.flags();
     }
 
     /**
