@@ -349,8 +349,8 @@ public class Entity {
     //-------------------------------------------------------------------------
     // Tripwires
 
-    public Entity tagAsTripwire(Tripwire tripwire) {
-        return put(tripwire);
+    public Entity tagAsTripwire(Trigger trigger, Step step) {
+        return put(new Tripwire(trigger, step));
     }
     public boolean isTripwire() { return has(Tripwire.class); }
     public Tripwire tripwire() { return get(Tripwire.class); }
@@ -380,14 +380,19 @@ public class Entity {
     //-------------------------------------------------------------------------
     // Fields - Single values associated with types
 
+    // Label
+    public String label() { return get(Label.class).text(); }
+    public Entity label(String text) { return put(new Label(text)); }
+
     // Sprite
     public Entity sprite(String name) { return put(new Sprite(name)); }
     public Entity sprite(ImageInfo info) { return put(new Sprite(info.name())); }
     public String sprite() { return get(Sprite.class).name(); }
 
-    public Label      label()      { return components.get(Label.class); }
     public Loc        loc()        { return components.get(Loc.class); }
     public Terrain    terrain()    { return components.get(Terrain.class); }
+
+    public Entity terrain(TerrainType type) { return put(new Terrain(type)); }
 
     // Other simple queries
 
@@ -436,9 +441,6 @@ public class Entity {
     // tagAs* methods add the tag component.
     // Others just add the component given the arguments.
 
-    public Entity label(String text) { return put(new Label(text)); }
-    public Entity terrain(TerrainType type) { return put(new Terrain(type)); }
-    public Entity tripwire(Trigger trigger, Step step) { return put(new Tripwire(trigger, step)); }
 
     /**
      * Sets the entity's cell location, clearing any visual offsets.

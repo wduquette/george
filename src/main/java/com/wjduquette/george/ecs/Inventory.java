@@ -248,7 +248,7 @@ public class Inventory implements Component {
                     .append("] - ")
                     .append(slots[i].count)
                     .append(" ")
-                    .append(slots[i].entity.label().text());
+                    .append(slots[i].entity.label());
                 buff.append("\n");
             }
         }

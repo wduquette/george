@@ -140,7 +140,7 @@ public class InventoryPanel extends GamePane implements Panel {
         gc().setFont(NORMAL_FONT);
         gc().setFill(Color.WHITE);
         gc().setTextBaseline(VPos.TOP);
-        gc().fillText(player.label().text() + "'s Backpack", x, ty);
+        gc().fillText(player.label() + "'s Backpack", x, ty);
 
         // NEXT, Draw Backpack Slot array
         var boxes = getBackpackSlots();
@@ -213,7 +213,7 @@ public class InventoryPanel extends GamePane implements Panel {
         var ty = y;
         var box = slot2box.get(selectedSlot);
 
-        drawText(box.item().label().text(), x, ty);
+        drawText(box.item().label(), x, ty);
         ty += OPTION_LEADING;
 
         for (var action : box.actions()) {

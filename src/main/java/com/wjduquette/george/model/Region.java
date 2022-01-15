@@ -393,7 +393,7 @@ public abstract class Region {
         var mobile = findAt(cell, Mobile.class);
 
         if (mobile.isPresent()) {
-            return "You see: " + mobile.get().label().text();
+            return "You see: " + mobile.get().label();
         }
 
         // Item: TODO could be several
@@ -411,7 +411,7 @@ public abstract class Region {
         var feature = findAt(cell, Feature.class);
 
         if (feature.isPresent()) {
-            return "You see: " + feature.get().label().text();
+            return "You see: " + feature.get().label();
         }
 
         var tile = getTerrain(cell);
@@ -579,7 +579,7 @@ public abstract class Region {
     public Entity makeNarrative(String key) {
         var narrative = new Entity()
             .tagAsNarrative(key);
-        narrative.tripwire(
+        narrative.tagAsTripwire(
             new Trigger.RadiusOnce(2, key + ".triggered"),
             new Step.Interact(narrative.id()));
         return narrative;

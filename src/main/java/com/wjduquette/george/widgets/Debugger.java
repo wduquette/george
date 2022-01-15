@@ -317,7 +317,7 @@ public class Debugger extends StackPane {
 
         public String getLabel() {
             if (entity.label() != null) {
-                return entity.label().text();
+                return entity.label();
             } else {
                 return "--";
             }

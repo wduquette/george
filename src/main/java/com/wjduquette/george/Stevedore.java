@@ -111,7 +111,7 @@ public class Stevedore {
         }
 
         if (stack.inventory().add(item) != -1) {
-            region.log("Dropped " + item.label().text());
+            region.log("Dropped " + item.label());
             return true;
         } else {
             owner.inventory().add(item);
@@ -124,7 +124,7 @@ public class Stevedore {
         var item = owner.equipment().remove(role).orElseThrow();
 
         if (owner.inventory().add(item) != -1) {
-            region.log("Unequipped " + item.label().text());
+            region.log("Unequipped " + item.label());
             return true;
         } else {
             region.log("Inventory is full.");
@@ -153,7 +153,7 @@ public class Stevedore {
                 region.log("You know more about the vicinity.");
             }
             case VIAL_OF_HEALING -> {
-                region.log(owner.label().text() + " is at full health.");
+                region.log(owner.label() + " is at full health.");
                 used = false;
             }
             default -> {
@@ -190,9 +190,9 @@ public class Stevedore {
         owner.equipment().wear(role, item);
         oldItem.ifPresent(i -> {
             owner.inventory().add(i);
-            region.log("Unequipped " + i.label().text());
+            region.log("Unequipped " + i.label());
         });
-        region.log("Equipped " + item.label().text());
+        region.log("Equipped " + item.label());
 
         return true;
     }
@@ -214,7 +214,7 @@ public class Stevedore {
 
                 if (mobile.inventory().add(item) != -1) {
                     // If it fits, notify the player
-                    region.log("Picked up: " + item.label().text());
+                    region.log("Picked up: " + item.label());
                 } else {
                     // Otherwise, put it back in the inventory, and go on
                     // to the next item.
