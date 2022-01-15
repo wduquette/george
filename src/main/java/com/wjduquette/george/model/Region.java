@@ -524,7 +524,7 @@ public abstract class Region {
             Opening.CLOSED);
         return new Entity()
             .tagAsFeature()
-            .chest(chest)
+            .tagAsChest(chest)
             .put(new Inventory(Chest.INVENTORY_SIZE))
             .terrain(TerrainType.FENCE);
     }
@@ -539,9 +539,9 @@ public abstract class Region {
         String[] tokens = regionPoint.split(":");
 
         if (tokens.length == 2) {
-            return new Entity().exit(tokens[0], tokens[1]);
+            return new Entity().tagAsExit(tokens[0], tokens[1]);
         } else if (tokens.length == 1) {
-            return new Entity().exit(null, regionPoint);
+            return new Entity().tagAsExit(null, regionPoint);
         } else {
             throw new IllegalArgumentException("Invalid Exit name: \"" +
                 regionPoint + "\"");
@@ -564,9 +564,9 @@ public abstract class Region {
     public Entity makeMannikin(String key) {
         return new Entity()
             .tagAsFeature()
-            .mannikin(key)
+            .tagAsMannikin(key)
             .label(getInfo(key, "label"))
-            .sprite(getInfo(key, "sprite"))
+            .tagAsSprite(getInfo(key, "sprite"))
             .terrain(TerrainType.FENCE);
     }
 
@@ -578,7 +578,7 @@ public abstract class Region {
      */
     public Entity makeNarrative(String key) {
         var narrative = new Entity()
-            .narrative(key);
+            .tagAsNarrative(key);
         narrative.tripwire(
             new Trigger.RadiusOnce(2, key + ".triggered"),
             new Step.Interact(narrative.id()));
@@ -591,7 +591,7 @@ public abstract class Region {
      * @return The entity
      */
     public Entity makePoint(String name) {
-        return new Entity().point(name);
+        return new Entity().tagAsPoint(name);
     }
 
     /**
@@ -603,9 +603,9 @@ public abstract class Region {
     public Entity makeSign(String key) {
         return new Entity()
             .tagAsFeature()
-            .sign(key)
+            .tagAsSign(key)
             .label("sign")
             .terrain(TerrainType.FENCE)
-            .sprite(getInfo(key, "sprite"));
+            .tagAsSprite(getInfo(key, "sprite"));
     }
 }

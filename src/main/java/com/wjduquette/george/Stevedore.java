@@ -225,7 +225,7 @@ public class Stevedore {
 
         if (inv.isEmpty()) {
             // Remove the stack if it's an ItemStack.
-            if (stack.itemStack() != null) {
+            if (stack.isItemStack()) {
                 region.entities().remove(stack.id());
             }
         } else {

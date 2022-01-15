@@ -101,9 +101,9 @@ public class Items {
         var sprite = info.get(key, "sprite").orElseThrow();
         var label = info.get(key, "label").orElseThrow();
         return new Entity()
-            .item(key, type)
+            .tagAsItem(key, type)
             .label(label)
-            .sprite(sprite);
+            .tagAsSprite(sprite);
     }
 
     /**
@@ -117,10 +117,10 @@ public class Items {
         var sprite = info.get(key, "sprite").orElseThrow();
         var label = info.get(key, "label").orElseThrow();
         return new Entity()
-            .item(key, type)
+            .tagAsItem(key, type)
             .tagAsArmor()
             .label(label)
-            .sprite(sprite);
+            .tagAsSprite(sprite);
     }
 
     /**
@@ -134,10 +134,10 @@ public class Items {
         var sprite = info.get(key, "sprite").orElseThrow();
         var label = info.get(key, "label").orElseThrow();
         return new Entity()
-            .item(key, type)
+            .tagAsItem(key, type)
             .tagAsWeapon()
             .label(label)
-            .sprite(sprite);
+            .tagAsSprite(sprite);
     }
 
     //-------------------------------------------------------------------------
@@ -176,8 +176,8 @@ public class Items {
      */
     public Entity makeKeyItem(String key, String label, String spriteName) {
         return new Entity()
-            .item(key, Type.KEY_ITEM)
+            .tagAsItem(key, Type.KEY_ITEM)
             .label(label)
-            .sprite(spriteName);
+            .tagAsSprite(spriteName);
     }
 }

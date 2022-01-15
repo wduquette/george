@@ -121,7 +121,6 @@ public class App extends Application {
 
     // Creates George as of the beginning of the game.
     private Entity makeGeorge() {
-        Player player = new Player("George");
         var inv = new Inventory(Player.INVENTORY_SIZE);
         inv.add(items().make("vial.healing"));
         inv.add(items().make("vial.healing"));
@@ -134,12 +133,12 @@ public class App extends Application {
         equip.wear(Role.FEET, items().make("foot.shoes"));
 
         return new Entity()
-            .player(player)
-            .mobile("george") // Key
-            .health(10)
+            .tagAsPlayer("George") // name
+            .tagAsMobile("george") // key
+            .tagAsSprite(Sprites.ALL.getInfo("mobile.george"))
+            .put(new Health(10))
             .put(inv)
-            .put(equip)
-            .sprite(Sprites.ALL.getInfo("mobile.george"));
+            .put(equip);
     }
 
     //-------------------------------------------------------------------------

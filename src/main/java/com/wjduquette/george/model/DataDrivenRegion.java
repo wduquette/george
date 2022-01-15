@@ -160,7 +160,7 @@ public class DataDrivenRegion extends Region {
                 .tagAsFeature()
                 .label(tile.description())
                 .terrain(tile.type())
-                .sprite(tile)
+                .tagAsSprite(tile)
                 .cell(r, c);
 
             // NEXT, Handle special cases.
@@ -173,10 +173,10 @@ public class DataDrivenRegion extends Region {
 
             if (tile.name().equals(closed)) {
                 var door = new Door(Opening.CLOSED, tile.type(), closed, open);
-                feature.door(door);
+                feature.tagAsDoor(door);
             } else if (tile.name().equals(open)) {
                 var door = new Door(Opening.OPEN, tile.type(), closed, open);
-                feature.door(door);
+                feature.tagAsDoor(door);
             }
         }
     }

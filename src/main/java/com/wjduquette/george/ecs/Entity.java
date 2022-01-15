@@ -142,8 +142,9 @@ public class Entity {
      * Removes the component of the given class, if any.
      * @param cls The class
      */
-    public void remove(Class<? extends Component> cls) {
+    public Entity remove(Class<? extends Component> cls) {
         components.remove(cls);
+        return this;
     }
 
     /**
@@ -152,7 +153,7 @@ public class Entity {
      * @throws IllegalArgumentException if this component doesn't belong to
      * the entity.
      */
-    public void remove(Component component) {
+    public Entity remove(Component component) {
         // TODO: consider defining TypeMap.values(), and using that.
         var old = components.get(component.getClass());
         if (!old.equals(component)) {
@@ -160,6 +161,7 @@ public class Entity {
                 "Attempt to remove un-owned component: " + component);
         }
         components.remove(component.getClass());
+        return this;
     }
 
     /**
@@ -182,35 +184,210 @@ public class Entity {
         return Optional.ofNullable(components.get(cls));
     }
 
-    //-------------------------------------------------------------------------
-    // Component Retrieval Methods
-    //
-    // There is one for each defined component class. Each returns the
-    // component, throwing an error if it doesn't exist.
+    /**
+     * True if the entity has the given component class.
+     * @param cls The desired component class.
+     * @return true or falseThe component
+     */
+    public <T extends Component> boolean has(Class<T> cls) {
+        return components.get(cls) != null;
+    }
 
-    public Armor      armor()      { return components.get(Armor.class); }
-    public Chest      chest()      { return components.get(Chest.class); }
-    public Door       door()       { return components.get(Door.class); }
-    public Equipment  equipment()  { return components.get(Equipment.class); }
-    public Exit       exit()       { return components.get(Exit.class); }
-    public Feature    feature()    { return components.get(Feature.class); }
-    public Health     health()     { return components.get(Health.class); }
-    public Item       item()       { return components.get(Item.class); }
-    public ItemStack  itemStack()  { return components.get(ItemStack.class); }
-    public Inventory  inventory()  { return components.get(Inventory.class); }
+    //-------------------------------------------------------------------------
+    // Component Access Methods
+
+    //
+    // Preliminary -- Not sure what the access pattern will be.
+    //
+
+    // Armor
+    public Entity  tagAsArmor()  { return put(new Armor()); }
+    public Armor   armor()       { return components.get(Armor.class); }
+    public boolean isArmor()     { return has(Armor.class); }
+
+    // Weapon
+    public Entity  tagAsWeapon() { return put(new Weapon()); }
+    public Weapon  weapon()      { return components.get(Weapon.class); }
+    public boolean isWeapon()    { return has(Weapon.class); }
+
+    //
+    // Type and TypeInfo components.  These components tag an entity as having
+    // a particular type, and may include some static metadata (e.g., a
+    // game info key).
+    //
+
+    // Exit
+    public Entity tagAsExit(String region, String point) {
+        return put(new Exit(region, point));
+    }
+    public boolean isExit() { return has(Exit.class); }
+    public Exit exit() { return get(Exit.class); }
+
+    // Feature
+    public Entity tagAsFeature() { return put(new Feature()); }
+    public boolean isFeature() { return has(Feature.class); }
+
+    // Item
+    public Entity tagAsItem(String key, Items.Type type) {
+        return put(new Item(key, type));
+    }
+    public boolean isItem() { return has(Item.class); }
+    public Item item() { return get(Item.class); }
+
+    // ItemStack
+    public Entity tagAsItemStack() { return put(new ItemStack()); }
+    public boolean isItemStack() { return has(ItemStack.class); }
+
+    // Mannikin
+    public Entity tagAsMannikin(String key) { return put(new Mannikin(key)); }
+    public boolean isMannikin() { return has(Mannikin.class); }
+    public Mannikin mannikin() { return get(Mannikin.class); }
+
+    // Mobile
+    public Entity tagAsMobile(String key) { return put(new Mobile(key)); }
+    public boolean isMobile() { return has(Mobile.class); }
+    public Mobile mobile() { return get(Mobile.class); }
+
+    // Narrative
+    public Entity tagAsNarrative(String key) { return put(new Narrative(key)); }
+    public boolean isNarrative() { return has(Narrative.class); }
+    public Narrative narrative() { return get(Narrative.class); }
+
+    // Player
+    public Entity tagAsPlayer(String name) {
+        return put(new Player(name)).label(name);
+    }
+    public boolean isPlayer() { return has(Player.class); }
+    public Player player() { return get(Player.class); }
+
+    // Point
+    public Entity tagAsPoint(String name) { return put(new Point(name)); }
+    public boolean isPoint() { return has(Point.class); }
+    public Point point() { return get(Point.class); }
+
+    // Sign
+    public Entity tagAsSign(String text) { return put(new Sign(text)); }
+    public boolean isSign() { return has(Sign.class); }
+    public Sign sign() { return get(Sign.class); }
+
+    // Sprite
+    public Entity tagAsSprite(String name) { return put(new Sprite(name)); }
+    public Entity tagAsSprite(ImageInfo info) { return put(new Sprite(info.name())); }
+    public boolean isSprite() { return has(Sprite.class); }
+    public Sprite sprite() { return get(Sprite.class); }
+
+    //=========================================================================
+    // Record Types - Records containing dynamic data associated with
+    // the entity.
+    // TODO: Possibly these should either be Structures or decomposed.
+
+    //-------------------------------------------------------------------------
+    // Chests
+
+    /**
+     * Adds the chest, and updates the entity's label and sprite according to
+     * the chest's state.
+     * @param chest The chest component
+     * @return The entity
+     */
+    public Entity tagAsChest(Chest chest) {
+        return put(chest)
+            .put(chest.label())
+            .put(chest.sprite());
+    }
+
+    public boolean isChest() { return has(Chest.class); }
+    public Chest chest() { return get(Chest.class); }
+
+    /**
+     * Sets the entity's chest's state to DoorState.OPEN, updating relevant
+     * components.
+     * @return The entity.
+     */
+    public Entity openChest() {
+        chest().open();
+        return tagAsChest(chest());  // Resets label and sprite
+    }
+
+    /**
+     * Sets the entity's chest's state to DoorState.CLOSED, updating relevant
+     * @return The entity.
+     */
+    public Entity closeChest() {
+        chest().close();
+        return tagAsChest(chest());  // Resets label and sprite
+    }
+
+    //-------------------------------------------------------------------------
+    // Doors
+
+    /**
+     * Adds the door and updates the entity's label, sprite, and terrain
+     * according to the door's state.
+     * @param door The door
+     * @return The entity
+     */
+    public Entity tagAsDoor(Door door) {
+        return put(door)
+            .put(door.label())
+            .put(door.sprite())
+            .put(door.terrain());
+    }
+
+    public boolean isDoor() { return has(Door.class); }
+    public Door door() { return get(Door.class); }
+
+    /**
+     * Sets the entity's door's state to DoorState.OPEN, updating relevant
+     * components.
+     * @return The entity.
+     */
+    public Entity openDoor() { return tagAsDoor(door().open()); }
+
+    /**
+     * Sets the entity's door's state to DoorState.CLOSED, updating relevant
+     * components.
+     * @return The entity.
+     */
+    public Entity closeDoor() { return tagAsDoor(door().close()); }
+
+    //-------------------------------------------------------------------------
+    // Tripwires
+
+    public Entity tagAsTripwire(Tripwire tripwire) {
+        return put(tripwire);
+    }
+    public boolean isTripwire() { return has(Tripwire.class); }
+    public Tripwire tripwire() { return get(Tripwire.class); }
+
+    //========================================================================
+    // Entity Parts
+    //
+    // These components add information to one or more entity types.
+
+    //-------------------------------------------------------------------------
+    // Structures
+    //
+    // A structure is a component containing a complex mutable Java data
+    // structures.  Usually they are created with the entity and edited in
+    // place.
+
+    // Miscellaneous
+    public Equipment  equipment()  { return get(Equipment.class); }
+    public Health     health()     { return get(Health.class); }
+    public Inventory  inventory()  { return get(Inventory.class); }
+
+    // Plan
+    public Plan plan() { return get(Plan.class); }
+    public Entity removePlan() { return remove(Plan.class); }
+    public Entity newPlan() { return put(new Plan()); }
+
+    //-------------------------------------------------------------------------
+    // Fields - Single values associated with types
+
     public Label      label()      { return components.get(Label.class); }
     public Loc        loc()        { return components.get(Loc.class); }
-    public Mannikin   mannikin()   { return components.get(Mannikin.class); }
-    public Mobile     mobile()     { return components.get(Mobile.class); }
-    public Narrative  narrative()  { return components.get(Narrative.class); }
-    public Plan       plan()       { return components.get(Plan.class); }
-    public Player     player()     { return components.get(Player.class); }
-    public Point      point()      { return components.get(Point.class); }
-    public Sign       sign()       { return components.get(Sign.class); }
-    public Sprite     sprite()     { return components.get(Sprite.class); }
     public Terrain    terrain()    { return components.get(Terrain.class); }
-    public Tripwire   tripwire()   { return components.get(Tripwire.class); }
-    public Weapon     weapon()     { return components.get(Weapon.class); }
 
     // Other simple queries
 
@@ -259,22 +436,7 @@ public class Entity {
     // tagAs* methods add the tag component.
     // Others just add the component given the arguments.
 
-    public Entity tagAsArmor() { return put(new Armor()); }
-    public Entity tagAsFeature() { return put(new Feature()); }
-    public Entity tagAsItemStack() { return put(new ItemStack()); }
-    public Entity tagAsWeapon() { return put(new Weapon()); }
-    public Entity player(Player player) { return put(player).label(player.name()); }
-    public Entity exit(String region, String point) { return put(new Exit(region, point)); }
-    public Entity health(int maxHP) { return put(new Health(maxHP)); }
-    public Entity item(String key, Items.Type type) { return put(new Item(key, type)); }
     public Entity label(String text) { return put(new Label(text)); }
-    public Entity mannikin(String key) { return put(new Mannikin(key)); }
-    public Entity mobile(String key) { return put(new Mobile(key)); }
-    public Entity narrative(String key) { return put(new Narrative(key)); }
-    public Entity point(String name) { return put(new Point(name)); }
-    public Entity sign(String text) { put(new Sign(text)); return this; }
-    public Entity sprite(String name) { return put(new Sprite(name)); }
-    public Entity sprite(ImageInfo info) { return put(new Sprite(info.name())); }
     public Entity terrain(TerrainType type) { return put(new Terrain(type)); }
     public Entity tripwire(Trigger trigger, Step step) { return put(new Tripwire(trigger, step)); }
 
@@ -293,67 +455,6 @@ public class Entity {
      * @return The entity
      */
     public Entity cell(int row, int col) { return put(Loc.of(new Cell(row, col))); }
-
-    /**
-     * Adds the chest, and updates the entity's label and sprite according to
-     * the chest's state.
-     * @param chest The chest component
-     * @return The entity
-     */
-    public Entity chest(Chest chest) {
-        return put(chest)
-            .put(chest.label())
-            .put(chest.sprite());
-    }
-
-    /**
-     * Adds the door and updates the entity's label, sprite, and terrain
-     * according to the door's state.
-     * @param door The door
-     * @return The entity
-     */
-    public Entity door(Door door) {
-        return put(door)
-            .put(door.label())
-            .put(door.sprite())
-            .put(door.terrain());
-    }
-
-
-    //-------------------------------------------------------------------------
-    // Entity Operations
-
-    /**
-     * Sets the entity's chest's state to DoorState.OPEN, updating relevant
-     * components.
-     * @return The entity.
-     */
-    public Entity openChest() {
-        chest().open();
-        return chest(chest());  // Resets label and sprite
-    }
-
-    /**
-     * Sets the entity's chest's state to DoorState.CLOSED, updating relevant
-     * @return The entity.
-     */
-    public Entity closeChest() {
-        chest().close();
-        return chest(chest());  // Resets label and sprite
-    }
-
-    /**
-     * Sets the entity's door's state to DoorState.OPEN, updating relevant
-     * components
-     * @return The entity.
-     */
-    public Entity openDoor() { return door(door().open()); }
-
-    /**
-     * Sets the entity's door's state to DoorState.CLOSED, updating relevant
-     * @return The entity.
-     */
-    public Entity closeDoor() { return door(door().close()); }
 
 
     //-------------------------------------------------------------------------
