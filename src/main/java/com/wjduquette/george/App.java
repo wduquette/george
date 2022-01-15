@@ -217,8 +217,9 @@ public class App extends Application {
                     Planner.doPlanning(userInput, region);
                 }
 
-                // Animate any visual effects
-                Animator.doAnimate(gameTick, region);
+                // Animate any visual effects.  Pass this to provide the
+                // game tick and sprites.
+                Animator.doAnimate(this, region);
 
                 // Execute any plans.  (Can throw interrupt.)
                 Executor.doMovement(region);
@@ -393,9 +394,6 @@ public class App extends Application {
         return region;
     }
 
-    //-------------------------------------------------------------------------
-    // Items
-
     /**
      * Gets the items table.
      * @return The table
@@ -406,6 +404,14 @@ public class App extends Application {
 
     public SpriteSet sprites() {
         return Sprites.ALL;
+    }
+
+    /**
+     * Gets the current game tick.
+     * @return The game tick.
+     */
+    public long gameTick() {
+        return gameTick;
     }
 
     //-------------------------------------------------------------------------

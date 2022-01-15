@@ -21,17 +21,18 @@ public class Animator {
 
     /**
      * Animates visual effects for the region.
-     * @param gameTick The current game tick
+     * @param app The application
      * @param region The region
      */
-    public static void doAnimate(long gameTick, Region region) {
+    public static void doAnimate(App app, Region region) {
         // Update all effect animations
         for (Entity effect : region.query(VisualEffect.class).toList()) {
-            doUpdate(region, effect);
+            doUpdate(app, region, effect);
         }
     }
 
-    public static void doUpdate(Region region, Entity effect) {
+    public static void doUpdate(App app, Region region, Entity effect) {
+        // TODO: Add better accessor
         var animation = effect.get(VisualEffect.class).animation();
 
         switch (animation) {
