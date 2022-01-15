@@ -35,7 +35,7 @@ public record Cell(int row, int col) {
      * @return The new offset
      */
     public Offset offset(Offset offset) {
-        return new Offset(row + offset.rowOffset(), col + offset.colOffset());
+        return new Offset(row + offset.row(), col + offset.col());
     }
 
     /**

@@ -59,7 +59,7 @@ public sealed interface Animation {
         public Loc update(Entity target) {
             var cell = target.cell();
             if (step < numSteps) { ++step; }
-            return new Loc(cell, step * deltaR, step * deltaC);
+            return new Loc(cell, new Offset(step * deltaR, step * deltaC));
         }
 
         @Override

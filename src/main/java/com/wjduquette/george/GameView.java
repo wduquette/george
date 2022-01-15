@@ -293,8 +293,8 @@ public class GameView extends GamePane {
 
     private Point2D loc2xy(Loc loc) {
         return rc2xy(
-            loc.cell().row() + loc.rowOffset(),
-            loc.cell().col() + loc.colOffset());
+            loc.cell().row() + loc.offset().row(),
+            loc.cell().col() + loc.offset().col());
     }
 
     private Point2D rc2xy(double row, double col) {
