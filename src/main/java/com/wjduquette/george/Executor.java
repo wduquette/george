@@ -239,8 +239,8 @@ public class Executor {
     // - Waits until it is complete
     // - Puts the mob in the cell
     private static void slideTo(Region region, Entity mob, Cell cell) {
-        var anim = new Animation.Slide(
-            mob.id(), mob.cell(), cell, 1.0);
+        var anim = new Animation.Slide(mob.id(),
+            new Slider(mob.cell(), cell, 1.0));
         var effect = region.entities().make().put(new VisualEffect(anim));
 
         // These will execute in reverse order: we complete

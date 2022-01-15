@@ -37,10 +37,10 @@ public class Animator {
 
         switch (animation) {
             case Animation.Slide anim -> {
-                var target = region.get(anim.target());
+                var target = region.get(anim.targetID());
                 if (target != null) {
-                    var newLoc = anim.update(target);
-                    target.put(newLoc);
+                    var offset = anim.update();
+                    target.put(target.loc().offset(offset));
                 }
             }
         }
