@@ -194,6 +194,7 @@ public class Entity {
     public Equipment  equipment()  { return components.get(Equipment.class); }
     public Exit       exit()       { return components.get(Exit.class); }
     public Feature    feature()    { return components.get(Feature.class); }
+    public Health     health()     { return components.get(Health.class); }
     public Item       item()       { return components.get(Item.class); }
     public ItemStack  itemStack()  { return components.get(ItemStack.class); }
     public Inventory  inventory()  { return components.get(Inventory.class); }
@@ -264,6 +265,7 @@ public class Entity {
     public Entity tagAsWeapon() { return put(new Weapon()); }
     public Entity player(Player player) { return put(player).label(player.name()); }
     public Entity exit(String region, String point) { return put(new Exit(region, point)); }
+    public Entity health(int maxHP) { return put(new Health(maxHP)); }
     public Entity item(String key, Items.Type type) { return put(new Item(key, type)); }
     public Entity label(String text) { return put(new Label(text)); }
     public Entity mannikin(String key) { return put(new Mannikin(key)); }

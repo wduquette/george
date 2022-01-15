@@ -13,11 +13,6 @@ public class Player implements Component {
     // The player's name.  This will be used to set its Label.
     private final String name;
 
-    // Hit Points: Possibly, this should be a component shared with
-    // monsters.
-    private int hitPoints = 0;
-    private int maxHitPoints = 0;
-
     //-------------------------------------------------------------------------
     // Constructor
 
@@ -33,24 +28,6 @@ public class Player implements Component {
     // Player API
 
     public String name() { return name; }
-
-    /**
-     * Initializes the player's hit point stats.
-     * @param hitPoints The number of hit points
-     * @param maxHitPoints The maximum number of hit points.
-     */
-    public void setHitPoints(int hitPoints, int maxHitPoints) {
-        this.hitPoints = hitPoints;
-        this.maxHitPoints = maxHitPoints;
-    }
-
-    /**
-     * Indicates whether the player has taken damage or not.
-     * @return true or false.
-     */
-    public boolean isInjured() {
-        return hitPoints < maxHitPoints;
-    }
 
     //-------------------------------------------------------------------------
     // Component API
