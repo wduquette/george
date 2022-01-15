@@ -323,7 +323,7 @@ public abstract class Region {
     public TerrainType getTerrainType(Cell cell) {
         TerrainType type = entities.query(Feature.class)
             .filter(e -> e.isAt(cell))
-            .map(Entity::terrainType)
+            .map(Entity::terrain)
             .findFirst()
             .orElse(TerrainType.NONE);
 

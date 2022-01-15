@@ -384,15 +384,27 @@ public class Entity {
     public String label() { return get(Label.class).text(); }
     public Entity label(String text) { return put(new Label(text)); }
 
+    // Loc
+    public Loc loc() { return components.get(Loc.class); }
+
     // Sprite
     public Entity sprite(String name) { return put(new Sprite(name)); }
     public Entity sprite(ImageInfo info) { return put(new Sprite(info.name())); }
     public String sprite() { return get(Sprite.class).name(); }
 
-    public Loc        loc()        { return components.get(Loc.class); }
-    public Terrain    terrain()    { return components.get(Terrain.class); }
-
+    // Terrain
     public Entity terrain(TerrainType type) { return put(new Terrain(type)); }
+
+    /**
+     * Gets the entity's terrain type, as read from its Terrain component,
+     * or NONE if it has no terrain type.
+     * @return The TerrainType.
+     */
+    public TerrainType terrain() {
+        return find(Terrain.class)
+            .map(Terrain::terrainType)
+            .orElse(TerrainType.NONE);
+    }
 
     // Other simple queries
 
@@ -409,16 +421,6 @@ public class Entity {
      */
     public boolean isAt(Cell cell) { return Objects.equals(cell(), cell); }
 
-    /**
-     * Gets the entity's terrain type, as read from its Terrain component,
-     * or NONE if it has no terrain type.
-     * @return The TerrainType.
-     */
-    public TerrainType terrainType() {
-        return find(Terrain.class)
-            .map(Terrain::terrainType)
-            .orElse(TerrainType.NONE);
-    }
 
     /**
      * Returns true if a transition is in progress, and false otherwise.
