@@ -363,8 +363,8 @@ public class Entity {
     //-------------------------------------------------------------------------
     // Record field.
 
-    public Entity visual(Visual visual) { return put(visual); }
-    public Visual visual() { return get(Visual.class); }
+    public Entity visual(LiveImage liveImage) { return put(liveImage); }
+    public LiveImage visual() { return get(LiveImage.class); }
 
     //-------------------------------------------------------------------------
     // Structures

@@ -3,7 +3,7 @@ package com.wjduquette.george.widgets;
 import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.Sprite;
-import com.wjduquette.george.ecs.Visual;
+import com.wjduquette.george.ecs.LiveImage;
 import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.ItemSlot;
@@ -208,7 +208,7 @@ public abstract class GamePane extends StackPane {
      * @return The image
      */
     protected Image toImage(Entity entity) {
-        return entity.has(Visual.class)
+        return entity.has(LiveImage.class)
             ? entity.visual().image()
             : sprites().get(entity.sprite());
     }

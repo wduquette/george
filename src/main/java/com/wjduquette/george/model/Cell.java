@@ -22,6 +22,23 @@ public record Cell(int row, int col) {
     }
 
     /**
+     * Converts the cell into an offset.
+     * @return The offset
+     */
+    public Offset offset() {
+        return new Offset(row, col);
+    }
+
+    /**
+     * Returns this cell plus an offset as an offset.
+     * @param offset The offset
+     * @return The new offset
+     */
+    public Offset offset(Offset offset) {
+        return new Offset(row + offset.rowOffset(), col + offset.colOffset());
+    }
+
+    /**
      * Compute the Cartesian distance between this and the other cell for
      * purposes of the A* algorithm.
      *
