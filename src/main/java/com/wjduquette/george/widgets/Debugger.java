@@ -177,7 +177,7 @@ public class Debugger extends StackPane {
 
             if (!labels.contains(label)) {
                 gotoMenu.getItems().add(
-                    menuItem(label, () -> app.doMagicMove(e.cell())));
+                    menuItem(label, () -> app.doMagicMove(e.loc())));
             }
             labels.add(label);
         }
@@ -211,7 +211,7 @@ public class Debugger extends StackPane {
             label(proxy.getIdText()),
             separator(),
             menuItem("Go To Cell",
-                with(entity.loc(), () -> app.doMagicMove(entity.cell())))
+                with(entity.loc(), () -> app.doMagicMove(entity.loc())))
         );
     }
 
@@ -270,7 +270,7 @@ public class Debugger extends StackPane {
 
         // Display George's location
         var player = region.query(Player.class).findFirst().orElseThrow();
-        playerCellLabel.setText(player.cell().displayString());
+        playerCellLabel.setText(player.loc().displayString());
 
         // Populate the entities table
         var selectedEntity = entitiesView.getSelectionModel().getSelectedItem();
@@ -325,7 +325,7 @@ public class Debugger extends StackPane {
 
         public String getPlace() {
             if (entity.loc() != null) {
-                return entity.cell().displayString();
+                return entity.loc().displayString();
             } else {
                 return "--";
             }

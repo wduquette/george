@@ -234,8 +234,8 @@ public abstract class GamePane extends StackPane {
      * @param y The top y coordinate, in pixels
      */
     protected void drawFramedEntity(Entity entity, double x, double y, int factor) {
-        var terrain = entity.cell() != null
-            ? app().getCurrentRegion().getTerrain(entity.cell()).image()
+        var terrain = entity.loc() != null
+            ? app().getCurrentRegion().getTerrain(entity.loc()).image()
             : null;
 
         drawFramedSprites(toImage(entity), terrain, x, y, factor);

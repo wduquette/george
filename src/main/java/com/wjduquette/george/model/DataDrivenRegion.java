@@ -161,7 +161,7 @@ public class DataDrivenRegion extends Region {
                 .label(tile.description())
                 .terrain(tile.type())
                 .sprite(tile)
-                .cell(r, c);
+                .loc(r, c);
 
             // NEXT, Handle special cases.
             //
@@ -199,12 +199,12 @@ public class DataDrivenRegion extends Region {
 
                 // NEXT, if not handle it in the standard way.
                 var entity = switch (obj.type) {
-                    case CHEST    -> makeChest(key).cell(cell);
-                    case EXIT     -> makeExit(obj.name).cell(cell);
-                    case MANNIKIN -> makeMannikin(key).cell(cell);
-                    case NARRATIVE -> makeNarrative(key).cell(cell);
-                    case POINT    -> makePoint(obj.name).cell(cell);
-                    case SIGN     -> makeSign(key).cell(cell);
+                    case CHEST    -> makeChest(key).loc(cell);
+                    case EXIT     -> makeExit(obj.name).loc(cell);
+                    case MANNIKIN -> makeMannikin(key).loc(cell);
+                    case NARRATIVE -> makeNarrative(key).loc(cell);
+                    case POINT    -> makePoint(obj.name).loc(cell);
+                    case SIGN     -> makeSign(key).loc(cell);
                     default -> null;
                 };
 

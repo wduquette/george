@@ -102,11 +102,11 @@ public class Stevedore {
         var item = owner.inventory().take(index).orElseThrow();
 
         // NEXT, find or create a stack.
-        var stack = region.findAt(owner.cell(), ItemStack.class).orElse(null);
+        var stack = region.findAt(owner.loc(), ItemStack.class).orElse(null);
 
         // TODO: Need to check for overflow, find adjacent cell.
         if (stack == null) {
-            stack = region.makeItemStack().cell(owner.cell());
+            stack = region.makeItemStack().loc(owner.loc());
             region.entities().add(stack);
         }
 
@@ -149,7 +149,7 @@ public class Stevedore {
         // NEXT, attempt to use it.
         switch (item.item().type()) {
             case SCROLL_OF_MAPPING -> {
-                region.markSeen(owner.cell(), MAPPING_RADIUS);
+                region.markSeen(owner.loc(), MAPPING_RADIUS);
                 region.log("You know more about the vicinity.");
             }
             case VIAL_OF_HEALING -> {

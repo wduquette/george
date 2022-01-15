@@ -95,7 +95,7 @@ public class App extends Application {
 
         // Put George in the region
         Cell origin = region.point("origin").orElse(new Cell(10, 10));
-        region.entities().add(george.cell(origin));
+        region.entities().add(george.loc(origin));
 
         // NEXT, initialize the GUI
         viewer = new GameView(this);
@@ -187,7 +187,7 @@ public class App extends Application {
         if (region.isWalkable(cell)) {
             region.query(Player.class)
                 .findFirst()
-                .ifPresent(p -> p.cell(cell));
+                .ifPresent(p -> p.loc(cell));
         }
     }
 
@@ -302,7 +302,7 @@ public class App extends Application {
         newRegion.entities().add(player);
 
         // Position the player.
-        player.cell(point.get().cell());
+        player.loc(point.get().loc());
 
         // NEXT, Make the new region the current region.
         region = newRegion;

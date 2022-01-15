@@ -126,7 +126,7 @@ public class GameView extends GamePane {
         Entity player = region.query(Player.class).findFirst().orElseThrow();
 
         if (player.find(Plan.class).isEmpty()) {
-            computeBounds(player.cell());
+            computeBounds(player.loc());
         }
 
         // FIRST, render the terrain
@@ -282,9 +282,9 @@ public class GameView extends GamePane {
         var img = entity.liveImage();
 
         if (img == null) {
-            return cell2xy(entity.cell());
+            return cell2xy(entity.loc());
         } else {
-            return cell2xy(entity.cell(), img.offset());
+            return cell2xy(entity.loc(), img.offset());
         }
     }
 

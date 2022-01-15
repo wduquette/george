@@ -76,8 +76,8 @@ public class MapPanel extends GamePane implements Panel {
         // NEXT, draw the player/leader a little bigger than its cell.
         var player = region.query(Player.class).findFirst().orElseThrow();
 
-        var x = xLeft + player.cell().col() * cellSize;
-        var y = yTop + player.cell().row() * cellSize;
+        var x = xLeft + player.loc().col() * cellSize;
+        var y = yTop + player.loc().row() * cellSize;
 
         fill(Color.CYAN, x - 1, y - 1, cellSize + 2, cellSize + 2);
     }

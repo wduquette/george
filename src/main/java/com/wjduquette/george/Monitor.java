@@ -38,7 +38,7 @@ public class Monitor {
 
                 // If the player character is within the radius, make it
                 // execute the step; and forget the tripwire.
-                var dist = region.passableDistance(player, wire.cell());
+                var dist = region.passableDistance(player, wire.loc());
 
                 if (dist <= trigger.radius()) {
                     player.put(new Plan());

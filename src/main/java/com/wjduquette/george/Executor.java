@@ -98,7 +98,7 @@ public class Executor {
 
             case Step.Exit goal: {
                 var feature = region.get(goal.id());
-                targetCell = feature.cell();
+                targetCell = feature.loc();
                 var result = proceed(region, mob, goal, targetCell);
 
                 if (result == Result.DO_NEXT) {
@@ -161,7 +161,7 @@ public class Executor {
             // Completes a mover's cell step, as initiated by the
             // proceed() method.
             case Step.CompleteCellStep step:
-                mob.cell(step.cell());  // Go there.
+                mob.loc(step.cell());  // Go there.
                 // Pause, because we've completed a logical change.  This
                 // gives the Monitor a chance to analyze the current state.
                 return Result.PAUSE;
@@ -200,7 +200,7 @@ public class Executor {
         Cell target
     ) {
         var route = Region.findRoute(c -> isPassable(region, mob, c),
-            mob.cell(), target);
+            mob.loc(), target);
 
         if (route.size() == 1) {
             return Result.DO_NEXT;
@@ -240,7 +240,7 @@ public class Executor {
     // - Puts the mob in the cell
     private static void slideTo(Region region, Entity mob, Cell cell) {
         var anim = new Animation.Slide(mob.id(),
-            new Slider(mob.cell(), cell, 1.0));
+            new Slider(mob.loc(), cell, 1.0));
         var effect = region.entities().make().put(new VisualEffect(anim));
 
         // These will execute in reverse order: we complete

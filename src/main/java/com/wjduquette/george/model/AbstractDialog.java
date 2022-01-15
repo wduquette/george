@@ -1,10 +1,7 @@
 package com.wjduquette.george.model;
 
-import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.Entity;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -84,6 +81,6 @@ public abstract class AbstractDialog implements Dialog {
      */
     @Override
     public String backgroundSprite() {
-        return region.getTerrain(entity.cell()).name();
+        return region.getTerrain(entity.loc()).name();
     }
 }

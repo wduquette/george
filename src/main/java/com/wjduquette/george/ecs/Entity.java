@@ -391,7 +391,10 @@ public class Entity {
     public Entity label(String text) { return put(new Label(text)); }
 
     // Loc
-    public Loc loc() { return components.get(Loc.class); }
+    public Cell loc() { return components.get(Loc.class).cell(); }
+    public Entity loc(Cell cell) { return put(new Loc(cell)); }
+    public Entity loc(int row, int col) { return put(new Loc(new Cell(row, col))); }
+
 
     // Sprite
     public Entity sprite(String name) { return put(new Sprite(name)); }
@@ -414,18 +417,13 @@ public class Entity {
 
     // Other simple queries
 
-    /**
-     * Gets the entity's cell location (taken from its Loc component).
-     * @return The cell.
-     */
-    public Cell cell() { return components.get(Loc.class).cell(); }
 
     /**
      * Returns true if the entity is at the given cell, and false otherwise.
      * @param cell The cell
      * @return true or false
      */
-    public boolean isAt(Cell cell) { return Objects.equals(cell(), cell); }
+    public boolean isAt(Cell cell) { return Objects.equals(loc(), cell); }
 
 
     /**
@@ -442,29 +440,6 @@ public class Entity {
 
         return step != null && step.isTransition();
     }
-
-    //-------------------------------------------------------------------------
-    // Component Setters
-    //
-    // tagAs* methods add the tag component.
-    // Others just add the component given the arguments.
-
-
-    /**
-     * Sets the entity's cell location, clearing any visual offsets.
-     * @param cell The cell
-     * @return The entity
-     */
-    public Entity cell(Cell cell) { return put(new Loc(cell)); }
-
-    /**
-     * Sets the entity's cell location given a row and column, clearing any
-     * visual offset.
-     * @param row The row index
-     * @param col The column index
-     * @return The entity
-     */
-    public Entity cell(int row, int col) { return put(new Loc(new Cell(row, col))); }
 
     //-------------------------------------------------------------------------
     // Object Methods

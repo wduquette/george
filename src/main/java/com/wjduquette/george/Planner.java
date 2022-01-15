@@ -106,7 +106,7 @@ public class Planner {
 
         if ((result = region.findAt(targetCell, ItemStack.class)).isPresent()) {
             Entity stack = result.get();
-            var distance = region.passableDistance(player, stack.cell());
+            var distance = region.passableDistance(player, stack.loc());
             if (distance > MAX_PHYSICAL_RANGE) {
                 region.log("That's too far.");
             } else {
@@ -138,7 +138,7 @@ public class Planner {
                     plan.add(new Step.CloseChest(entity.id()));
                 }
             } else if (entity.mannikin() != null) {
-                var distance = player.cell().distance(targetCell);
+                var distance = player.loc().distance(targetCell);
 
                 if (distance > MAX_TALKING_RANGE ||
                     !region.isInLineOfSight(player, targetCell))

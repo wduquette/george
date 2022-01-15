@@ -238,7 +238,7 @@ public abstract class Region {
     public Optional<Cell> point(String name) {
         return query(Point.class)
             .filter(e -> e.point().name().equals(name))
-            .map(Entity::cell)
+            .map(Entity::loc)
             .findFirst();
     }
 
@@ -477,7 +477,7 @@ public abstract class Region {
         Cell target)
     {
         return Region.findRoute(c -> isPassable(mobile, c),
-            mobile.cell(), target);
+            mobile.loc(), target);
     }
 
     /**
@@ -493,7 +493,7 @@ public abstract class Region {
         Cell target)
     {
         return Region.distance(c -> isPassable(mobile, c),
-            mobile.cell(), target);
+            mobile.loc(), target);
     }
 
     /**

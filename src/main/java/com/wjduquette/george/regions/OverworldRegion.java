@@ -26,7 +26,7 @@ public class OverworldRegion extends DataDrivenRegion {
     {
         switch (obj.name) {
             case "tutor":
-                var tutor = makeMannikin(key).cell(object2cell(obj));
+                var tutor = makeMannikin(key).loc(object2cell(obj));
                 tutor.tagAsTripwire(
                     new Trigger.RadiusOnce(3, "overworld.tutor.triggered"),
                     new Step.Interact(tutor.id()));
