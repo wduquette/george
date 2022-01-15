@@ -361,6 +361,12 @@ public class Entity {
     // These components add information to one or more entity types.
 
     //-------------------------------------------------------------------------
+    // Record field.
+
+    public Entity visual(Visual visual) { return put(visual); }
+    public Visual visual() { return get(Visual.class); }
+
+    //-------------------------------------------------------------------------
     // Structures
     //
     // A structure is a component containing a complex mutable Java data

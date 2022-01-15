@@ -3,6 +3,7 @@ package com.wjduquette.george.widgets;
 import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.ecs.Sprite;
+import com.wjduquette.george.ecs.Visual;
 import com.wjduquette.george.graphics.ImageUtils;
 import com.wjduquette.george.graphics.SpriteSet;
 import com.wjduquette.george.model.ItemSlot;
@@ -201,12 +202,15 @@ public abstract class GamePane extends StackPane {
     }
 
     /**
-     * Get a sprite image given an entity, from its Sprite component.
+     * Gets the entity's sprite image.  The image will come from the entity's
+     * Visual, if any, and from its Sprite component otherwise.
      * @param entity The entity
      * @return The image
      */
     protected Image toImage(Entity entity) {
-        return sprites().get(entity.sprite());
+        return entity.has(Visual.class)
+            ? entity.visual().image()
+            : sprites().get(entity.sprite());
     }
 
     //-------------------------------------------------------------------------
