@@ -135,7 +135,7 @@ public class App extends Application {
         return new Entity()
             .tagAsPlayer("George") // name
             .tagAsMobile("george") // key
-            .tagAsSprite(Sprites.ALL.getInfo("mobile.george"))
+            .sprite(Sprites.ALL.getInfo("mobile.george"))
             .put(new Health(10))
             .put(inv)
             .put(equip);

@@ -160,7 +160,7 @@ public class DataDrivenRegion extends Region {
                 .tagAsFeature()
                 .label(tile.description())
                 .terrain(tile.type())
-                .tagAsSprite(tile)
+                .sprite(tile)
                 .cell(r, c);
 
             // NEXT, Handle special cases.

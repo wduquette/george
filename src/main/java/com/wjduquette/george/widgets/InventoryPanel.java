@@ -177,7 +177,7 @@ public class InventoryPanel extends GamePane implements Panel {
         if (box.slot() instanceof ItemSlot.Equipment slot) {
             String sprite;
             if (box.item() != null) {
-                sprite = box.item().sprite().name();
+                sprite = box.item().sprite();
             } else {
                 sprite = switch (slot.role()) {
                     case HEAD -> "equip.helmet";

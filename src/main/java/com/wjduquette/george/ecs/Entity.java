@@ -270,11 +270,6 @@ public class Entity {
     public boolean isSign() { return has(Sign.class); }
     public Sign sign() { return get(Sign.class); }
 
-    // Sprite
-    public Entity tagAsSprite(String name) { return put(new Sprite(name)); }
-    public Entity tagAsSprite(ImageInfo info) { return put(new Sprite(info.name())); }
-    public boolean isSprite() { return has(Sprite.class); }
-    public Sprite sprite() { return get(Sprite.class); }
 
     //=========================================================================
     // Record Types - Records containing dynamic data associated with
@@ -384,6 +379,11 @@ public class Entity {
 
     //-------------------------------------------------------------------------
     // Fields - Single values associated with types
+
+    // Sprite
+    public Entity sprite(String name) { return put(new Sprite(name)); }
+    public Entity sprite(ImageInfo info) { return put(new Sprite(info.name())); }
+    public String sprite() { return get(Sprite.class).name(); }
 
     public Label      label()      { return components.get(Label.class); }
     public Loc        loc()        { return components.get(Loc.class); }

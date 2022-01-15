@@ -206,7 +206,7 @@ public abstract class GamePane extends StackPane {
      * @return The image
      */
     protected Image toImage(Entity entity) {
-        return sprites().get(entity.sprite().name());
+        return sprites().get(entity.sprite());
     }
 
     //-------------------------------------------------------------------------
@@ -323,7 +323,7 @@ public abstract class GamePane extends StackPane {
                 fill(bg, sx + border, sy + border, sw - border, sh - border);
 
                 if (box.item() != null) {
-                    drawImage(sprites().get(box.item().sprite().name()),
+                    drawImage(sprites().get(box.item().sprite()),
                         sx + border, sy + border);
                 }
 

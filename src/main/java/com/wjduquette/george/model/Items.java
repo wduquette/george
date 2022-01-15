@@ -103,7 +103,7 @@ public class Items {
         return new Entity()
             .tagAsItem(key, type)
             .label(label)
-            .tagAsSprite(sprite);
+            .sprite(sprite);
     }
 
     /**
@@ -120,7 +120,7 @@ public class Items {
             .tagAsItem(key, type)
             .tagAsArmor()
             .label(label)
-            .tagAsSprite(sprite);
+            .sprite(sprite);
     }
 
     /**
@@ -137,7 +137,7 @@ public class Items {
             .tagAsItem(key, type)
             .tagAsWeapon()
             .label(label)
-            .tagAsSprite(sprite);
+            .sprite(sprite);
     }
 
     //-------------------------------------------------------------------------
@@ -178,6 +178,6 @@ public class Items {
         return new Entity()
             .tagAsItem(key, Type.KEY_ITEM)
             .label(label)
-            .tagAsSprite(spriteName);
+            .sprite(spriteName);
     }
 }

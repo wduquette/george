@@ -566,7 +566,7 @@ public abstract class Region {
             .tagAsFeature()
             .tagAsMannikin(key)
             .label(getInfo(key, "label"))
-            .tagAsSprite(getInfo(key, "sprite"))
+            .sprite(getInfo(key, "sprite"))
             .terrain(TerrainType.FENCE);
     }
 
@@ -606,6 +606,6 @@ public abstract class Region {
             .tagAsSign(key)
             .label("sign")
             .terrain(TerrainType.FENCE)
-            .tagAsSprite(getInfo(key, "sprite"));
+            .sprite(getInfo(key, "sprite"));
     }
 }

@@ -74,7 +74,7 @@ public abstract class AbstractDialog implements Dialog {
      */
     @Override
     public String foregroundSprite() {
-        return entity.sprite().name();
+        return entity.sprite();
     }
 
     /**
