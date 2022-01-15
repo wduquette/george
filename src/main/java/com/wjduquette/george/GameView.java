@@ -277,11 +277,17 @@ public class GameView extends GamePane {
         colMin = Math.max(0, colOffset);
     }
 
-
     // Gets the pixel coordinates at which to draw the entity's tile.
     private Point2D entity2xy(Entity entity) {
-        return loc2xy(entity.loc());
+        var img = entity.liveImage();
+
+        if (img == null) {
+            return cell2xy(entity.cell());
+        } else {
+            return cell2xy(entity.cell(), img.offset());
+        }
     }
+
 
     // Convert cell coordinates to the pixel coordinates at which it will
     // be drawn, taking the cell's row and column offset into account.  If
@@ -291,10 +297,10 @@ public class GameView extends GamePane {
         return rc2xy(cell.row(), cell.col());
     }
 
-    private Point2D loc2xy(Loc loc) {
+    private Point2D cell2xy(Cell cell, Offset offset) {
         return rc2xy(
-            loc.cell().row() + loc.offset().row(),
-            loc.cell().col() + loc.offset().col());
+            cell.row() + offset.row(),
+            cell.col() + offset.col());
     }
 
     private Point2D rc2xy(double row, double col) {

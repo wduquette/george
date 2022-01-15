@@ -363,8 +363,8 @@ public class Entity {
     //-------------------------------------------------------------------------
     // Record field.
 
-    public Entity visual(LiveImage liveImage) { return put(liveImage); }
-    public LiveImage visual() { return get(LiveImage.class); }
+    public Entity liveImage(LiveImage liveImage) { return put(liveImage); }
+    public LiveImage liveImage() { return get(LiveImage.class); }
 
     //-------------------------------------------------------------------------
     // Structures
@@ -455,7 +455,7 @@ public class Entity {
      * @param cell The cell
      * @return The entity
      */
-    public Entity cell(Cell cell) { return put(Loc.of(cell)); }
+    public Entity cell(Cell cell) { return put(new Loc(cell)); }
 
     /**
      * Sets the entity's cell location given a row and column, clearing any
@@ -464,8 +464,7 @@ public class Entity {
      * @param col The column index
      * @return The entity
      */
-    public Entity cell(int row, int col) { return put(Loc.of(new Cell(row, col))); }
-
+    public Entity cell(int row, int col) { return put(new Loc(new Cell(row, col))); }
 
     //-------------------------------------------------------------------------
     // Object Methods

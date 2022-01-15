@@ -209,7 +209,7 @@ public abstract class GamePane extends StackPane {
      */
     protected Image toImage(Entity entity) {
         return entity.has(LiveImage.class)
-            ? entity.visual().image()
+            ? entity.liveImage().image()
             : sprites().get(entity.sprite());
     }
 

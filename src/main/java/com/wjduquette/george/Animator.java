@@ -5,9 +5,6 @@ import com.wjduquette.george.ecs.LiveImage;
 import com.wjduquette.george.ecs.VisualEffect;
 import com.wjduquette.george.model.Animation;
 import com.wjduquette.george.model.Region;
-import javafx.scene.image.Image;
-
-import java.util.List;
 
 /**
  * The animator system is responsible for animating effects over time.
@@ -40,11 +37,18 @@ public class Animator {
         switch (animation) {
             case Animation.Slide anim -> {
                 var target = region.get(anim.targetID());
-                if (target != null) {
-                    var offset = anim.update();
-                    target.put(target.loc().offset(offset));
-                } else {
+                if (target == null) {
                     region.entities().remove(effect.id());
+                    return;
+                }
+
+                var offset = anim.update();
+
+                if (!anim.isComplete()) {
+                    var img = app.sprites().get(target.sprite());
+                    target.liveImage(new LiveImage("slide", img, offset));
+                } else {
+                    target.remove(LiveImage.class);
                 }
             }
         }
