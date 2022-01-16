@@ -58,10 +58,10 @@ public class App extends Application {
     private Region region = null;
 
     // The Party!
-    private Entity george;
+    private Party party;
 
     // Flags
-    private Flags flags = new Flags();
+    private final Flags flags = new Flags();
 
     // The most recent user input.
     private UserInput userInput = null;
@@ -84,8 +84,8 @@ public class App extends Application {
         populateRegionFactories();
         items = new Items(getClass(), "assets/items.keydata");
 
-        // NEXT, Create the player(s)
-        george = makeGeorge();
+        // NEXT, Create the party.
+        party = new Party(this);
 
         // TEMP
 
@@ -95,7 +95,7 @@ public class App extends Application {
 
         // Put George in the region
         Cell origin = region.point("origin").orElse(new Cell(10, 10));
-        region.entities().add(george.loc(origin));
+        region.entities().add(party.leader().loc(origin));
 
         // NEXT, initialize the GUI
         viewer = new GameView(this);
@@ -119,27 +119,6 @@ public class App extends Application {
         Platform.runLater(looper::run);
     }
 
-    // Creates George as of the beginning of the game.
-    private Entity makeGeorge() {
-        var inv = new Inventory(Player.INVENTORY_SIZE);
-        inv.add(items().make("vial.healing"));
-        inv.add(items().make("vial.healing"));
-        inv.add(items().make("scroll.mapping"));
-
-        var equip = new Equipment();
-        equip.wear(Role.HAND, items().make("weapon.small_wrench"));
-        equip.wear(Role.BODY, items().make("body.overalls"));
-        equip.wear(Role.HEAD, items().make("head.hat"));
-        equip.wear(Role.FEET, items().make("foot.shoes"));
-
-        return new Entity()
-            .tagAsPlayer("George") // name
-            .tagAsMobile("george") // key
-            .sprite(Sprites.ALL.getInfo("mobile.george"))
-            .put(new Health(10))
-            .put(inv)
-            .put(equip);
-    }
 
     //-------------------------------------------------------------------------
     // Click Handling
@@ -245,14 +224,22 @@ public class App extends Application {
     }
 
     //-------------------------------------------------------------------------
-    // Movers
+    // The party
+
+    /**
+     * Returns the party.
+     * @return The party.
+     */
+    public Party party() {
+        return party;
+    }
 
     /**
      * Returns the party leader.
      * @return The leader
      */
     public Entity leader() {
-        return george;
+        return party.leader();
     }
 
     //-------------------------------------------------------------------------
