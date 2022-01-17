@@ -5,6 +5,8 @@ import com.wjduquette.george.ecs.Player;
 import com.wjduquette.george.model.Cell;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
@@ -26,7 +28,11 @@ public class MapPanel extends GamePane implements Panel {
     @Override public void setOnClose(Runnable func) { this.onClose = func; }
 
     protected void onMouseClick(MouseEvent evt) {
-        if (onClose != null) {
+        onClose.run();
+    }
+
+    protected void onKeyPress(KeyEvent evt) {
+        if (evt.getCode() == KeyCode.ESCAPE) {
             onClose.run();
         }
     }

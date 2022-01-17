@@ -99,8 +99,9 @@ public class GameView extends GamePane {
     // Convert keypresses into user input
     protected void onKeyPress(KeyEvent evt) {
         if (evt.getCode() == KeyCode.I) {
-            App.println("GameView: " + evt);
             fireInputEvent(new UserInput.ShowInventory());
+        } else if (evt.getCode() == KeyCode.M) {
+            fireInputEvent(new UserInput.ShowMap());
         } else if (evt.getCode() == KeyCode.F1) {
             fireInputEvent(new UserInput.ShowDebugger());
         }

@@ -9,6 +9,8 @@ import com.wjduquette.george.model.Role;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
@@ -50,6 +52,12 @@ public class InventoryPanel extends GamePane implements Panel {
 
     //-------------------------------------------------------------------------
     // Event Handling
+
+    protected void onKeyPress(KeyEvent evt) {
+        if (evt.getCode() == KeyCode.ESCAPE) {
+            onClose.run();
+        }
+    }
 
     private void onClose() { onClose.run(); }
 
