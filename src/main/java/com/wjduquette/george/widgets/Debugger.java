@@ -316,7 +316,9 @@ public class Debugger extends StackPane {
         }
 
         public String getLabel() {
-            if (entity.label() != null) {
+            if (entity.has(com.wjduquette.george.ecs.Label.class) &&
+                entity.label() != null)
+            {
                 return entity.label();
             } else {
                 return "--";
