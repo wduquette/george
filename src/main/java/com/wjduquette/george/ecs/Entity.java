@@ -205,11 +205,6 @@ public class Entity {
     public Armor   armor()       { return components.get(Armor.class); }
     public boolean isArmor()     { return has(Armor.class); }
 
-    // Weapon
-    public Entity  tagAsWeapon() { return put(new Weapon()); }
-    public Weapon  weapon()      { return components.get(Weapon.class); }
-    public boolean isWeapon()    { return has(Weapon.class); }
-
     //
     // Type and TypeInfo components.  These components tag an entity as having
     // a particular type, and may include some static metadata (e.g., a
@@ -269,6 +264,13 @@ public class Entity {
     public Entity tagAsSign(String text) { return put(new Sign(text)); }
     public boolean isSign() { return has(Sign.class); }
     public Sign sign() { return get(Sign.class); }
+
+    // Weapon
+    public Entity  tagAsWeapon(Dice damage, int range) {
+        return put(new Weapon(damage, range));
+    }
+    public Weapon  weapon() { return components.get(Weapon.class); }
+    public boolean isWeapon() { return has(Weapon.class); }
 
 
     //=========================================================================

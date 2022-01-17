@@ -8,6 +8,7 @@
 %string weapon.small_wrench.label Small Wrench
 %string weapon.small_wrench.sprite item.small_wrench
 %string weapon.small_wrench.value 20
+%string weapon.small_wrench.damage 1D4
 
 #------------------------------------------------------------------------------
 # Ranged Weapons
@@ -17,6 +18,8 @@
 %string weapon.staple_gun.label Staple Gun
 %string weapon.staple_gun.sprite item.staple_gun
 %string weapon.staple_gun.value 50
+%string weapon.staple_gun.damage 1D4+2
+%string weapon.staple_gun.range 4
 
 #------------------------------------------------------------------------------
 # Body Armor

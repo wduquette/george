@@ -127,7 +127,9 @@ public class Items {
      * @return The entity
      */
     private Entity makeWeapon(String key) {
-        return makeSimple(key).tagAsWeapon();
+        var damage = Dice.valueOf(info.get(key, "damage").orElseThrow());
+        var range = Integer.valueOf(info.get(key, "range").orElse("1"));
+        return makeSimple(key).tagAsWeapon(damage, 1);
     }
 
     //-------------------------------------------------------------------------
