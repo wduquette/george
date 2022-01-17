@@ -103,8 +103,9 @@ public class Items {
         var type = Type.valueOf(info.get(key, "type").orElseThrow().toUpperCase());
         var sprite = info.get(key, "sprite").orElseThrow();
         var label = info.get(key, "label").orElseThrow();
+        var value = Integer.parseInt(info.get(key, "value").orElseThrow());
         return new Entity()
-            .tagAsItem(key, type)
+            .tagAsItem(key, type, value)
             .label(label)
             .sprite(sprite);
     }
@@ -116,14 +117,7 @@ public class Items {
      * @return The entity
      */
     private Entity makeArmor(String key) {
-        var type = Type.valueOf(info.get(key, "type").orElseThrow().toUpperCase());
-        var sprite = info.get(key, "sprite").orElseThrow();
-        var label = info.get(key, "label").orElseThrow();
-        return new Entity()
-            .tagAsItem(key, type)
-            .tagAsArmor()
-            .label(label)
-            .sprite(sprite);
+        return makeSimple(key).tagAsArmor();
     }
 
     /**
@@ -133,14 +127,7 @@ public class Items {
      * @return The entity
      */
     private Entity makeWeapon(String key) {
-        var type = Type.valueOf(info.get(key, "type").orElseThrow().toUpperCase());
-        var sprite = info.get(key, "sprite").orElseThrow();
-        var label = info.get(key, "label").orElseThrow();
-        return new Entity()
-            .tagAsItem(key, type)
-            .tagAsWeapon()
-            .label(label)
-            .sprite(sprite);
+        return makeSimple(key).tagAsWeapon();
     }
 
     //-------------------------------------------------------------------------
@@ -179,7 +166,7 @@ public class Items {
      */
     public Entity makeKeyItem(String key, String label, String spriteName) {
         return new Entity()
-            .tagAsItem(key, Type.KEY_ITEM)
+            .tagAsItem(key, Type.KEY_ITEM, 0)
             .label(label)
             .sprite(spriteName);
     }

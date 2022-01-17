@@ -1,20 +1,13 @@
 # Items Definitions
 
 #------------------------------------------------------------------------------
-# Body Armor
-
-# body.overalls
-%string body.overalls.type body_armor
-%string body.overalls.label Grubby Overalls
-%string body.overalls.sprite item.overalls
-
-#------------------------------------------------------------------------------
 # Hand Weapons
 
 # weapon.small_wrench
 %string weapon.small_wrench.type hand_weapon
 %string weapon.small_wrench.label Small Wrench
 %string weapon.small_wrench.sprite item.small_wrench
+%string weapon.small_wrench.value 20
 
 #------------------------------------------------------------------------------
 # Ranged Weapons
@@ -23,6 +16,16 @@
 %string weapon.staple_gun.type ranged
 %string weapon.staple_gun.label Staple Gun
 %string weapon.staple_gun.sprite item.staple_gun
+%string weapon.staple_gun.value 50
+
+#------------------------------------------------------------------------------
+# Body Armor
+
+# body.overalls
+%string body.overalls.type body_armor
+%string body.overalls.label Grubby Overalls
+%string body.overalls.sprite item.overalls
+%string body.overalls.value 4
 
 #------------------------------------------------------------------------------
 # Headgear
@@ -31,6 +34,7 @@
 %string head.hat.type head_gear
 %string head.hat.label Farmer's Hat
 %string head.hat.sprite item.hat
+%string head.hat.value 1
 
 #------------------------------------------------------------------------------
 # Footgear
@@ -39,6 +43,7 @@
 %string foot.shoes.type foot_wear
 %string foot.shoes.label Farmer's Shoes
 %string foot.shoes.sprite item.shoes
+%string foot.shoes.value 4
 
 #------------------------------------------------------------------------------
 # Usable Items
@@ -47,8 +52,10 @@
 %string scroll.mapping.type scroll_of_mapping
 %string scroll.mapping.label Scroll of Magic Mapping
 %string scroll.mapping.sprite item.map_scroll
+%string scroll.mapping.value 40
 
 # vial.healing
 %string vial.healing.type vial_of_healing
 %string vial.healing.label Vial of Healing
 %string vial.healing.sprite item.red_vial
+%string vial.healing.value 15

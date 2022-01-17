@@ -228,8 +228,8 @@ public class Entity {
     public boolean isFeature() { return has(Feature.class); }
 
     // Item
-    public Entity tagAsItem(String key, Items.Type type) {
-        return put(new Item(key, type));
+    public Entity tagAsItem(String key, Items.Type type, int value) {
+        return put(new Item(key, type, value));
     }
     public boolean isItem() { return has(Item.class); }
     public Item item() { return get(Item.class); }
