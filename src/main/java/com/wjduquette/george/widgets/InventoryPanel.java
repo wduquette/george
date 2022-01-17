@@ -122,15 +122,18 @@ public class InventoryPanel extends GamePane implements Panel {
         var bpw = bpx +                      // Width of backpack array
             (4 + sprites().width())*BACKPACK_COLS;
         var iox = bpw + COLUMN_GAP;          // X origin of item options
-        var bbx = px + pw;                   // X origin of back button
-        var bby = py + ph;                   // Y origin of back button
+        var goldx = px;                      // X origin of gold text
+        var goldy = py + ph;                 // Y origin of gold text
+        var backx = px + pw;                 // X origin of back button
+        var backy = py + ph;                 // Y origin of back button
 
         // Draw components
         drawPCBox(px, py);
         drawBackpackArray(bpx, bpy);
         drawEquipmentSlots(iox + 200, bpy);
         drawItemOptions(iox, py);
-        drawBackButton(bbx, bby);
+        drawGoldText(goldx, goldy);
+        drawBackButton(backx, backy);
     }
 
     // Draws the player character buttons in a column, starting at (x,y)
@@ -247,6 +250,18 @@ public class InventoryPanel extends GamePane implements Panel {
         place(text, x, y);
     }
 
+    // Draws the gold amount with its lower-left corner at (x,y)
+    private void drawGoldText(double x, double y) {
+        Text text = new Text("Gold: " + app().party().gold());
+
+        text.setTextOrigin(VPos.BOTTOM);
+        text.setFill(Color.WHITE);
+        text.setFont(TITLE_FONT);
+        text.setOnMouseClicked(evt -> onClose());
+
+        place(text, x, y);
+    }
+    
     // Draws the back button with its lower right corner at (x,y)
     private void drawBackButton(double x, double y) {
         // Draw the "Back" button
