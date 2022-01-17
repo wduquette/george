@@ -33,17 +33,6 @@
          "objects":[
                 {
                  "height":0,
-                 "id":1,
-                 "name":"notice.noises",
-                 "rotation":0,
-                 "type":"Narrative",
-                 "visible":true,
-                 "width":0,
-                 "x":160,
-                 "y":1520
-                }, 
-                {
-                 "height":0,
                  "id":2,
                  "name":"notice.ruin",
                  "rotation":0,
@@ -51,7 +40,7 @@
                  "visible":true,
                  "width":0,
                  "x":200,
-                 "y":1320
+                 "y":1240
                 }, 
                 {
                  "height":0,
@@ -138,8 +127,8 @@
                  "type":"Narrative",
                  "visible":true,
                  "width":0,
-                 "x":680,
-                 "y":1200
+                 "x":800,
+                 "y":1160
                 }, 
                 {
                  "height":0,
@@ -151,6 +140,18 @@
                  "width":0,
                  "x":320,
                  "y":880
+                }, 
+                {
+                 "height":0,
+                 "id":13,
+                 "name":"notice.noises",
+                 "point":true,
+                 "rotation":0,
+                 "type":"Narrative",
+                 "visible":true,
+                 "width":0,
+                 "x":240,
+                 "y":1440
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -181,7 +182,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":13,
+ "nextobjectid":16,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",

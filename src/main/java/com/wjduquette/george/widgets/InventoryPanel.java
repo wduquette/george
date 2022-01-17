@@ -261,7 +261,7 @@ public class InventoryPanel extends GamePane implements Panel {
 
         place(text, x, y);
     }
-    
+
     // Draws the back button with its lower right corner at (x,y)
     private void drawBackButton(double x, double y) {
         // Draw the "Back" button
