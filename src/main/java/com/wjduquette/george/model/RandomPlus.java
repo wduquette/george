@@ -1,4 +1,4 @@
-package com.wjduquette.george.util;
+package com.wjduquette.george.model;
 
 import java.util.List;
 import java.util.Random;

@@ -7,7 +7,7 @@ import com.wjduquette.george.regions.BuglandRegion;
 import com.wjduquette.george.regions.FloobhamRegion;
 import com.wjduquette.george.regions.OverworldRegion;
 import com.wjduquette.george.util.Looper;
-import com.wjduquette.george.util.RandomPlus;
+import com.wjduquette.george.model.RandomPlus;
 import com.wjduquette.george.widgets.*;
 import javafx.application.Application;
 import javafx.application.Platform;
