@@ -74,6 +74,9 @@ public class Items {
         // Hand Weapons
         define("weapon.small_wrench", this::makeWeapon);
 
+        // Ranged Weapons
+        define("weapon.staple_gun", this::makeWeapon);
+
         // Body Armor
         define("body.overalls", this::makeArmor);
 
