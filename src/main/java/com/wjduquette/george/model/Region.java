@@ -223,6 +223,14 @@ public abstract class Region {
     }
 
     /**
+     * Returns the party of Players.
+     * @return The party
+     */
+    public Party party() {
+        return app.party();
+    }
+
+    /**
      * Gets the region's entities table.
      * @return The table.
      */

@@ -207,6 +207,10 @@ public class Stevedore {
     public static void takeAll(Region region, Entity mobile, Entity stack) {
         var inv = stack.inventory();
 
+        var gold = stack.inventory().takeGold();
+        region.party().addGold(gold);
+        region.log("Picked up: " + gold + " gold");
+
         for (int i = 0; i < inv.size(); i++) {
             Optional<Entity> oitem;
             while ((oitem = inv.take(i)).isPresent()) {

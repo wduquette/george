@@ -63,6 +63,11 @@ public class Inventory implements Component {
     //-------------------------------------------------------------------------
     // Instance Variables
 
+    // Gold, in Chests and ItemStacks; it is transferred to the Party when
+    // the Inventory is accessed.  This property is ignored for Player
+    // inventory and Party baggage.
+    int gold;
+
     // The slots.  The size is fixed.
     private final Slot[] slots;
 
@@ -74,7 +79,16 @@ public class Inventory implements Component {
      * @param size The inventory size
      */
     public Inventory(int size) {
-        slots = new Slot[size];
+        this(size, 0);
+    }
+
+    /**
+     * Creates an inventory with the given size.
+     * @param size The inventory size
+     */
+    public Inventory(int size, int gold) {
+        this.slots = new Slot[size];
+        this.gold = gold;
         Arrays.fill(slots, EMPTY);
     }
 
@@ -85,9 +99,40 @@ public class Inventory implements Component {
      * Removes everything from the inventory.
      */
     public final void clear() {
+        this.gold = 0;
         Arrays.fill(slots, EMPTY);
     }
 
+    /**
+     * Returns the amount of gold in the inventory.
+     * @return The amount
+     */
+    public int gold() {
+        return gold;
+    }
+
+    /**
+     * Returns the amount of gold in the inventory and sets it to 0.
+     * @return The amount
+     */
+    public int takeGold() {
+        var result = gold;
+        gold = 0;
+        return result;
+    }
+
+    /**
+     * Sets the amount of gold in the inventory.
+     * @param gold The amount
+     */
+    public void setGold(int gold) {
+        this.gold = gold;
+    }
+
+    /**
+     * Gets the inventory's size in slots
+     * @return The size
+     */
     public final int size() {
         return slots.length;
     }
