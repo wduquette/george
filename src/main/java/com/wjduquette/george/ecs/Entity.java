@@ -211,6 +211,13 @@ public class Entity {
     // game info key).
     //
 
+    // Creature
+    public Entity tagAsCreature(CreatureData creature) {
+        return put(new Creature(creature));
+    }
+    public boolean isCreature() { return has(Creature.class); }
+    public CreatureData creature() { return get(Creature.class).creature(); }
+
     // Exit
     public Entity tagAsExit(String region, String point) {
         return put(new Exit(region, point));
@@ -396,7 +403,6 @@ public class Entity {
     public Cell loc() { return components.get(Loc.class).cell(); }
     public Entity loc(Cell cell) { return put(new Loc(cell)); }
     public Entity loc(int row, int col) { return put(new Loc(new Cell(row, col))); }
-
 
     // Sprite
     public Entity sprite(String name) { return put(new Sprite(name)); }
