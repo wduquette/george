@@ -86,7 +86,8 @@ public class App extends Application {
         // FIRST, Set up global resources
         populateRegionFactories();
         items = new Items(getClass(), "assets/items.keydata");
-        creatures = new Creatures(getClass(), "assets/creatures.keydata");
+        creatures = new Creatures(getClass(), "assets/creatures.keyfile");
+        var bug = creatures.make("creature.lady_bug");
 
         // NEXT, Create the party.
         party = new Party(this);

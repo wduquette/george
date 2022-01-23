@@ -2,7 +2,7 @@ package com.wjduquette.george.util;
 
 import java.util.function.Function;
 
-public class Result {
+public class StringResult {
     //-------------------------------------------------------------------------
     // Instance Variables
 
@@ -11,7 +11,7 @@ public class Result {
     //-------------------------------------------------------------------------
     // Constructor
 
-    public Result(String value) {
+    public StringResult(String value) {
         this.value = value;
     }
 
@@ -26,7 +26,7 @@ public class Result {
         return value == null;
     }
 
-    public String value() {
+    public String asIs() {
         if (value != null) {
             return value;
         } else {
@@ -39,7 +39,7 @@ public class Result {
     }
 
     public <T> T as(Function<String,T> converter) {
-        return converter.apply(value());
+        return converter.apply(asIs());
     }
 
     public int asInt() {

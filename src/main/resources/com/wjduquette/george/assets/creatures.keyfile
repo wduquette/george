@@ -7,7 +7,7 @@
 %field experience 1
 %field noticeRange 12
 %field mp 4
-%field posture wandering
+%field posture WANDERING
 %field restlessness 25
 
 %record creature.manly_bug
@@ -17,5 +17,5 @@
 %field experience 2
 %field noticeRange 12
 %field mp 4
-%field posture wandering
+%field posture WANDERING
 %field restlessness 15

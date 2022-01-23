@@ -2,7 +2,7 @@ package com.wjduquette.george.model;
 
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.model.behaviors.NaiveTimid;
-import com.wjduquette.george.util.KeyDataTable;
+import com.wjduquette.george.util.KeyFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +12,12 @@ import java.util.function.Function;
  * This class provides factories for all creature types, by info key.
  */
 public class Creatures {
+    public static final String EXPERIENCE = "experience";
+    public static final String LEVEL = "level";
+    public static final String MP = "mp";
+    public static final String NOTICE_RANGE = "noticeRange";
+    public static final String POSTURE = "posture";
+
     /**
      * The interface for creature factories
      */
@@ -21,7 +27,7 @@ public class Creatures {
     // Instance Variables
 
     // The game info table for creatures
-    protected final KeyDataTable info;
+    protected final KeyFile info;
 
     // The factory functions, by info key.
     private final Map<String, Factory> factories =
@@ -35,7 +41,7 @@ public class Creatures {
      * time, we might read them from a file.
      */
     public Creatures(Class<?> cls, String relPath) {
-        info = new KeyDataTable(cls, relPath);
+        info = new KeyFile(cls, relPath);
 
         // Hand Weapons
         define("creature.lady_bug", this::makeLadyBug);
@@ -52,16 +58,16 @@ public class Creatures {
      */
     private Entity makeSimple(String record) {
         var creature = new CreatureData(record)
-            .level(info.requireInt(record, "level"))
-            .experience(info.requireInt(record, "experience"))
-            .posture(Posture.valueOf(info.require(record, "posture").toUpperCase()))
-            .noticeRange(info.requireInt(record, "noticeRange"))
-            .mp(info.requireInt(record, "mp"));
+            .level(info.get(record, LEVEL).asInt())
+            .experience(info.get(record, EXPERIENCE).asInt())
+            .posture(info.get(record, POSTURE).as(Posture::valueOf))
+            .noticeRange(info.get(record, NOTICE_RANGE).asInt())
+            .mp(info.get(record, MP).asInt());
         return new Entity()
             .tagAsMobile(record)
             .tagAsCreature(creature)
-            .label(info.require(record, "label"))
-            .sprite(info.require(record, "sprite"));
+            .label(info.get(record, "label").asIs())
+            .sprite(info.get(record, "sprite").asIs());
     }
 
     /**

@@ -4,13 +4,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ResultTest {
+public class StringResultTest {
     @Test
     public void testResult_present() {
-        Result good = new Result("abc");
+        StringResult good = new StringResult("abc");
         assertTrue(good.isPresent());
         assertFalse(good.isEmpty());
-        assertEquals("abc", good.value());
+        assertEquals("abc", good.asIs());
 
         assertEquals("abc", good.or("xyz"));
         assertEquals("ABC", good.as(String::toUpperCase));
@@ -26,8 +26,8 @@ public class ResultTest {
 
     @Test
     public void testResult_empty() {
-        Result bad = new Result(null);
-        assertThrows(IllegalArgumentException.class, bad::value);
+        StringResult bad = new StringResult(null);
+        assertThrows(IllegalArgumentException.class, bad::asIs);
         assertFalse(bad.isPresent());
         assertTrue(bad.isEmpty());
 
@@ -44,26 +44,26 @@ public class ResultTest {
 
     @Test
     public void testResult_int() {
-        Result good = new Result("123");
+        StringResult good = new StringResult("123");
         assertEquals(123, good.asInt());
     }
 
     @Test
     public void testResult_double() {
-        Result good = new Result("123.4");
+        StringResult good = new StringResult("123.4");
         assertEquals(123.4, good.asDouble());
     }
 
     @Test
     public void testResult_enum() {
-        Result good = new Result("RED");
+        StringResult good = new StringResult("RED");
         assertEquals(Color.RED, good.as(Color::valueOf));
 
-        Result syntax = new Result("VIOLET");
+        StringResult syntax = new StringResult("VIOLET");
         assertThrows(IllegalArgumentException.class,
             () -> syntax.as(Color::valueOf));
 
-        Result empty = new Result(null);
+        StringResult empty = new StringResult(null);
         assertThrows(IllegalArgumentException.class,
             () -> empty.as(Color::valueOf));
         assertEquals(Color.GREEN,
