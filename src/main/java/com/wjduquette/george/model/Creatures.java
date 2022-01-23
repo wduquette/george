@@ -47,34 +47,33 @@ public class Creatures {
     /**
      * Makes a basic creature entity, reading the creature's data from the game
      * info file.
-     * @param key The creature's key
+     * @param record The creature's record key
      * @return The entity
      */
-    private Entity makeSimple(String key) {
-        var sprite = info.get(key, "sprite").orElseThrow();
-        var label = info.get(key, "label").orElseThrow();
+    private Entity makeSimple(String record) {
+        var creature = new CreatureData(record)
+            .level(info.requireInt(record, "level"))
+            .experience(info.requireInt(record, "experience"))
+            .posture(Posture.valueOf(info.require(record, "posture").toUpperCase()))
+            .noticeRange(info.requireInt(record, "noticeRange"))
+            .mp(info.requireInt(record, "mp"));
         return new Entity()
-            .tagAsMobile(key)
-            .label(label)
-            .sprite(sprite);
+            .tagAsMobile(record)
+            .tagAsCreature(creature)
+            .label(info.require(record, "label"))
+            .sprite(info.require(record, "sprite"));
     }
 
     /**
      * Makes "creature.lady_bug"
-     * @param key The creature's key
+     * @param record The creature's record key
      * @return The entity
      */
-    private Entity makeLadyBug(String key) {
-        // TODO: Could set default posture from info file.
-        // TODO: Could maybe set default behavior from info file
-        var creature = new CreatureData(key)
-            .level(1)
-            .experience(1)
-            .behavior(NaiveTimid.TRAIT)
-            .posture(Posture.WANDERING)
-            .noticeRange(12)
-            .mp(4);
-        return makeSimple(key).tagAsCreature(creature);
+    private Entity makeLadyBug(String record) {
+        // TODO: allow most behaviors to be defined in creature file.
+        var entity = makeSimple(record);
+        entity.creature().behavior(NaiveTimid.TRAIT);
+        return entity;
     }
 
     //-------------------------------------------------------------------------

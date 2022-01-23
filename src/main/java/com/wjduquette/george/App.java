@@ -51,6 +51,9 @@ public class App extends Application {
     // The items lookup table
     private Items items;
 
+    // The creatures lookup table
+    private Creatures creatures;
+
     // A lookup table for regions by name
     private final Map<String,Region> regions = new HashMap<>();
 
@@ -83,6 +86,7 @@ public class App extends Application {
         // FIRST, Set up global resources
         populateRegionFactories();
         items = new Items(getClass(), "assets/items.keydata");
+        creatures = new Creatures(getClass(), "assets/creatures.keydata");
 
         // NEXT, Create the party.
         party = new Party(this);

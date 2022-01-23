@@ -1,0 +1,21 @@
+# creatures.keydata
+
+%record creature.lady_bug
+%field label Lady Bug
+%field sprite mobile.lady_bug
+%field level 1
+%field experience 1
+%field noticeRange 12
+%field mp 4
+%field posture wandering
+%field restlessness 25
+
+%record creature.manly_bug
+%field label Manly Bug
+%field sprite mobile.manly_bug
+%field level 2
+%field experience 2
+%field noticeRange 12
+%field mp 4
+%field posture wandering
+%field restlessness 15

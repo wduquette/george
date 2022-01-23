@@ -14,20 +14,25 @@ import java.util.*;
  * <pre>
  * %prefix {prefix}
  *
- * %string {name} {value....}
+ * %record {record}
+ * %field {name} {value....}
  * %block {name}
  * ...text...
  * %end
  * </pre>
  *
  * <ul>
- *     <li> The {@code %prefix} keyword defines a prefix for the keys in the
- *          file, so that the full name is "{prefix}.{string name}".</li>
- *     <li> The {@code %string} keyword defines a key/value pair with a brief
+ *     <li> The {@code %prefix} keyword defines a prefix for all keys in the
+ *          file.</li>
+ *     <li> The {@code %record} keyword defines a record name, which defaults to
+ *          the empty string.</li>
+ *     <li> The {@code %field} keyword defines a key/value pair with a brief
  *          string value.  All tokens following the {name} are part of the
- *          value.</li>
+ *          value. (Note: {@code %string} is a deprecated synonym for
+ *          {@code %field}.)</li>
  *     <li> Longer strings are bracketed by {@code %block {name}}/{@code %end}
  *          keywords.</li>
+ *     <li> The full key for a value is {@code [{prefix}.[{record}.]{name}}</li>
  *     <li> Leading and trailing whitespace is trimmed.</li>
  *     <li> Outside of blocks, blank lines and lines beginning with "#" are
  *          ignored.</li>
@@ -35,17 +40,28 @@ import java.util.*;
  *          unconstrained; they are usually dotted identifiers.</li>
  * </ul>
  *
- * For example,
+ * <p>For example,</p>
  *
  * <pre>
- * # My Strings File
+ * %field my.sword.name My Sword
+ * %field my.sword.sprite item.sword
+ * %field my.sword.description
+ * This is my sword.
  *
+ * It's really sharp.
+ * %end
+ *
+ * </pre>
+ *
+ * <p>Or, using {@code %prefix} and {%record}</p>
+ *
+ * <pre>
  * %prefix my
  *
- * # Definitions for my.sword
- * %string sword.name My Sword
- * %string sword.sprite item.sword
- * %block sword.description
+ * %record sword
+ * %field name My Sword
+ * %field sprite item.sword
+ * %field description
  * This is my sword.
  *
  * It's really sharp.
@@ -64,6 +80,9 @@ public final class KeyDataTable {
 
     // The table's prefix.
     private String prefix = null;
+
+    // The current record name
+    private transient String record = null;
 
     // The table containing the data.
     private final Map<String,String> table = new HashMap<>();
@@ -102,23 +121,42 @@ public final class KeyDataTable {
         parser.defineKeyword("%prefix", (scanner, $) -> {
             this.prefix = scanner.next();
         });
-        parser.defineKeyword("%string", (scanner, $) -> {
-            var key = scanner.next();
-            if (prefix != null) {
-                key = prefix + "." + key;
+        parser.defineKeyword("%record", (scanner, $) -> {
+            if (scanner.hasNext()) {
+                this.record = scanner.next();
+            } else {
+                this.record = null;
             }
+        });
+        parser.defineKeyword("%field", (scanner, $) -> {
+            var name = scanner.next();
             var value = scanner.nextLine().trim();
-            table.put(key,value);
+            table.put(fullKey(name),value);
+        });
+        parser.defineKeyword("%string", (scanner, $) -> {
+            // %string is deprecated
+            var name = scanner.next();
+            var value = scanner.nextLine().trim();
+            table.put(fullKey(name),value);
         });
         parser.defineBlock("%block", "%end", (scanner, block) -> {
-            var key = scanner.next();
-            if (prefix != null) {
-                key = prefix + "." + key;
-            }
-            table.put(key, block);
+            var name = scanner.next();
+            table.put(fullKey(name), block);
         });
 
         parser.parse(Resource.getLines(cls, relPath));
+    }
+
+    private String fullKey(String fieldName) {
+        if (record != null) {
+            fieldName = record + "." + fieldName;
+        }
+
+        if (prefix != null) {
+            fieldName = prefix + "." + fieldName;
+        }
+
+        return fieldName;
     }
 
     //-------------------------------------------------------------------------
@@ -140,7 +178,8 @@ public final class KeyDataTable {
         return prefix;
     }
 
-    /** Retrieves a string from the table given its key
+    /**
+     * Retrieves a string from the table given its key
      * @param key The key
      * @return The string
      */
@@ -148,13 +187,77 @@ public final class KeyDataTable {
         return Optional.ofNullable(table.get(key));
     }
 
-    /** Retrieves a string from the table given its key and suffix, e.g.,
-     * get("my.sword, "label") retrieves "my.sword.label"
-     * @param key The key
+    /**
+     * Retrieves a string from the table given its record prefix and a suffix,
+     * e.g., get("my.sword, "label") retrieves "my.sword.label"
+     * @param record The record's key prefix
      * @return The string
      */
-    public Optional<String> get(String key, String suffix) {
-        return Optional.ofNullable(table.get(key + "." + suffix));
+    public Optional<String> get(String record, String suffix) {
+        return Optional.ofNullable(table.get(record + "." + suffix));
+    }
+
+    /**
+     * Retrieves an integer from the table given its key.
+     * @param key The key
+     * @return The integer
+     */
+    public Optional<Integer> getInt(String key) {
+        return get(key).map(Integer::valueOf);
+    }
+
+    /**
+     * Retrieves an integer from the table given its record prefix and a suffix,
+     * e.g., get("my.player, "hp") retrieves "my.player.hp"
+     * @param record The record's key prefix
+     * @return The integer
+     */
+    public Optional<Integer> getInt(String record, String suffix) {
+        return get(record, suffix).map(Integer::valueOf);
+    }
+
+    /**
+     * Retrieves a required string from the table given its key.
+     * @param key The key
+     * @return The string
+     * @throws IllegalArgumentException if the key is not found.
+     */
+    public String require(String key) {
+        var value = table.get(key);
+        if (value == null) {
+            throw new IllegalArgumentException("Missing required key: " + key);
+        }
+        return value;
+    }
+
+    /**
+     * Retrieves a required string from the table given its record prefix and a suffix,
+     * e.g., get("my.sword, "label") retrieves "my.sword.label"
+     * @param record The record's key prefix
+     * @return The string
+     * @throws IllegalArgumentException if the key is not found.
+     */
+    public String require(String record, String suffix) {
+        return require(record + "." + suffix);
+    }
+
+    /**
+     * Retrieves a required integer from the table given its key.
+     * @param key The key
+     * @return The integer
+     */
+    public int requireInt(String key) {
+        return Integer.valueOf(require(key));
+    }
+
+    /**
+     * Retrieves a required integer from the table given its record prefix and
+     * a suffix, e.g., get("my.player, "hp") retrieves "my.player.hp"
+     * @param record The record's key prefix
+     * @return The integer
+     */
+    public int requireInt(String record, String suffix) {
+        return requireInt(record + "." + suffix);
     }
 
     /** @return a list of the keys. */
