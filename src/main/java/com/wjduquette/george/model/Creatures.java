@@ -13,10 +13,12 @@ import java.util.function.Function;
  */
 public class Creatures {
     public static final String EXPERIENCE = "experience";
+    public static final String LABEL = "label";
     public static final String LEVEL = "level";
     public static final String MP = "mp";
     public static final String NOTICE_RANGE = "noticeRange";
     public static final String POSTURE = "posture";
+    public static final String SPRITE = "sprite";
 
     /**
      * The interface for creature factories
@@ -53,21 +55,22 @@ public class Creatures {
     /**
      * Makes a basic creature entity, reading the creature's data from the game
      * info file.
-     * @param record The creature's record key
+     * @param recordKey The creature's record key
      * @return The entity
      */
-    private Entity makeSimple(String record) {
-        var creature = new CreatureData(record)
-            .level(info.get(record, LEVEL).asInt())
-            .experience(info.get(record, EXPERIENCE).asInt())
-            .posture(info.get(record, POSTURE).as(Posture::valueOf))
-            .noticeRange(info.get(record, NOTICE_RANGE).asInt())
-            .mp(info.get(record, MP).asInt());
+    private Entity makeSimple(String recordKey) {
+        var record = info.with(recordKey);
+        var creature = new CreatureData(recordKey)
+            .level(record.get(LEVEL).asInt())
+            .experience(record.get(EXPERIENCE).asInt())
+            .posture(record.get(POSTURE).as(Posture::valueOf))
+            .noticeRange(record.get(NOTICE_RANGE).asInt())
+            .mp(record.get(MP).asInt());
         return new Entity()
-            .tagAsMobile(record)
+            .tagAsMobile(recordKey)
             .tagAsCreature(creature)
-            .label(info.get(record, "label").asIs())
-            .sprite(info.get(record, "sprite").asIs());
+            .label(record.get(LABEL).asIs())
+            .sprite(record.get(SPRITE).asIs());
     }
 
     /**

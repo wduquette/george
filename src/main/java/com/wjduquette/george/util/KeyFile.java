@@ -252,4 +252,41 @@ public final class KeyFile {
             .map(Map.Entry::getValue)
             .toList();
     }
+
+    /**
+     * Gets a record accessor for the record with the given key.
+     * @param recordKey The record's key
+     * @return The accessor
+     */
+    public Record with(String recordKey) {
+        return new Record(recordKey);
+    }
+
+    //-------------------------------------------------------------------------
+    // Helper Classes
+
+    /** An accessor for a specific record in the file. */
+    public class Record {
+        private final String record;
+        private Record(String record) { this.record = record; }
+
+        /**
+         * Gets a result for the given field within the record.
+         * @param field
+         * @return The result, which will not be empty.
+         * @throws IllegalArgumentException if not found.
+         */
+        public StringResult get(String field) {
+            return KeyFile.this.get(record + "." + field);
+        }
+
+        /**
+         * Gets a result for the given field within the record.
+         * @param field
+         * @return The result, which might be empty.
+         */
+        public StringResult lookup(String field) {
+            return KeyFile.this.lookup(record + "." + field);
+        }
+    }
 }
