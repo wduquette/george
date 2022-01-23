@@ -68,6 +68,8 @@ public class Creatures {
         // TODO: Could set default posture from info file.
         // TODO: Could maybe set default behavior from info file
         var creature = new CreatureData(key)
+            .level(1)
+            .experience(1)
             .behavior(NaiveTimid.TRAIT)
             .posture(Posture.WANDERING)
             .noticeRange(12)

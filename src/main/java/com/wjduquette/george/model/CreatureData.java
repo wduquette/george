@@ -2,11 +2,21 @@ package com.wjduquette.george.model;
 
 import com.wjduquette.george.model.behaviors.Immobile;
 
+/**
+ * This class defines a variety of information about a creature: everything
+ * that Creatures do not have in common with other Mobiles.
+ */
 public class CreatureData {
     //-------------------------------------------------------------------------
     // Instance Variables
 
     private final String key;
+
+    // The creature's level
+    private int level = 1;
+
+    // Experience points awarded for slaying the creature
+    private int experience = 1;
 
     // The creature's behavior
     private Behavior behavior = Immobile.TRAIT;
@@ -32,6 +42,24 @@ public class CreatureData {
 
     //-------------------------------------------------------------------------
     // API
+
+    public int level() {
+        return level;
+    }
+
+    public CreatureData level(int level) {
+        this.level = level;
+        return this;
+    }
+
+    public int experience() {
+        return experience;
+    }
+
+    public CreatureData experience(int points) {
+        this.experience = points;
+        return this;
+    }
 
     public Behavior behavior() {
         return behavior;
