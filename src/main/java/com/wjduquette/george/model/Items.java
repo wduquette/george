@@ -2,6 +2,8 @@ package com.wjduquette.george.model;
 
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.util.KeyDataTable;
+import com.wjduquette.george.util.KeyFile;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -55,7 +57,7 @@ public class Items {
     // Instance Variables
 
     // The game info table for items
-    protected final KeyDataTable info;
+    protected final KeyFile info;
 
     // The factory functions, by info key.
     private final Map<String, Factory> factories =
@@ -69,7 +71,7 @@ public class Items {
      * time, we might read them from a file.
      */
     public Items(Class<?> cls, String relPath) {
-        info = new KeyDataTable(cls, relPath);
+        info = new KeyFile(cls, relPath);
 
         // Hand Weapons
         define("weapon.small_wrench", this::makeWeapon);
@@ -100,10 +102,11 @@ public class Items {
      * @return The entity
      */
     private Entity makeSimple(String key) {
-        var type = Type.valueOf(info.get(key, "type").orElseThrow().toUpperCase());
-        var sprite = info.get(key, "sprite").orElseThrow();
-        var label = info.get(key, "label").orElseThrow();
-        var value = Integer.parseInt(info.get(key, "value").orElseThrow());
+        var record = info.with(key);
+        var type = record.get("type").as(Type::valueOf);
+        var sprite = record.get("sprite").asIs();
+        var label = record.get("label").asIs();
+        var value = record.get("value").asInt();
         return new Entity()
             .tagAsItem(key, type, value)
             .label(label)
@@ -127,9 +130,10 @@ public class Items {
      * @return The entity
      */
     private Entity makeWeapon(String key) {
-        var damage = Dice.valueOf(info.get(key, "damage").orElseThrow());
-        var range = Integer.valueOf(info.get(key, "range").orElse("1"));
-        return makeSimple(key).tagAsWeapon(damage, 1);
+        var record = info.with(key);
+        var damage = record.get("damage").as(Dice::valueOf);
+        var range = record.lookup("range").orInt(1);
+        return makeSimple(key).tagAsWeapon(damage, range);
     }
 
     //-------------------------------------------------------------------------
