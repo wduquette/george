@@ -3,5 +3,5 @@
 # The %tilemap must go last.
 %prefix overworld
 %terrain overworld.terrain
-%info overworld.keydata
+%info overworld.keyfile
 %tilemap overworld.json

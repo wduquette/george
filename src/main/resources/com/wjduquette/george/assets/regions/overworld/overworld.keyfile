@@ -5,8 +5,9 @@
 #------------------------------------------------------------------------------
 # Signs
 
-%string sign.map.sprite feature.sign
-%block sign.map.text
+%record sign.map
+%field sprite feature.sign
+%block text
 The sign shows a detailed map of the world, with an
 arrow labeled "You are Here".  Unfortunately, you can't
 read the language the map legend is written in, so the
@@ -16,22 +17,25 @@ You might find it more useful to click the map icon down
 on the control bar.
 %end
 
-%string sign.floobham.sprite feature.sign
-%block sign.floobham.text
+%record sign.floobham
+%field sprite feature.sign
+%block text
 Floobham Township
 
 Everything for the Adventurer!
 %end
 
-%string sign.floob_castle.sprite feature.sign
-%block sign.floob_castle.text
+%record sign.floob_castle
+%field sprite feature.sign
+%block text
 Floob Castle
 
 Do Not Feed The Guards!
 %end
 
-%string sign.bugland.sprite feature.sign
-%block sign.bugland.text
+%record sign.bugland
+%field sprite feature.sign
+%block text
 Tunnel to Paradise Valley
 
 Warning: Beware of Bugs
@@ -42,20 +46,20 @@ Warning: Beware of Bugs
 
 # Joe Pro the Tutor
 
-%string tutor.label Joe Pro
-%string tutor.sprite mobile.joepro
-%block tutor.description
+%record tutor
+%field label Joe Pro
+%field sprite mobile.joepro
+%block description
 He's lean, but not mean.
 %end
-%block tutor.start
+%block start
 A man in black speaks to you as you approach.
 
 "There are things you need to know, and I guess I'm the one
 to tell you.  First thing is, you have to left-click to move—
 but it seems you already know that."
 %end
-
-%block tutor.leftclick
+%block leftclick
 "Left-click?" you say. "What's that supposed to mean?"
 
 "I know," he says, "It makes no darn sense to me either.
@@ -65,8 +69,7 @@ gotta do what a man's gotta do, and you gotta left-click.
 "And if you want to interact with something—or someone—
 you gotta right-click."
 %end
-
-%block tutor.interact
+%block interact
 "Interact?" you say. "That's an odd sort of word."
 
 "Yeah, like if you want to read a sign or open a door.
@@ -78,8 +81,7 @@ He scratches his chin.
 
 "You'll probably need to move next to it first, though."
 %end
-
-%block tutor.final
+%block final
 "Is there anything else?" you say.
 
 "If you want to know what something is, use that magnifier

@@ -3,5 +3,5 @@
 # The %tilemap must go last.
 %prefix test
 %terrain test.terrain
-%info test.keydata
+%info test.keyfile
 %tilemap test.json
