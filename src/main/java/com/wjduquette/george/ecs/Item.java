@@ -4,7 +4,7 @@ import com.wjduquette.george.model.Items;
 
 /**
  * An item in the game.
- * @param key Its key in the items.keydata file
+ * @param key Its key in the items.keyfile file
  * @param type Its Items.Type
  * @param value Its base sale value
  */

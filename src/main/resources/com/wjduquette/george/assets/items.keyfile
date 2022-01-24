@@ -1,0 +1,64 @@
+# Items Definitions
+
+#------------------------------------------------------------------------------
+# Hand Weapons
+
+%record weapon.small_wrench
+%field type hand_weapon
+%field label Small Wrench
+%field sprite item.small_wrench
+%field value 20
+%field damage 1D4
+
+#------------------------------------------------------------------------------
+# Ranged Weapons
+
+%record weapon.staple_gun
+%field type ranged
+%field label Staple Gun
+%field sprite item.staple_gun
+%field value 50
+%field damage 1D4+2
+%field range 4
+
+#------------------------------------------------------------------------------
+# Body Armor
+
+%record body.overalls
+%field type body_armor
+%field label Grubby Overalls
+%field sprite item.overalls
+%field value 4
+
+#------------------------------------------------------------------------------
+# Headgear
+
+%record head.hat
+%field type head_gear
+%field label Farmer's Hat
+%field sprite item.hat
+%field value 1
+
+#------------------------------------------------------------------------------
+# Footgear
+
+%record foot.shoes
+%field type foot_wear
+%field label Farmer's Shoes
+%field sprite item.shoes
+%field value 4
+
+#------------------------------------------------------------------------------
+# Usable Items
+
+%record scroll.mapping
+%field type scroll_of_mapping
+%field label Scroll of Magic Mapping
+%field sprite item.map_scroll
+%field value 40
+
+%record vial.healing
+%field type vial_of_healing
+%field label Vial of Healing
+%field sprite item.red_vial
+%field value 15

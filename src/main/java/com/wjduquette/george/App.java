@@ -85,7 +85,7 @@ public class App extends Application {
     public void start(Stage stage) {
         // FIRST, Set up global resources
         populateRegionFactories();
-        items = new Items(getClass(), "assets/items.keydata");
+        items = new Items(getClass(), "assets/items.keyfile");
         creatures = new Creatures(getClass(), "assets/creatures.keyfile");
         var bug = creatures.make("creature.lady_bug");
 
