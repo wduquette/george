@@ -3,5 +3,5 @@
 # The %tilemap must go last.
 %prefix floobham
 %terrain floobham.terrain
-%info floobham.keydata
+%info floobham.keyfile
 %tilemap floobham.json

@@ -3,5 +3,5 @@
 # The %tilemap must go last.
 %prefix bugland
 %terrain bugland.terrain
-%info bugland.keydata
+%info bugland.keyfile
 %tilemap bugland.json

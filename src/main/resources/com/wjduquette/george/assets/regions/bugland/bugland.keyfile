@@ -5,8 +5,9 @@
 #------------------------------------------------------------------------------
 # Signs
 
-%string sign.toolate.sprite feature.sign
-%block sign.toolate.text
+%record sign.toolate
+%field sprite feature.sign
+%block text
 Kilroy was here.
 
 The treasure isn't.
@@ -14,16 +15,18 @@ The treasure isn't.
 Life's like that sometimes.
 %end
 
-%string sign.notroll.sprite feature.sign
-%block sign.notroll.text
+%record sign.notroll
+%field sprite feature.sign
+%block text
 Warning: This Troll Bridge is no longer manned
 due to insufficient business.  Please drop the
 toll in the water, and the Troll will come 
 pick it up whenever he darn well pleases.
 %end
 
-%string sign.overlook.sprite feature.sign
-%block sign.overlook.text
+%record sign.overlook
+%field sprite feature.sign
+%block text
 Scenic Overlook
 
 No Littering.
@@ -32,18 +35,21 @@ No Littering.
 #------------------------------------------------------------------------------
 # Notices
 
-%block notice.noises.text
+%record notice.noises
+%block text
 There's an odd smell in the air, and rustling--lots 
 of rustling.  You resolve to move carefully.
 %end 
 
-%block notice.ruin.text
+%record notice.ruin
+%block text
 There's a house ahead...or what remains of one.
 Apparently these bugs are nasty.  Better leave them
 alone!
 %end
 
-%block notice.valley.text
+%record notice.valley
+%block text
 From here you can begin to see more of the valley,
 and you can see why they called it Paradise.  Sunshine,
 water, fertile soil...it must really have been 
