@@ -3,6 +3,8 @@ package com.wjduquette.george.util;
 import java.util.function.Function;
 
 public class StringResult {
+    public final static StringResult EMPTY = new StringResult(null);
+
     //-------------------------------------------------------------------------
     // Instance Variables
 

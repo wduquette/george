@@ -88,7 +88,7 @@ public class FloobhamRegion extends DataDrivenRegion {
 
         @Override
         public String getDisplayText() {
-            return getInfo(key(), state.toString().toLowerCase());
+            return info.get(key(), state.toString().toLowerCase()).asIs();
         }
 
         @Override

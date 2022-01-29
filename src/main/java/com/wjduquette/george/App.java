@@ -311,7 +311,7 @@ public class App extends Application {
 
         if (entity.sign() != null) {
             var key = entity.sign().key();
-            var text = region.getInfo(key, "text");
+            var text = region.info().get(key, "text").asIs();
 
             showPanel(new FeaturePanel(this, entity, text));
         } else if (entity.mannikin() != null) {
@@ -319,7 +319,7 @@ public class App extends Application {
                 showPanel(new DialogPanel(this, dlg)));
         } else if (entity.narrative() != null) {
             var key = entity.narrative().key();
-            var text = region.getInfo(key, "text");
+            var text = region.info().get(key, "text").asIs();
             showPanel(new FeaturePanel(this, leader(), text));
         }
     }

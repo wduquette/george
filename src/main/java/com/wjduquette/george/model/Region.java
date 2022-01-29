@@ -5,6 +5,8 @@ import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.TerrainTileSet;
 import com.wjduquette.george.util.AStar;
 import com.wjduquette.george.util.KeyDataTable;
+import com.wjduquette.george.util.KeyFile;
+import com.wjduquette.george.util.StringResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +99,7 @@ public abstract class Region {
     protected TerrainTileSet terrainTileSet;
 
     // The game info table
-    protected KeyDataTable info;
+    protected KeyFile info;
 
     // The tile size for this map.
     protected int tileHeight = 0;
@@ -345,33 +347,10 @@ public abstract class Region {
     }
 
     /**
-     * Gets an info parameter, which must exist.
-     * @param key The parameter's key
-     * @return The value we found.
-     */
-    public String getInfo(String key) {
-        return info.get(key).orElseThrow(() ->
-            new IllegalArgumentException("Unknown info key: " + key));
-    }
-
-    /**
-     * Gets the info parameter for an object, which must exist, e.g.,
-     * the value "{key}.{suffix}"
-     * @param key The object's key
-     * @param suffix The value's suffix
-     * @return The value we found.
-     */
-    public String getInfo(String key, String suffix) {
-        return info.get(key, suffix).orElseThrow(() ->
-            new IllegalArgumentException(
-                "Unknown info key: " + key + "." + suffix));
-    }
-
-    /**
      * Get the entire info table.
      * @return The table.
      */
-    public KeyDataTable info() {
+    public KeyFile info() {
         return info;
     }
 
@@ -573,8 +552,8 @@ public abstract class Region {
         return new Entity()
             .tagAsFeature()
             .tagAsMannikin(key)
-            .label(getInfo(key, "label"))
-            .sprite(getInfo(key, "sprite"))
+            .label(info.get(key, "label").asIs())
+            .sprite(info.get(key, "sprite").asIs())
             .terrain(TerrainType.FENCE);
     }
 
@@ -614,6 +593,6 @@ public abstract class Region {
             .tagAsSign(key)
             .label("sign")
             .terrain(TerrainType.FENCE)
-            .sprite(getInfo(key, "sprite"));
+            .sprite(info.get(key, "sprite").asIs());
     }
 }

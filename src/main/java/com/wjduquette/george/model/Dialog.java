@@ -1,5 +1,7 @@
 package com.wjduquette.george.model;
 
+import com.wjduquette.george.util.StringResult;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +22,8 @@ public interface Dialog {
      * Returns the NPC's description.
      * @return the name
      */
-    Optional<String> getDescription();
+    StringResult getDescription();
+
 
     /**
      * The foreground image for the NPC, i.e., its sprite image.

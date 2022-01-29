@@ -4,6 +4,7 @@ import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.Entity;
 import com.wjduquette.george.model.*;
 import com.wjduquette.george.tmx.TiledMapReader;
+import com.wjduquette.george.util.StringResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,8 +79,8 @@ public class OverworldRegion extends DataDrivenRegion {
 
         @Override public String getName() { return "A Man in Black"; }
 
-        @Override public Optional<String> getDescription() {
-            return Optional.empty();
+        @Override public StringResult getDescription() {
+            return StringResult.EMPTY;
         }
 
         @Override
@@ -89,7 +90,7 @@ public class OverworldRegion extends DataDrivenRegion {
 
         @Override
         public String getDisplayText() {
-            return getInfo(key(), state.toString().toLowerCase());
+            return info.get(key(), state.toString().toLowerCase()).asIs();
         }
 
         @Override

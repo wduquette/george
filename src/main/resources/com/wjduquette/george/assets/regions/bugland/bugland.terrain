@@ -20,5 +20,5 @@
 %tile brick_center     Brick              floor
 %tile brick_ns         Brick              floor
 %tile brick_ew         Brick              floor
-%tile tunnel_entrance  Tunnel_entrance    none
+%tile tunnel_entrance  Tunnel_entrance    floor
 

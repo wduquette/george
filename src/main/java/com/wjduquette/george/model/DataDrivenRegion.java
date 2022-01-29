@@ -67,7 +67,8 @@ public class DataDrivenRegion extends Region {
     // Loads the data from the region's .region file.  This is a separate
     // method to make exception handling easier.
     private void loadData(Class<?> cls, String relPath)
-        throws KeywordParser.KeywordException {
+        throws KeywordParser.KeywordException
+    {
         // FIRST, prepare to accumulate data.
         this.resource = (relPath.startsWith("/"))
             ? relPath : cls.getCanonicalName() + ":" + relPath;
@@ -84,7 +85,7 @@ public class DataDrivenRegion extends Region {
 
         parser.defineKeyword("%info", (scanner, $) -> {
             var filename = Resource.relativeTo(relPath, scanner.next());
-            info = new KeyDataTable(cls, filename);
+            info = new KeyFile(cls, filename);
         });
 
         parser.defineKeyword("%tilemap", (scanner, $) -> {

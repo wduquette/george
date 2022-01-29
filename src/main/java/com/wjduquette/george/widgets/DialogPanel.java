@@ -86,7 +86,7 @@ public class DialogPanel extends GamePane implements Panel {
         var description = dialog.getDescription();
 
         if (description.isPresent()) {
-            gc().fillText(description.get(), tx, ty);
+            gc().fillText(description.asIs(), tx, ty);
             ty += DESCRIPTION_SPACING;
         }
 

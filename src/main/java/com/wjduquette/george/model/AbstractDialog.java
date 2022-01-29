@@ -1,6 +1,7 @@
 package com.wjduquette.george.model;
 
 import com.wjduquette.george.ecs.Entity;
+import com.wjduquette.george.util.StringResult;
 
 import java.util.Optional;
 
@@ -52,7 +53,7 @@ public abstract class AbstractDialog implements Dialog {
      */
     @Override
     public String getName() {
-        return region.getInfo(key, "label");
+        return region.info().get(key, "label").asIs();
     }
 
     /**
@@ -61,8 +62,8 @@ public abstract class AbstractDialog implements Dialog {
      * @return The description
      */
     @Override
-    public Optional<String> getDescription() {
-        return Optional.of(region.getInfo(key, "description"));
+    public StringResult getDescription() {
+        return region.info().lookup(key, "description");
     }
 
     /**
