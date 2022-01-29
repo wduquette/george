@@ -4,9 +4,7 @@ import com.wjduquette.george.App;
 import com.wjduquette.george.ecs.*;
 import com.wjduquette.george.graphics.TerrainTileSet;
 import com.wjduquette.george.util.AStar;
-import com.wjduquette.george.util.KeyDataTable;
 import com.wjduquette.george.util.KeyFile;
-import com.wjduquette.george.util.StringResult;
 
 import java.util.ArrayList;
 import java.util.List;

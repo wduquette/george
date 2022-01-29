@@ -1,7 +1,6 @@
 package com.wjduquette.george.model;
 
 import com.wjduquette.george.ecs.Entity;
-import com.wjduquette.george.util.KeyDataTable;
 import com.wjduquette.george.util.KeyFile;
 
 import java.util.HashMap;
