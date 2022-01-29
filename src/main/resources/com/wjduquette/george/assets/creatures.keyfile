@@ -3,6 +3,7 @@
 %record creature.lady_bug
 %field behavior NAIVE_TIMID
 %field experience 1
+%field hp 6
 %field label Lady Bug
 %field level 1
 %field mp 4
@@ -14,6 +15,7 @@
 %record creature.manly_bug
 %field behavior IMMOBILE
 %field experience 2
+%field hp 6
 %field label Manly Bug
 %field level 2
 %field mp 4

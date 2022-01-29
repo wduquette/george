@@ -1,8 +1,8 @@
 package com.wjduquette.george.model;
 
 import com.wjduquette.george.ecs.Entity;
+import com.wjduquette.george.ecs.Health;
 import com.wjduquette.george.model.behaviors.Behaviors;
-import com.wjduquette.george.model.behaviors.NaiveTimid;
 import com.wjduquette.george.util.KeyFile;
 
 import java.util.HashMap;
@@ -15,6 +15,7 @@ import java.util.function.Function;
 public class Creatures {
     public static final String BEHAVIOR = "behavior";
     public static final String EXPERIENCE = "experience";
+    public static final String HP = "hp";
     public static final String LABEL = "label";
     public static final String LEVEL = "level";
     public static final String MP = "mp";
@@ -74,7 +75,8 @@ public class Creatures {
             .tagAsMobile(recordKey)
             .tagAsCreature(creature)
             .label(record.get(LABEL).asIs())
-            .sprite(record.get(SPRITE).asIs());
+            .sprite(record.get(SPRITE).asIs())
+            .put(new Health(record.get(HP).asInt()));
     }
 
     //-------------------------------------------------------------------------

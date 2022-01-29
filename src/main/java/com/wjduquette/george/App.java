@@ -87,7 +87,10 @@ public class App extends Application {
         populateRegionFactories();
         items = new Items(getClass(), "assets/items.keyfile");
         creatures = new Creatures(getClass(), "assets/creatures.keyfile");
-        var bug = creatures.make("creature.lady_bug");
+
+        // TODO: Just verifying that code works
+        var lady_bug = creatures.make("creature.lady_bug");
+        var manly_bug = creatures.make("creature.manly_bug");
 
         // NEXT, Create the party.
         party = new Party(this);
