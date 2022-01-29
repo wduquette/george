@@ -147,6 +147,18 @@
                  "width":0,
                  "x":1640,
                  "y":1480
+                }, 
+                {
+                 "height":0,
+                 "id":12,
+                 "name":"bugland",
+                 "point":true,
+                 "rotation":0,
+                 "type":"Point",
+                 "visible":true,
+                 "width":0,
+                 "x":2000,
+                 "y":1000
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -155,7 +167,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":12,
+ "nextobjectid":13,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",
