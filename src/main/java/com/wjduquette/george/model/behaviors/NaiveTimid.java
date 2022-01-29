@@ -30,12 +30,8 @@ import com.wjduquette.george.model.Region;
  * @author will
  */
 public class NaiveTimid implements Behavior {
-    public static final Behavior TRAIT = new NaiveTimid();
-
-    private NaiveTimid() {}
-
     @Override
     public void doPlan(Region region, Entity entity) {
-
+        // Not implemented yet.
     }
 }

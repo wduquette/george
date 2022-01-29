@@ -1,21 +1,23 @@
 # creatures.keydata
 
 %record creature.lady_bug
-%field label Lady Bug
-%field sprite mobile.lady_bug
-%field level 1
+%field behavior NAIVE_TIMID
 %field experience 1
-%field noticeRange 12
+%field label Lady Bug
+%field level 1
 %field mp 4
+%field noticeRange 12
 %field posture WANDERING
 %field restlessness 25
+%field sprite mobile.lady_bug
 
 %record creature.manly_bug
-%field label Manly Bug
-%field sprite mobile.manly_bug
-%field level 2
+%field behavior IMMOBILE
 %field experience 2
-%field noticeRange 12
+%field label Manly Bug
+%field level 2
 %field mp 4
+%field noticeRange 12
 %field posture WANDERING
 %field restlessness 15
+%field sprite mobile.manly_bug

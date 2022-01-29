@@ -1,6 +1,7 @@
 package com.wjduquette.george.model;
 
 import com.wjduquette.george.ecs.Entity;
+import com.wjduquette.george.model.behaviors.Behaviors;
 import com.wjduquette.george.model.behaviors.NaiveTimid;
 import com.wjduquette.george.util.KeyFile;
 
@@ -12,6 +13,7 @@ import java.util.function.Function;
  * This class provides factories for all creature types, by info key.
  */
 public class Creatures {
+    public static final String BEHAVIOR = "behavior";
     public static final String EXPERIENCE = "experience";
     public static final String LABEL = "label";
     public static final String LEVEL = "level";
@@ -46,7 +48,8 @@ public class Creatures {
         info = new KeyFile(cls, relPath);
 
         // Hand Weapons
-        define("creature.lady_bug", this::makeLadyBug);
+        define("creature.lady_bug", this::makeSimple);
+        define("creature.manly_bug", this::makeSimple);
     }
 
     //-------------------------------------------------------------------------
@@ -61,28 +64,17 @@ public class Creatures {
     private Entity makeSimple(String recordKey) {
         var record = info.with(recordKey);
         var creature = new CreatureData(recordKey)
-            .level(record.get(LEVEL).asInt())
+            .behavior(record.get(BEHAVIOR).as(Behaviors::valueOf).trait())
             .experience(record.get(EXPERIENCE).asInt())
-            .posture(record.get(POSTURE).as(Posture::valueOf))
+            .level(record.get(LEVEL).asInt())
+            .mp(record.get(MP).asInt())
             .noticeRange(record.get(NOTICE_RANGE).asInt())
-            .mp(record.get(MP).asInt());
+            .posture(record.get(POSTURE).as(Posture::valueOf));
         return new Entity()
             .tagAsMobile(recordKey)
             .tagAsCreature(creature)
             .label(record.get(LABEL).asIs())
             .sprite(record.get(SPRITE).asIs());
-    }
-
-    /**
-     * Makes "creature.lady_bug"
-     * @param record The creature's record key
-     * @return The entity
-     */
-    private Entity makeLadyBug(String record) {
-        // TODO: allow most behaviors to be defined in creature file.
-        var entity = makeSimple(record);
-        entity.creature().behavior(NaiveTimid.TRAIT);
-        return entity;
     }
 
     //-------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 package com.wjduquette.george.model;
 
+import com.wjduquette.george.model.behaviors.Behaviors;
 import com.wjduquette.george.model.behaviors.Immobile;
 
 /**
@@ -19,7 +20,7 @@ public class CreatureData {
     private int experience = 1;
 
     // The creature's behavior
-    private Behavior behavior = Immobile.TRAIT;
+    private Behavior behavior = Behaviors.IMMOBILE.trait();
 
     // The creature's current posture
     private Posture posture = Posture.SITTING;
