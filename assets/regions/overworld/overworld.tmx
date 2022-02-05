@@ -218,7 +218,7 @@
   <object id="1" name="origin" type="Point" x="2000" y="1600"/>
   <object id="2" name="floobham:origin" type="Exit" x="1720" y="1360"/>
   <object id="3" name="bugland:origin" type="Exit" x="2000" y="960"/>
-  <object id="4" name="sign.map" type="Sign" x="1600" y="1560"/>
+  <object id="4" name="sign.map" type="Sign" x="1600" y="1520"/>
   <object id="5" name="sign.floobham" type="Sign" x="1720" y="1440"/>
   <object id="6" name="sign.floob_castle" type="Sign" x="1680" y="1200"/>
   <object id="7" name="sign.bugland" type="Sign" x="2040" y="1000">
@@ -228,7 +228,7 @@
   </object>
   <object id="8" name="floob_entry:origin" type="Exit" x="1640" y="1160"/>
   <object id="9" name="floobham" type="Point" x="1720" y="1400"/>
-  <object id="11" name="tutor" type="Mannikin" x="1640" y="1480">
+  <object id="11" name="tutor" type="Mannikin" x="1600" y="1600">
    <point/>
   </object>
   <object id="12" name="bugland" type="Point" x="2000" y="1000">
