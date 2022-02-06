@@ -1,8 +1,10 @@
 # creatures.keydata
 
 %record creature.lady_bug
+%field attitude IGNORES
 %field behavior NAIVE_TIMID
 %field experience 1
+%field faction lady_bug
 %field hp 6
 %field label Lady Bug
 %field level 1
@@ -13,8 +15,10 @@
 %field sprite mobile.lady_bug
 
 %record creature.manly_bug
+%field attitude IGNORES
 %field behavior IMMOBILE
 %field experience 2
+%field faction lady_bug
 %field hp 6
 %field label Manly Bug
 %field level 2

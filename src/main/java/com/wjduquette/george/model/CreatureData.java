@@ -1,13 +1,15 @@
 package com.wjduquette.george.model;
 
 import com.wjduquette.george.model.behaviors.Behaviors;
-import com.wjduquette.george.model.behaviors.Immobile;
 
 /**
  * This class defines a variety of information about a creature: everything
  * that Creatures do not have in common with other Mobiles.
  */
 public class CreatureData {
+    /** The default creature faction. */
+    public static final String MONSTER_FACTION = "monster";
+
     //-------------------------------------------------------------------------
     // Instance Variables
 
@@ -18,6 +20,12 @@ public class CreatureData {
 
     // Experience points awarded for slaying the creature
     private int experience = 1;
+
+    // The creature's default attitude toward the player characters
+    private Attitude attitude = Attitude.HATES;
+
+    // The creature's default faction (used by various rules)
+    private String faction = MONSTER_FACTION;
 
     // The creature's behavior
     private Behavior behavior = Behaviors.IMMOBILE.trait();
@@ -44,12 +52,22 @@ public class CreatureData {
     //-------------------------------------------------------------------------
     // API
 
-    public int level() {
-        return level;
+
+    public Attitude attitude() {
+        return attitude;
     }
 
-    public CreatureData level(int level) {
-        this.level = level;
+    public CreatureData attitude(Attitude attitude) {
+        this.attitude = attitude;
+        return this;
+    }
+
+    public Behavior behavior() {
+        return behavior;
+    }
+
+    public CreatureData behavior(Behavior behavior) {
+        this.behavior = behavior;
         return this;
     }
 
@@ -62,12 +80,21 @@ public class CreatureData {
         return this;
     }
 
-    public Behavior behavior() {
-        return behavior;
+    public String faction() {
+        return faction;
     }
 
-    public CreatureData behavior(Behavior behavior) {
-        this.behavior = behavior;
+    public CreatureData faction(String faction) {
+        this.faction = faction;
+        return this;
+    }
+
+    public int level() {
+        return level;
+    }
+
+    public CreatureData level(int level) {
+        this.level = level;
         return this;
     }
 

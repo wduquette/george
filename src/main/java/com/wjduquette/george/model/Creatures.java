@@ -13,8 +13,10 @@ import java.util.function.Function;
  * This class provides factories for all creature types, by info key.
  */
 public class Creatures {
+    public static final String ATTITUDE = "attitude";
     public static final String BEHAVIOR = "behavior";
     public static final String EXPERIENCE = "experience";
+    public static final String FACTION = "faction";
     public static final String HP = "hp";
     public static final String LABEL = "label";
     public static final String LEVEL = "level";
@@ -65,8 +67,10 @@ public class Creatures {
     private Entity makeSimple(String recordKey) {
         var record = info.with(recordKey);
         var creature = new CreatureData(recordKey)
+            .attitude(record.get(ATTITUDE).as(Attitude::valueOf))
             .behavior(record.get(BEHAVIOR).as(Behaviors::valueOf).trait())
             .experience(record.get(EXPERIENCE).asInt())
+            .faction(record.get(FACTION).asIs())
             .level(record.get(LEVEL).asInt())
             .mp(record.get(MP).asInt())
             .noticeRange(record.get(NOTICE_RANGE).asInt())
